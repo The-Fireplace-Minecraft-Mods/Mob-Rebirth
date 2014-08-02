@@ -1,4 +1,4 @@
-package f1repl4ce.mobrebirth;
+package f1repl4ce.mobrebirth.config;
 
 import java.util.Set;
 

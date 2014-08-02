@@ -22,8 +22,9 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import f1repl4ce.mobrebirth.config.ConfigValues;
 
-@Mod(modid = "mobrebirth", name = "Mob Rebirth", version = "2.0.0", acceptedMinecraftVersions="1.7.10", canBeDeactivated = true, guiFactory = "f1repl4ce.mobrebirth.MobRebirthGuiFactory", dependencies="required-after:fireplacecore")
+@Mod(modid = "mobrebirth", name = "Mob Rebirth", version = "2.0.1", acceptedMinecraftVersions="1.7.10", canBeDeactivated = true, guiFactory = "f1repl4ce.mobrebirth.config.MobRebirthGuiFactory", dependencies="required-after:fireplacecore")
 public class ModBase {
 
 	@Instance("mobrebirth")
@@ -31,26 +32,10 @@ public class ModBase {
 	
 	public static Configuration file;
 	
-	//Achievements
-	public static Achievement insanity;
-	public static Achievement tooeasy;
-	public static Achievement useless;
-	//public static Achievement truehardcore;
-	
 	@EventHandler
 	public void PreInit(FMLPreInitializationEvent event) {
 		file = new Configuration(event.getSuggestedConfigurationFile());
 		syncConfig();
-		//Achievement Code
-		insanity = new Achievement("achievement.insanity", "insanity", 1, 0, new ItemStack(Items.skull, 1, 0), null).registerStat();
-		//truehardcore = new Achievement("achievement.truehardcore", "truehardcore", 0, 1, new ItemStack(Items.skull, 1, 1), null).registerStat();
-		tooeasy = new Achievement("achievement.tooeasy", "tooeasy", 0, -1, Items.cake, null).registerStat();
-		useless = new Achievement("achievement.useless", "useless", 0, 0, Items.poisonous_potato, null).registerStat();
-		//Achievement Page Code
-		AchievementPage pageMobRebirth = new AchievementPage("Mob Rebirth", new Achievement[]{insanity, /*truehardcore, */tooeasy, useless});
-		AchievementPage.registerAchievementPage(pageMobRebirth);
-		
-		FMLCommonHandler.instance().bus().register(new MROnLoaded());
 	}
 	public static void syncConfig(){
 		ConfigValues.SPAWNMOBCHANCE = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNMOBCHANCE_NAME, ConfigValues.SPAWNMOBCHANCE_DEFAULT).getDouble(ConfigValues.SPAWNMOBCHANCE_DEFAULT);

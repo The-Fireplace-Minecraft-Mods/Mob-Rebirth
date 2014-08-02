@@ -1,4 +1,4 @@
-package f1repl4ce.mobrebirth;
+package f1repl4ce.mobrebirth.config;
 
 import java.util.List;
 
@@ -7,6 +7,7 @@ import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import cpw.mods.fml.client.config.GuiConfig;
 import cpw.mods.fml.client.config.IConfigElement;
+import f1repl4ce.mobrebirth.ModBase;
 
 public class MobRebirthConfigGui extends GuiConfig {
 
