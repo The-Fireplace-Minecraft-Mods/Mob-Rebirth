@@ -1,6 +1,7 @@
 package f1repl4ce.mobrebirth;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import f1repl4ce.mobrebirth.config.ConfigValues;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -25,7 +26,17 @@ public class MobRebirthHandler {
 			makeMobReborn(event);
 		}
 		else{
-		if (event.source.getDamageType().equals("player")) {//Checks to see if a player killed it
+			//New experimental code
+			if(/*EntityDamageSource*/event.source.getEntity().equals("player")){
+				if ((event.entityLiving instanceof IMob)) {//Checks to see if it was a Mob
+					makeMobReborn(event);
+				}else if ((event.entityLiving instanceof IAnimals)) {//Checks to see if it was an Animal
+					if (ConfigValues.SPAWNANIMALS == true){//Checks if Animal Spawning is enabled
+						makeMobReborn(event);
+					}
+				}
+			//Old code(didn't work on mod entities, such as IC2 Mining Laser, gun mods of any kind, etc
+		/*if (event.source.getDamageType().equals("player")) {//Checks to see if a player killed it
 			EntityPlayer p = (EntityPlayer) event.source.getEntity();
 
 				if ((event.entityLiving instanceof IMob)) {//Checks to see if it was a Mob
@@ -55,7 +66,8 @@ public class MobRebirthHandler {
 
 			}
 
-		}
+		}*/
+			}
 		}
 	}
 	private void makeMobReborn(LivingDeathEvent event){
