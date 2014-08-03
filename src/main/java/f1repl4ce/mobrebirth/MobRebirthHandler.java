@@ -14,13 +14,14 @@ import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraft.entity.monster.*;
 
 public class MobRebirthHandler {
 	
 	@SubscribeEvent
-	public void onEntityLivingDeath(LivingDeathEvent event) {//TODO make it so slimes spawn the correct size
+	public void onEntityLivingDeath(LivingDropsEvent event) {//TODO make it so slimes spawn the correct size
 		if(ConfigValues.NATURALREBIRTH == true){
 			makeMobReborn(event);
 		}
@@ -58,7 +59,7 @@ public class MobRebirthHandler {
 		}
 		}
 	}
-	private void makeMobReborn(LivingDeathEvent event){
+	private void makeMobReborn(LivingDropsEvent event){
 		double rand = Math.random();
 		//rand = 0.0d;
 		if (rand <= ConfigValues.SPAWNMOBCHANCE) {//Checks the chance to see if anything should happen
@@ -66,7 +67,7 @@ public class MobRebirthHandler {
 			if (id > 0 && EntityList.entityEggs.containsKey(id)) {
 					if (ConfigValues.SPAWNMOB == false){ //Checks to see if creature spawning instead of Eggs is turned off
 						ItemStack dropEgg = new ItemStack(Items.spawn_egg, 1, id); //sets what egg should drop
-						event.entityLiving.entityDropItem(dropEgg, 0.0F);}//Makes the egg drop
+						event.entityLiving.entityDropItem(dropEgg, 0.0F);}//Makes the egg drop///fired on both client on server...
 					else{
 						Entity entity = ItemMonsterPlacer.spawnCreature(event.entityLiving.worldObj , id, event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ);
 				}
