@@ -1,7 +1,8 @@
-package f1repl4ce.mobrebirth;
+package the_fireplace.mobrebirth;
 
 import java.util.logging.Level;
 
+import the_fireplace.mobrebirth.config.ConfigValues;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -22,9 +23,8 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.LanguageRegistry;
-import f1repl4ce.mobrebirth.config.ConfigValues;
 
-@Mod(modid = "mobrebirth", name = "Mob Rebirth", version = "2.0.1", acceptedMinecraftVersions="1.7.10", canBeDeactivated = true, guiFactory = "f1repl4ce.mobrebirth.config.MobRebirthGuiFactory", dependencies="required-after:fireplacecore")
+@Mod(modid = "mobrebirth", name = "Mob Rebirth", version = "2.0.2", acceptedMinecraftVersions="1.7.10", canBeDeactivated = true, guiFactory = "the_fireplace.mobrebirth.config.MobRebirthGuiFactory", dependencies="required-after:fireplacecore@[1.1.1]")
 public class ModBase {
 
 	@Instance("mobrebirth")

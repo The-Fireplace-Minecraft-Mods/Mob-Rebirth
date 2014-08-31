@@ -1,4 +1,4 @@
-package f1repl4ce.mobrebirth.config;
+package the_fireplace.mobrebirth.config;
 
 public class ConfigValues {
 	
