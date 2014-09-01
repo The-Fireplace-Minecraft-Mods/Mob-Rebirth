@@ -22,12 +22,11 @@ import net.minecraft.entity.monster.*;
 public class MobRebirthHandler {
 	
 	@SubscribeEvent
-	public void onEntityLivingDeath(LivingDropsEvent event) {//TODO make it so slimes spawn the correct size
+	public void onEntityLivingDeath(LivingDropsEvent event) {
 		if(ConfigValues.NATURALREBIRTH == true){
 			makeMobReborn(event);
 		}
 		else{
-			//New experimental code
 			if(event.source.getEntity() instanceof EntityPlayer){
 				if ((event.entityLiving instanceof IMob)) {//Checks to see if it was a Mob
 					makeMobReborn(event);
@@ -47,8 +46,14 @@ public class MobRebirthHandler {
 					if (ConfigValues.SPAWNMOB == false){ //Checks to see if creature spawning instead of Eggs is turned off
 						ItemStack dropEgg = new ItemStack(Items.spawn_egg, 1, id); //sets what egg should drop
 						event.entityLiving.entityDropItem(dropEgg, 0.0F);}//Makes the egg drop
-					else{
+					else{//TODO make it metadata sensitive
+						if(event.entityLiving instanceof EntitySlime){
+							
+							
+							Entity entity = ItemMonsterPlacer.spawnCreature(event.entityLiving.worldObj , id, event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ);
+						}else{
 						Entity entity = ItemMonsterPlacer.spawnCreature(event.entityLiving.worldObj , id, event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ);
+						}
 				}
 				}
 				
