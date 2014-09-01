@@ -42,6 +42,6 @@ eclipse/*
 bin/*
 
 # Ignore dependency
-bin/assets/fireplacecore/*
 src/main/resources/assets/fireplacecore/*
 src/main/java/f1repl4ce/fireplacecore/*
+src/main/java/the_fireplace/fireplacecore/*
