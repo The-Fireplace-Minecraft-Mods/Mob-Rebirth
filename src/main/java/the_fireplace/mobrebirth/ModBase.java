@@ -24,7 +24,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-@Mod(modid = "mobrebirth", name = "Mob Rebirth", version = "2.0.3", acceptedMinecraftVersions="1.7.10", canBeDeactivated = true, guiFactory = "the_fireplace.mobrebirth.config.MobRebirthGuiFactory", dependencies="required-after:fireplacecore@[1.1.1]")
+@Mod(modid = "mobrebirth", name = "Mob Rebirth", version = "2.0.3", acceptedMinecraftVersions="1.7.10", canBeDeactivated = true, guiFactory = "the_fireplace.mobrebirth.config.MobRebirthGuiFactory", dependencies="required-after:fireplacecore@[1.2.0,)")
 public class ModBase {
 
 	@Instance("mobrebirth")
