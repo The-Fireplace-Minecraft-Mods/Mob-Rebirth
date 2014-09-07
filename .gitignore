@@ -42,6 +42,21 @@ eclipse/*
 bin/*
 
 # Ignore dependency
-bin/assets/fireplacecore/*
 src/main/resources/assets/fireplacecore/*
+src/main/java/f1repl4ce/fireplacecore/*
 src/main/java/the_fireplace/fireplacecore/*
+
+# Ignore Lycanite's Mobs
+src/main/resources/assets/arcticmobs/*
+src/main/resources/assets/demonmobs/*
+src/main/resources/assets/desertmobs/*
+src/main/resources/assets/forestmobs/*
+src/main/resources/assets/freshwatermobs/*
+src/main/resources/assets/infernomobs/*
+src/main/resources/assets/junglemobs/*
+src/main/resources/assets/lycanitesmobs/*
+src/main/resources/assets/mountainmobs/*
+src/main/resources/assets/plainsmobs/*
+src/main/resources/assets/saltwatermobs/*
+src/main/resources/assets/swampmobs/*
+src/main/java/lycanite/*
