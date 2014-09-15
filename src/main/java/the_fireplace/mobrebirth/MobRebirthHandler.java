@@ -22,12 +22,11 @@ import net.minecraft.entity.monster.*;
 public class MobRebirthHandler {
 	
 	@SubscribeEvent
-	public void onEntityLivingDeath(LivingDropsEvent event) {//TODO make it so slimes spawn the correct size
+	public void onEntityLivingDeath(LivingDropsEvent event) {//TODO make it so slimes and magma cubes spawn the correct size, sheep the correct color, zombies able to equip what they were before, children spawn as children
 		if(ConfigValues.NATURALREBIRTH == true){
 			makeMobReborn(event);
 		}
 		else{
-			//New experimental code
 			if(event.source.getEntity() instanceof EntityPlayer){
 				if ((event.entityLiving instanceof IMob)) {//Checks to see if it was a Mob
 					makeMobReborn(event);
