@@ -3,6 +3,7 @@ package the_fireplace.mobrebirth;
 import java.util.logging.Level;
 
 import the_fireplace.mobrebirth.config.ConfigValues;
+import the_fireplace.mobrebirth.config.MobRebirthOnConfigChanged;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -11,6 +12,7 @@ import net.minecraft.stats.Achievement;
 import net.minecraftforge.common.AchievementPage;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
@@ -29,31 +31,38 @@ public class ModBase {
 
 	@Instance("mobrebirth")
 	public static ModBase instance;
-	
 	public static Configuration file;
 	
-	@EventHandler
-	public void PreInit(FMLPreInitializationEvent event) {
-		file = new Configuration(event.getSuggestedConfigurationFile());
-		syncConfig();
-	}
+	public static Property SPAWNMOBCHANCE_PROPERTY;
+	public static Property SPAWNMOB_PROPERTY;
+	public static Property NATURALREBIRTH_PROPERTY;
+	public static Property SPAWNANIMALS_PROPERTY;
+	
+	
 	public static void syncConfig(){
-		ConfigValues.SPAWNMOBCHANCE = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNMOBCHANCE_NAME, ConfigValues.SPAWNMOBCHANCE_DEFAULT).getDouble(ConfigValues.SPAWNMOBCHANCE_DEFAULT);
-		ConfigValues.SPAWNMOB = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNMOB_NAME, ConfigValues.SPAWNMOB_DEFAULT).getBoolean(ConfigValues.SPAWNMOB_DEFAULT);
-		ConfigValues.NATURALREBIRTH = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.NATURALREBIRTH_NAME, ConfigValues.NATURALREBIRTH_DEFAULT).getBoolean(ConfigValues.NATURALREBIRTH_DEFAULT);
-		ConfigValues.SPAWNANIMALS = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNANIMALS_NAME, ConfigValues.SPAWNANIMALS_DEFAULT).getBoolean(ConfigValues.SPAWNANIMALS_DEFAULT);
+		ConfigValues.SPAWNMOBCHANCE = SPAWNMOBCHANCE_PROPERTY.getDouble();
+		ConfigValues.SPAWNMOB = SPAWNMOB_PROPERTY.getBoolean();
+		ConfigValues.NATURALREBIRTH = NATURALREBIRTH_PROPERTY.getBoolean();
+		ConfigValues.SPAWNANIMALS = SPAWNANIMALS_PROPERTY.getBoolean();
 		if(file.hasChanged()){
 	        file.save();
 		}
 	}
+	
+	@EventHandler
+	public void PreInit(FMLPreInitializationEvent event) {
+		file = new Configuration(event.getSuggestedConfigurationFile());
+		file.load();
+		SPAWNMOBCHANCE_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNMOBCHANCE_NAME, ConfigValues.SPAWNMOBCHANCE_DEFAULT);
+		SPAWNMOB_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNMOB_NAME, ConfigValues.SPAWNMOB_DEFAULT);
+		NATURALREBIRTH_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.NATURALREBIRTH_NAME, ConfigValues.NATURALREBIRTH_DEFAULT);
+		SPAWNANIMALS_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNANIMALS_NAME, ConfigValues.SPAWNANIMALS_DEFAULT);
+		syncConfig();
+	}
 	@EventHandler
 	public void Init(FMLInitializationEvent event) {
 		FMLCommonHandler.instance().bus().register(instance);
+		FMLCommonHandler.instance().bus().register(new MobRebirthOnConfigChanged());
 		MinecraftForge.EVENT_BUS.register(new MobRebirthHandler());
-	}
-	@SubscribeEvent
-	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-	     if(eventArgs.modID.equals("mobrebirth"))
-	         syncConfig();
 	}
 }
