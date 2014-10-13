@@ -5,6 +5,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,6 +15,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -21,13 +25,21 @@ import net.minecraft.entity.monster.*;
 
 public class MobRebirthHandler {
 
-public static Entity storedEntity;
+public static EntityLivingBase storedEntity;
 public static NBTTagCompound storedNBT;
+public static double storedX;
+public static double storedY;
+public static double storedZ;
 	
 	@SubscribeEvent
 	public void onEntityLivingDeath(LivingDropsEvent event) {
+		//Store data needed to spawn
        storedEntity = event.entityLiving;
-       storedNBT = event.entityLiving.NBTTagCompound;
+       storedNBT = event.entityLiving.getEntityData();
+       storedX = event.entityLiving.posX;
+       storedY = event.entityLiving.posY;
+       storedZ = event.entityLiving.posZ;
+        //Check if conditions match config and act accordingly
 		if(ConfigValues.NATURALREBIRTH == true){
 			makeMobReborn(event);
 		}
@@ -47,22 +59,26 @@ public static NBTTagCompound storedNBT;
 		double rand = Math.random();
 		if (rand <= ConfigValues.SPAWNMOBCHANCE) {//Checks the chance to see if anything should happen
 			int id = EntityList.getEntityID(event.entityLiving);
-			if (id > 0 && EntityList.entityEggs.containsKey(id)) {
-					if (ConfigValues.SPAWNMOB == false){ //Checks to see if creature spawning instead of Eggs is turned off
-						ItemStack dropEgg = new ItemStack(Items.spawn_egg, 1, id); //sets what egg should drop
-						event.entityLiving.entityDropItem(dropEgg, 0.0F);}//Makes the egg drop
-					else{//TODO make it metadata sensitive
-						if(event.entityLiving instanceof EntitySlime){
-							
-							
-							Entity entity = ItemMonsterPlacer.spawnCreature(event.entityLiving.worldObj , id, event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ);
-						}else{
-						Entity entity = ItemMonsterPlacer.spawnCreature(event.entityLiving.worldObj , id, event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ);
-						}
+			if (id > 0) {
+				if (ConfigValues.SPAWNMOB == false){ //This segment only works on mobs with vanilla spawn eggs
+					ItemStack dropEgg = new ItemStack(Items.spawn_egg, 1, id);
+					event.entityLiving.entityDropItem(dropEgg, 0.0F);}
+					//end of segment
+					//TODO: Add custom spawn egg that can spawn all mobs, so this feature works on mobs with custom spawn eggs.
+				else{
+					World world = event.entityLiving.worldObj;
+					EntityLivingBase entityliving = storedEntity;
+					
+					storedNBT.setInteger("health", (int) storedEntity.getMaxHealth());
+                    entityliving.setLocationAndAngles(storedX, storedY, storedZ, MathHelper.wrapAngleTo180_float(world.rand.nextFloat() * 360.0F), 0.0F);
+                    entityliving.readFromNBT(storedNBT);
+                    entityliving.rotationYawHead = entityliving.rotationYaw;
+                    entityliving.renderYawOffset = entityliving.rotationYaw;
+                    //((EntityLiving) entityliving).onSpawnWithEgg((IEntityLivingData)null);
+                    world.spawnEntityInWorld(entityliving);
+                    ((EntityLiving) entityliving).playLivingSound();
 				}
-				}
-				
-			
-		}
+			}
+		}	
 	}
 }
