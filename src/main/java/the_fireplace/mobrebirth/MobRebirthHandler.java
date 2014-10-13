@@ -26,6 +26,8 @@ public static NBTTagCompound storedNBT;
 	
 	@SubscribeEvent
 	public void onEntityLivingDeath(LivingDropsEvent event) {
+       storedEntity = event.entityLiving;
+       storedNBT = event.entityLiving.NBTTagCompound;
 		if(ConfigValues.NATURALREBIRTH == true){
 			makeMobReborn(event);
 		}
