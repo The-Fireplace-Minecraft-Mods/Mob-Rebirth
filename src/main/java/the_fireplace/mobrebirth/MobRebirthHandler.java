@@ -20,6 +20,9 @@ import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraft.entity.monster.*;
 
 public class MobRebirthHandler {
+
+public static Entity storedEntity;
+public static NBTTagCompound storedNBT;
 	
 	@SubscribeEvent
 	public void onEntityLivingDeath(LivingDropsEvent event) {
