@@ -1,7 +1,10 @@
 package the_fireplace.mobrebirth;
 
+import the_fireplace.fireplacecore.FireCoreBaseFile;
 import the_fireplace.mobrebirth.config.ConfigValues;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
