@@ -34,54 +34,47 @@ public static double storedX;
 public static double storedY;
 public static double storedZ;
 	
-	@SubscribeEvent
-	public void onEntityLivingDeath(LivingDropsEvent event) {
-		//Store data needed to spawn
-       storedEntity = event.entityLiving;
-       storedNBT = event.entityLiving.getEntityData();
-       storedX = event.entityLiving.posX;
-       storedY = event.entityLiving.posY;
-       storedZ = event.entityLiving.posZ;
-        //Check if conditions match config and act accordingly
-		if(ConfigValues.NATURALREBIRTH == true){
-			makeMobReborn(event);
-		}
-		else{
-			if(event.source.getEntity() instanceof EntityPlayer){
-				if ((event.entityLiving instanceof IMob)) {//Checks to see if it was a Mob
+@SubscribeEvent
+public void onEntityLivingDeath(LivingDropsEvent event) {
+	if(ConfigValues.NATURALREBIRTH == true){
+		makeMobReborn(event);
+	}
+	else{
+		if(event.source.getEntity() instanceof EntityPlayer){
+			if ((event.entityLiving instanceof IMob)) {//Checks to see if it was a Mob
+				makeMobReborn(event);
+			}else if ((event.entityLiving instanceof IAnimals)) {//Checks to see if it was an Animal
+				if (ConfigValues.SPAWNANIMALS == true){//Checks if Animal Spawning is enabled
 					makeMobReborn(event);
-				}else if ((event.entityLiving instanceof IAnimals)) {//Checks to see if it was an Animal
-					if (ConfigValues.SPAWNANIMALS == true){//Checks if Animal Spawning is enabled
-						makeMobReborn(event);
-					}
 				}
 			}
 		}
 	}
-	private void makeMobReborn(LivingDropsEvent event){
-		double rand = Math.random();
-		if (rand <= ConfigValues.SPAWNMOBCHANCE) {//Checks the chance to see if anything should happen
-			int id = EntityList.getEntityID(event.entityLiving);
-			if (id > 0) {
-				if (ConfigValues.SPAWNMOB == false){ //This segment only works on mobs with vanilla spawn eggs
+}
+private void makeMobReborn(LivingDropsEvent event){
+	double rand = Math.random();
+	EntityLivingBase storedEntity = event.entityLiving;
+	Entity entity;
+	World worldIn = event.entityLiving.worldObj;
+	NBTTagCompound storedData = event.entityLiving.getEntityData();
+	int id = EntityList.getEntityID(event.entityLiving);
+	if (rand <= ConfigValues.SPAWNMOBCHANCE) {
+		if (id > 0 && EntityList.entityEggs.containsKey(id)) {
+				if (ConfigValues.SPAWNMOB == false){
 					ItemStack dropEgg = new ItemStack(Items.spawn_egg, 1, id);
 					event.entityLiving.entityDropItem(dropEgg, 0.0F);}
-					//end of segment
-					//TODO: Add custom spawn egg that can spawn all mobs, so this feature works on mobs with custom spawn eggs.
 				else{
-					World world = event.entityLiving.worldObj;
-					EntityLivingBase entityliving = storedEntity;
-					
-					storedNBT.setInteger("health", (int) storedEntity.getMaxHealth());
-                    entityliving.setLocationAndAngles(storedX, storedY, storedZ, MathHelper.wrapAngleTo180_float(world.rand.nextFloat() * 360.0F), 0.0F);
-                    entityliving.readFromNBT(storedNBT);
-                    entityliving.rotationYawHead = entityliving.rotationYaw;
-                    entityliving.renderYawOffset = entityliving.rotationYaw;
-                    //((EntityLiving) entityliving).onSpawnWithEgg((IEntityLivingData)null);
-                    world.spawnEntityInWorld(entityliving);
-                    ((EntityLiving) entityliving).playLivingSound();
-				}
+					entity = EntityList.createEntityByID(id, worldIn);
+	                EntityLiving entityliving = (EntityLiving)entity;
+	                entity.setLocationAndAngles(event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ, MathHelper.wrapAngleTo180_float(worldIn.rand.nextFloat() * 360.0F), 0.0F);
+	                entityliving.rotationYawHead = entityliving.rotationYaw;
+	                entityliving.renderYawOffset = entityliving.rotationYaw;
+	                ((EntityLivingBase) entity).writeToNBT(storedData);
+	                worldIn.spawnEntityInWorld(entity);
+	                }
 			}
-		}	
+			
+		
 	}
+}
 }
