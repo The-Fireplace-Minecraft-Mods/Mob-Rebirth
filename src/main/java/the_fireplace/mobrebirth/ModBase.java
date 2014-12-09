@@ -8,7 +8,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.logging.Level;
 
-import the_fireplace.fireplacecore.FireCoreBaseFile;
 import the_fireplace.mobrebirth.config.ConfigValues;
 import the_fireplace.mobrebirth.config.MobRebirthOnConfigChanged;
 import net.minecraft.command.ICommandSender;
@@ -43,7 +42,7 @@ public class ModBase {
 	public static ModBase instance;
 	public static final String MODID = "mobrebirth";
 	public static final String MODNAME = "Mob Rebirth";
-	public static final String VERSION = "1.0.2.0";
+	public static final String VERSION = "1.1.0.2";
 	
 	private static int updateNotification;
 	private static String releaseVersion;
@@ -92,7 +91,6 @@ public class ModBase {
 	 */
 	public static void onPlayerJoinClient(EntityPlayer player,
 			ClientConnectedToServerEvent event) {
-		updateNotification=FireCoreBaseFile.getUpdateNotification();
 		if (!prereleaseVersion.equals("")
 				&& !releaseVersion.equals("")) {
 			switch (updateNotification) {

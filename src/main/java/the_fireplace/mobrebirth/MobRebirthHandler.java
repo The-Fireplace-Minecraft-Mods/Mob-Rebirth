@@ -1,10 +1,15 @@
 package the_fireplace.mobrebirth;
 
+import the_fireplace.fireplacecore.FireCoreBaseFile;
 import the_fireplace.mobrebirth.config.ConfigValues;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,6 +18,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -20,44 +27,54 @@ import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraft.entity.monster.*;
 
 public class MobRebirthHandler {
+
+public static EntityLivingBase storedEntity;
+public static NBTTagCompound storedNBT;
+public static double storedX;
+public static double storedY;
+public static double storedZ;
 	
-	@SubscribeEvent
-	public void onEntityLivingDeath(LivingDropsEvent event) {
-		if(ConfigValues.NATURALREBIRTH == true){
-			makeMobReborn(event);
-		}
-		else{
-			if(event.source.getEntity() instanceof EntityPlayer){
-				if ((event.entityLiving instanceof IMob)) {//Checks to see if it was a Mob
+@SubscribeEvent
+public void onEntityLivingDeath(LivingDropsEvent event) {
+	if(ConfigValues.NATURALREBIRTH == true){
+		makeMobReborn(event);
+	}
+	else{
+		if(event.source.getEntity() instanceof EntityPlayer){
+			if ((event.entityLiving instanceof IMob)) {//Checks to see if it was a Mob
+				makeMobReborn(event);
+			}else if ((event.entityLiving instanceof IAnimals)) {//Checks to see if it was an Animal
+				if (ConfigValues.SPAWNANIMALS == true){//Checks if Animal Spawning is enabled
 					makeMobReborn(event);
-				}else if ((event.entityLiving instanceof IAnimals)) {//Checks to see if it was an Animal
-					if (ConfigValues.SPAWNANIMALS == true){//Checks if Animal Spawning is enabled
-						makeMobReborn(event);
-					}
 				}
 			}
 		}
 	}
-	private void makeMobReborn(LivingDropsEvent event){
-		double rand = Math.random();
-		if (rand <= ConfigValues.SPAWNMOBCHANCE) {//Checks the chance to see if anything should happen
-			int id = EntityList.getEntityID(event.entityLiving);
-			if (id > 0 && EntityList.entityEggs.containsKey(id)) {
-					if (ConfigValues.SPAWNMOB == false){ //Checks to see if creature spawning instead of Eggs is turned off
-						ItemStack dropEgg = new ItemStack(Items.spawn_egg, 1, id); //sets what egg should drop
-						event.entityLiving.entityDropItem(dropEgg, 0.0F);}//Makes the egg drop
-					else{//TODO make it metadata sensitive
-						if(event.entityLiving instanceof EntitySlime){
-							
-							
-							Entity entity = ItemMonsterPlacer.spawnCreature(event.entityLiving.worldObj , id, event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ);
-						}else{
-						Entity entity = ItemMonsterPlacer.spawnCreature(event.entityLiving.worldObj , id, event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ);
-						}
-				}
-				}
-				
+}
+private void makeMobReborn(LivingDropsEvent event){
+	double rand = Math.random();
+	EntityLivingBase storedEntity = event.entityLiving;
+	Entity entity;
+	World worldIn = event.entityLiving.worldObj;
+	NBTTagCompound storedData = event.entityLiving.getEntityData();
+	int id = EntityList.getEntityID(event.entityLiving);
+	if (rand <= ConfigValues.SPAWNMOBCHANCE) {
+		if (id > 0 && EntityList.entityEggs.containsKey(id)) {
+				if (ConfigValues.SPAWNMOB == false){
+					ItemStack dropEgg = new ItemStack(Items.spawn_egg, 1, id);
+					event.entityLiving.entityDropItem(dropEgg, 0.0F);}
+				else{
+					entity = EntityList.createEntityByID(id, worldIn);
+	                EntityLiving entityliving = (EntityLiving)entity;
+	                entity.setLocationAndAngles(event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ, MathHelper.wrapAngleTo180_float(worldIn.rand.nextFloat() * 360.0F), 0.0F);
+	                entityliving.rotationYawHead = entityliving.rotationYaw;
+	                entityliving.renderYawOffset = entityliving.rotationYaw;
+	                ((EntityLivingBase) entity).writeToNBT(storedData);
+	                worldIn.spawnEntityInWorld(entity);
+	                }
+			}
 			
-		}
+		
 	}
+}
 }
