@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.logging.Level;
 
+import the_fireplace.fireplacecore.FireCoreBaseFile;
 import the_fireplace.mobrebirth.config.ConfigValues;
 import the_fireplace.mobrebirth.config.MobRebirthOnConfigChanged;
 import net.minecraft.command.ICommandSender;
@@ -96,30 +97,15 @@ public class ModBase {
 			switch (updateNotification) {
 			case 0:
 				if (isHigherVersion(VERSION, releaseVersion) && isHigherVersion(prereleaseVersion, releaseVersion)) {
-					sendToPlayer(
-							player,
-							"§6A new version of "+MODNAME+" is available!\n§l§c========== §4"
-									+ releaseVersion
-									+ "§c ==========\n"
-									+ "§6Download it at §e" + downloadURL + "§6!");
+					FireCoreBaseFile.sendClientUpdateNotification(player, MODNAME, releaseVersion, downloadURL);
 				}else if(isHigherVersion(VERSION, prereleaseVersion)){
-					sendToPlayer(
-							player,
-							"§6A new version of "+MODNAME+" is available!\n§l§c========== §4"
-									+ prereleaseVersion
-									+ "§c ==========\n"
-									+ "§6Download it at §e" + downloadURL + "§6!");
+					FireCoreBaseFile.sendClientUpdateNotification(player, MODNAME, prereleaseVersion, downloadURL);
 				}
 
 				break;
 			case 1:
 				if (isHigherVersion(VERSION, releaseVersion)) {
-					sendToPlayer(
-							player,
-							"§6A new version of "+MODNAME+" is available!\n§l§c========== §4"
-									+ releaseVersion
-									+ "§c ==========\n"
-									+ "§6Download it at §e" + downloadURL + "§6!");
+					FireCoreBaseFile.sendClientUpdateNotification(player, MODNAME, releaseVersion, downloadURL);
 				}
 				break;
 			case 2:
@@ -128,21 +114,6 @@ public class ModBase {
 			}
 		}
 	}
-	
-	/**
-	 * Sends a chat message to the current player. Only works client side
-	 * 
-	 * @param message
-	 *            the message to be sent
-	 */
-	private static void sendToPlayer(EntityPlayer player, String message) {
-		String[] lines = message.split("\n");
-
-		for (String line : lines)
-			((ICommandSender) player)
-					.addChatMessage(new ChatComponentText(line));
-	}
-
 	/**
 	 * Checks if the new version is higher than the current one
 	 * 
