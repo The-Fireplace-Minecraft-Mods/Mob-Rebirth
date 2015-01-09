@@ -37,14 +37,20 @@ public static double storedZ;
 @SubscribeEvent
 public void onEntityLivingDeath(LivingDropsEvent event) {
 	if(ConfigValues.NATURALREBIRTH == true){
-		makeMobReborn(event);
+		if ((event.entityLiving instanceof IMob)) {//Checks to see if it was a Mob
+			makeMobReborn(event);
+		}else if ((event.entityLiving instanceof IAnimals)) {
+			if (ConfigValues.SPAWNANIMALS == true){
+				makeMobReborn(event);
+			}
+		}
 	}
 	else{
 		if(event.source.getEntity() instanceof EntityPlayer){
 			if ((event.entityLiving instanceof IMob)) {//Checks to see if it was a Mob
 				makeMobReborn(event);
-			}else if ((event.entityLiving instanceof IAnimals)) {//Checks to see if it was an Animal
-				if (ConfigValues.SPAWNANIMALS == true){//Checks if Animal Spawning is enabled
+			}else if ((event.entityLiving instanceof IAnimals)) {
+				if (ConfigValues.SPAWNANIMALS == true){
 					makeMobReborn(event);
 				}
 			}
