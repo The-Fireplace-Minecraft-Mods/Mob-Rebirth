@@ -73,10 +73,15 @@ public class ModBase {
 	public void PreInit(FMLPreInitializationEvent event) {
 		file = new Configuration(event.getSuggestedConfigurationFile());
 		file.load();
+		file.addCustomCategoryComment(Configuration.CATEGORY_GENERAL, "The only config options that should be here are called mrb1, mrb2, mrb3, and mrb5.");
 		SPAWNMOBCHANCE_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNMOBCHANCE_NAME, ConfigValues.SPAWNMOBCHANCE_DEFAULT);
+		SPAWNMOBCHANCE_PROPERTY.comment = "The chance for the mob to be reborn";
 		SPAWNMOB_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNMOB_NAME, ConfigValues.SPAWNMOB_DEFAULT);
+		SPAWNMOB_PROPERTY.comment = "Whether or not rebirth means spawning the mob. True means the mob will spawn for Rebirth, False means an egg will drop.";
 		NATURALREBIRTH_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.NATURALREBIRTH_NAME, ConfigValues.NATURALREBIRTH_DEFAULT);
+		NATURALREBIRTH_PROPERTY.comment = "Should mobs be reborn from any kind of death? If false, they will only die when killed by a player.";
 		SPAWNANIMALS_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNANIMALS_NAME, ConfigValues.SPAWNANIMALS_DEFAULT);
+		SPAWNANIMALS_PROPERTY.comment = "Whether or not animals can be reborn like mobs.";
 		syncConfig();
 		retriveCurrentVersions();
 	}
