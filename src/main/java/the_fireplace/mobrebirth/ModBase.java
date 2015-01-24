@@ -78,7 +78,6 @@ public class ModBase {
 	public void PreInit(FMLPreInitializationEvent event) {
 		file = new Configuration(event.getSuggestedConfigurationFile());
 		file.load();
-		file.addCustomCategoryComment(Configuration.CATEGORY_GENERAL, "The only config options that should be here are called mrb1, mrb2, mrb3, and mrb5.");
 		SPAWNMOBCHANCE_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNMOBCHANCE_NAME, ConfigValues.SPAWNMOBCHANCE_DEFAULT);
 		SPAWNMOBCHANCE_PROPERTY.comment = "The chance for the mob to be reborn";
 		SPAWNMOB_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNMOB_NAME, ConfigValues.SPAWNMOB_DEFAULT);
