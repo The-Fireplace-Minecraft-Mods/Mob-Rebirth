@@ -14,8 +14,20 @@ public class ConfigValues {
 	public static final boolean NATURALREBIRTH_DEFAULT = false;
 	public static boolean NATURALREBIRTH;
 	
+	public static final int EXTRAMOBCOUNT_DEFAULT = 0;
+	public static int EXTRAMOBCOUNT;
+	
+	public static final double MULTIMOBCHANCE_DEFAULT = 0.05;
+	public static double MULTIMOBCHANCE;
+	
+	public static final String MULTIMOBMODE_DEFAULT = "continuous";
+	public static String MULTIMOBMODE;
+	
 	public static final String SPAWNMOB_NAME = "mrb1";
 	public static final String SPAWNMOBCHANCE_NAME = "mrb2";
 	public static final String SPAWNANIMALS_NAME = "mrb3";
 	public static final String NATURALREBIRTH_NAME = "mrb5";
+	public static final String EXTRAMOBCOUNT_NAME = "mrb4";
+	public static final String MULTIMOBCHANCE_NAME = "mrb6";
+	public static final String MULTIMOBMODE_NAME = "mrb7";
 }

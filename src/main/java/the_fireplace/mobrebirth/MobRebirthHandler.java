@@ -39,9 +39,11 @@ public void onEntityLivingDeath(LivingDropsEvent event) {
 	if(ConfigValues.NATURALREBIRTH == true){
 		if ((event.entityLiving instanceof IMob)) {//Checks to see if it was a Mob
 			makeMobReborn(event);
+			makeExtrasReborn(event);
 		}else if ((event.entityLiving instanceof IAnimals)) {
 			if (ConfigValues.SPAWNANIMALS == true){
 				makeMobReborn(event);
+				makeExtrasReborn(event);
 			}
 		}
 	}
@@ -49,9 +51,11 @@ public void onEntityLivingDeath(LivingDropsEvent event) {
 		if(event.source.getEntity() instanceof EntityPlayer){
 			if ((event.entityLiving instanceof IMob)) {//Checks to see if it was a Mob
 				makeMobReborn(event);
+				makeExtrasReborn(event);
 			}else if ((event.entityLiving instanceof IAnimals)) {
 				if (ConfigValues.SPAWNANIMALS == true){
 					makeMobReborn(event);
+					makeExtrasReborn(event);
 				}
 			}
 		}
@@ -81,6 +85,29 @@ private void makeMobReborn(LivingDropsEvent event){
 			}
 			
 		
+	}
+}
+private void makeExtrasReborn(LivingDropsEvent event){
+	if(ConfigValues.EXTRAMOBCOUNT > 0){
+		double rand = Math.random();
+		if(ConfigValues.MULTIMOBMODE.toLowerCase() == "all"){
+			if(rand <= ConfigValues.MULTIMOBCHANCE){
+			int i = 0;
+				while(i < ConfigValues.EXTRAMOBCOUNT){
+					makeMobReborn(event);
+					i = i+1;
+				}
+			}
+		}
+		else{
+			int i = 0;
+			while(i < ConfigValues.EXTRAMOBCOUNT){
+				if(rand <= ConfigValues.MULTIMOBCHANCE){
+				makeMobReborn(event);
+				}
+				i = i+1;
+			}
+		}
 	}
 }
 }
