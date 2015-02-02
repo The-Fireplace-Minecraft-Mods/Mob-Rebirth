@@ -57,13 +57,18 @@ public class ModBase {
 	public static Property SPAWNMOB_PROPERTY;
 	public static Property NATURALREBIRTH_PROPERTY;
 	public static Property SPAWNANIMALS_PROPERTY;
-	
+	public static Property EXTRAMOBCOUNT_PROPERTY;
+	public static Property MULTIMOBCHANCE_PROPERTY;
+	public static Property MULTIMOBMODE_PROPERTY;
 	
 	public static void syncConfig(){
 		ConfigValues.SPAWNMOBCHANCE = SPAWNMOBCHANCE_PROPERTY.getDouble();
 		ConfigValues.SPAWNMOB = SPAWNMOB_PROPERTY.getBoolean();
 		ConfigValues.NATURALREBIRTH = NATURALREBIRTH_PROPERTY.getBoolean();
 		ConfigValues.SPAWNANIMALS = SPAWNANIMALS_PROPERTY.getBoolean();
+		ConfigValues.EXTRAMOBCOUNT = EXTRAMOBCOUNT_PROPERTY.getInt();
+		ConfigValues.MULTIMOBCHANCE = MULTIMOBCHANCE_PROPERTY.getDouble();
+		ConfigValues.MULTIMOBMODE = MULTIMOBMODE_PROPERTY.getString();
 		if(file.hasChanged()){
 	        file.save();
 		}
@@ -74,9 +79,19 @@ public class ModBase {
 		file = new Configuration(event.getSuggestedConfigurationFile());
 		file.load();
 		SPAWNMOBCHANCE_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNMOBCHANCE_NAME, ConfigValues.SPAWNMOBCHANCE_DEFAULT);
+		SPAWNMOBCHANCE_PROPERTY.comment = "The chance for the mob to be reborn";
 		SPAWNMOB_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNMOB_NAME, ConfigValues.SPAWNMOB_DEFAULT);
+		SPAWNMOB_PROPERTY.comment = "Whether or not rebirth means spawning the mob. True means the mob will spawn for Rebirth, False means an egg will drop.";
 		NATURALREBIRTH_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.NATURALREBIRTH_NAME, ConfigValues.NATURALREBIRTH_DEFAULT);
+		NATURALREBIRTH_PROPERTY.comment = "Should mobs be reborn from any kind of death? If false, they will only die when killed by a player.";
 		SPAWNANIMALS_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNANIMALS_NAME, ConfigValues.SPAWNANIMALS_DEFAULT);
+		SPAWNANIMALS_PROPERTY.comment = "Whether or not animals can be reborn like mobs.";
+		EXTRAMOBCOUNT_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.EXTRAMOBCOUNT_NAME, ConfigValues.EXTRAMOBCOUNT_DEFAULT);
+		EXTRAMOBCOUNT_PROPERTY.comment = "The number of extra mobs to be reborn. Leave at 0 to disable extra mobs being reborn.";
+		MULTIMOBCHANCE_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.MULTIMOBCHANCE_NAME, ConfigValues.MULTIMOBCHANCE_DEFAULT);
+		MULTIMOBCHANCE_PROPERTY.comment = "Chance for extra mobs to be reborn.";
+		MULTIMOBMODE_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.MULTIMOBMODE_NAME, ConfigValues.MULTIMOBMODE_DEFAULT);
+		MULTIMOBMODE_PROPERTY.comment = "Extra Mob Mode, Options are 'continuous' or 'all'. Continual applies the chance per extra mob, All applies the chance once.";
 		syncConfig();
 		retriveCurrentVersions();
 	}
