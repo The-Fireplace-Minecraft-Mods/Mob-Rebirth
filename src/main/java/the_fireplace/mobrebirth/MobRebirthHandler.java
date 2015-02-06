@@ -2,9 +2,9 @@ package the_fireplace.mobrebirth;
 
 import the_fireplace.fireplacecore.FireCoreBaseFile;
 import the_fireplace.mobrebirth.config.ConfigValues;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -37,7 +37,7 @@ public static double storedZ;
 @SubscribeEvent
 public void onEntityLivingDeath(LivingDropsEvent event) {
 	if(ConfigValues.NATURALREBIRTH == true){
-		if ((event.entityLiving instanceof IMob)) {
+		if ((event.entityLiving instanceof IMob)) {//Checks to see if it was a Mob
 			makeMobReborn(event);
 		}else if ((event.entityLiving instanceof IAnimals)) {
 			if (ConfigValues.SPAWNANIMALS == true){
@@ -47,7 +47,7 @@ public void onEntityLivingDeath(LivingDropsEvent event) {
 	}
 	else{
 		if(event.source.getEntity() instanceof EntityPlayer){
-			if ((event.entityLiving instanceof IMob)) {
+			if ((event.entityLiving instanceof IMob)) {//Checks to see if it was a Mob
 				makeMobReborn(event);
 			}else if ((event.entityLiving instanceof IAnimals)) {
 				if (ConfigValues.SPAWNANIMALS == true){
@@ -79,27 +79,8 @@ private void makeMobReborn(LivingDropsEvent event){
 	                worldIn.spawnEntityInWorld(entity);
 	                }
 			}
-		if(ConfigValues.EXTRAMOBCOUNT > 0){
-			double rand2 = Math.random();
-			if(ConfigValues.MULTIMOBMODE.toLowerCase() == "all"){
-				if(rand2 <= ConfigValues.MULTIMOBCHANCE){
-				int i = 0;
-					while(i < ConfigValues.EXTRAMOBCOUNT){
-						makeMobReborn(event);
-						i = i+1;
-					}
-				}
-			}
-			else{
-				int i = 0;
-				while(i < ConfigValues.EXTRAMOBCOUNT){
-					if(rand2 <= ConfigValues.MULTIMOBCHANCE){
-					makeMobReborn(event);
-					}
-					i = i+1;
-				}
-			}
-		}
+			
+		
 	}
 }
 }

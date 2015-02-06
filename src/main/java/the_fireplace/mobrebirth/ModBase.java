@@ -23,19 +23,19 @@ import net.minecraftforge.common.AchievementPage;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import cpw.mods.fml.client.event.ConfigChangedEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
-import cpw.mods.fml.common.registry.LanguageRegistry;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
+import net.minecraftforge.fml.common.registry.LanguageRegistry;
 
 @Mod(modid = ModBase.MODID, name = ModBase.MODNAME, version = ModBase.VERSION, acceptedMinecraftVersions="1.7.2,1.7.10", canBeDeactivated = true, guiFactory = "the_fireplace.mobrebirth.config.MobRebirthGuiFactory", dependencies="required-after:fireplacecore@[1.0.3.0,)")
 public class ModBase {
@@ -43,7 +43,7 @@ public class ModBase {
 	public static ModBase instance;
 	public static final String MODID = "mobrebirth";
 	public static final String MODNAME = "Mob Rebirth";
-	public static final String VERSION = "1.2.0.2";
+	public static final String VERSION = "2.0.1.0";
 	
 	private static int updateNotification;
 	private static String releaseVersion;
@@ -107,6 +107,7 @@ public class ModBase {
 	 */
 	public static void onPlayerJoinClient(EntityPlayer player,
 			ClientConnectedToServerEvent event) {
+		updateNotification=FireCoreBaseFile.getUpdateNotification();
 		if (!prereleaseVersion.equals("")
 				&& !releaseVersion.equals("")) {
 			switch (updateNotification) {
