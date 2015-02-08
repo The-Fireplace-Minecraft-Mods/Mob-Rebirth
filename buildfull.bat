@@ -1,1 +1,2 @@
-gradlew build --refresh-dependencies eclipse
+call gradlew build --refresh-dependencies eclipse
+PAUSE

@@ -1,0 +1,3 @@
+call gradlew setupDecompWorkspace
+call gradlew eclipse
+PAUSE
