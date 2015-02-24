@@ -92,6 +92,8 @@ public class ModBase {
 		MULTIMOBCHANCE_PROPERTY.comment = "Chance for extra mobs to be reborn.";
 		MULTIMOBMODE_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.MULTIMOBMODE_NAME, ConfigValues.MULTIMOBMODE_DEFAULT);
 		MULTIMOBMODE_PROPERTY.comment = "Extra Mob Mode, Options are 'continuous' or 'all'. Continual applies the chance per extra mob, All applies the chance once.";
+		
+		
 		syncConfig();
 		retriveCurrentVersions();
 	}
