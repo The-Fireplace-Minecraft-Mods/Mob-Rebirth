@@ -3,7 +3,7 @@
   "modid": "mobrebirth",
   "name": "Mob Rebirth",
   "description": "A mod allowing creatures to be reborn in various ways",
-  "version": "2.1.0.1",
+  "version": "2.1.0.2",
   "mcversion": "1.8",
   "url": "http://f1repl4ce.enjin.com/forum/m/19328304/viewthread/10066347-172mob-rebirth/page/1",
   "updateUrl": "",
@@ -11,8 +11,8 @@
   "credits": "The_Fireplace",
   "logoFile": "",
   "screenshots": [],
-  "dependencies": [ "fireplacecore" ],
-  "requiredMods": [ "fireplacecore" ],
-  "useDependencyInformation": false
+  "dependencies": [ "fireplacecore", "VersionChecker" ],
+  "requiredMods": [ "fireplacecore@[2.1.0.0,)" ],
+  "useDependencyInformation": true
 }
 ]
