@@ -66,6 +66,7 @@ private void makeMobReborn(LivingDropsEvent event){
 	World worldIn = event.entityLiving.worldObj;
 	NBTTagCompound storedData = event.entityLiving.getEntityData();
 	int id = EntityList.getEntityID(event.entityLiving);
+	ItemStack weapon = event.entityLiving.getHeldItem();
 	if (rand <= ConfigValues.SPAWNMOBCHANCE) {
 		if (id > 0 && EntityList.entityEggs.containsKey(id)) {
 				if (ConfigValues.SPAWNMOB == false){
@@ -78,6 +79,7 @@ private void makeMobReborn(LivingDropsEvent event){
 	                entityliving.rotationYawHead = entityliving.rotationYaw;
 	                entityliving.renderYawOffset = entityliving.rotationYaw;
 	                ((EntityLivingBase) entity).writeToNBT(storedData);
+	                entityliving.setCurrentItemOrArmor(0, weapon);
 	                worldIn.spawnEntityInWorld(entity);
 	                }
 			}
