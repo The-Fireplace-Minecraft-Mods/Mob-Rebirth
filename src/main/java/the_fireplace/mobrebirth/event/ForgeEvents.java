@@ -1,4 +1,4 @@
-package the_fireplace.mobrebirth;
+package the_fireplace.mobrebirth.event;
 
 import the_fireplace.fireplacecore.FireCoreBaseFile;
 import the_fireplace.mobrebirth.config.ConfigValues;
@@ -19,14 +19,16 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraft.entity.monster.*;
 
-public class MobRebirthHandler {
+public class ForgeEvents {
 
 public static EntityLivingBase storedEntity;
 public static NBTTagCompound storedNBT;
@@ -81,6 +83,19 @@ private void makeMobReborn(LivingDropsEvent event){
 			}
 			
 		
+	}
+}
+
+@SubscribeEvent
+public void entityDamaged(LivingHurtEvent event){
+	if(event.source.isFireDamage()){
+		if(ConfigValues.SUNLIGHTAPOCALYPSEFIX == true){
+			if(event.entityLiving.isEntityUndead()){
+				if(event.entityLiving.worldObj.canBlockSeeSky(new BlockPos(MathHelper.floor_double(event.entityLiving.posX), MathHelper.floor_double(event.entityLiving.posY), MathHelper.floor_double(event.entityLiving.posZ)))){
+					event.setCanceled(true);
+				}
+			}
+		}
 	}
 }
 }

@@ -10,7 +10,8 @@ import java.util.logging.Level;
 
 import the_fireplace.fireplacecore.FireCoreBaseFile;
 import the_fireplace.mobrebirth.config.ConfigValues;
-import the_fireplace.mobrebirth.config.MobRebirthOnConfigChanged;
+import the_fireplace.mobrebirth.event.FMLEvents;
+import the_fireplace.mobrebirth.event.ForgeEvents;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -60,6 +61,7 @@ public class ModBase {
 	public static Property EXTRAMOBCOUNT_PROPERTY;
 	public static Property MULTIMOBCHANCE_PROPERTY;
 	public static Property MULTIMOBMODE_PROPERTY;
+	public static Property SUNLIGHTAPOCALYPSEFIX_PROPERTY;
 	
 	public static void syncConfig(){
 		ConfigValues.SPAWNMOBCHANCE = SPAWNMOBCHANCE_PROPERTY.getDouble();
@@ -69,6 +71,7 @@ public class ModBase {
 		ConfigValues.EXTRAMOBCOUNT = EXTRAMOBCOUNT_PROPERTY.getInt();
 		ConfigValues.MULTIMOBCHANCE = MULTIMOBCHANCE_PROPERTY.getDouble();
 		ConfigValues.MULTIMOBMODE = MULTIMOBMODE_PROPERTY.getString();
+		ConfigValues.SUNLIGHTAPOCALYPSEFIX = SUNLIGHTAPOCALYPSEFIX_PROPERTY.getBoolean();
 		if(file.hasChanged()){
 	        file.save();
 		}
@@ -92,16 +95,15 @@ public class ModBase {
 		MULTIMOBCHANCE_PROPERTY.comment = "Chance for extra mobs to be reborn.";
 		MULTIMOBMODE_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.MULTIMOBMODE_NAME, ConfigValues.MULTIMOBMODE_DEFAULT);
 		MULTIMOBMODE_PROPERTY.comment = "Extra Mob Mode, Options are 'continuous' or 'all'. Continual applies the chance per extra mob, All applies the chance once.";
-		
-		
+		SUNLIGHTAPOCALYPSEFIX_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SUNLIGHTAPOCALYPSEFIX_NAME, ConfigValues.SUNLIGHTAPOCALYPSEFIX_DEFAULT);
+		SUNLIGHTAPOCALYPSEFIX_PROPERTY.comment = "Fixes the 'Sunlight Apocalypse'";
 		syncConfig();
 		retriveCurrentVersions();
 	}
 	@EventHandler
 	public void Init(FMLInitializationEvent event) {
-		FMLCommonHandler.instance().bus().register(instance);
-		FMLCommonHandler.instance().bus().register(new MobRebirthOnConfigChanged());
-		MinecraftForge.EVENT_BUS.register(new MobRebirthHandler());
+		FMLCommonHandler.instance().bus().register(new FMLEvents());
+		MinecraftForge.EVENT_BUS.register(new ForgeEvents());
 	}
 	/**
 	 * This method is client side called when a player joins the game. Both for
