@@ -82,9 +82,28 @@ private void makeMobReborn(LivingDropsEvent event){
 	                entityliving.setCurrentItemOrArmor(0, weapon);
 	                worldIn.spawnEntityInWorld(entity);
 	                }
+				if(ConfigValues.EXTRAMOBCOUNT > 0){
+					double rand2 = Math.random();
+					if(ConfigValues.MULTIMOBMODE.toLowerCase() == "all"){
+						if(rand2 <= ConfigValues.MULTIMOBCHANCE){
+						int i = 0;
+							while(i < ConfigValues.EXTRAMOBCOUNT){
+								makeMobReborn(event);
+								i = i+1;
+							}
+						}
+					}
+					else{
+						int i = 0;
+						while(i < ConfigValues.EXTRAMOBCOUNT){
+							if(rand2 <= ConfigValues.MULTIMOBCHANCE){
+							makeMobReborn(event);
+							}
+							i = i+1;
+						}
+					}
+				}
 			}
-			
-		
 	}
 }
 
