@@ -68,8 +68,8 @@ private void makeMobReborn(LivingDropsEvent event){
 	int id = EntityList.getEntityID(event.entityLiving);
 	ItemStack weapon = event.entityLiving.getHeldItem();
 	if (rand <= ConfigValues.SPAWNMOBCHANCE) {
-		if (id > 0 && EntityList.entityEggs.containsKey(id)) {
-				if (ConfigValues.SPAWNMOB == false){
+		if (id > 0) {
+				if (ConfigValues.SPAWNMOB == false && EntityList.entityEggs.containsKey(id)){
 					ItemStack dropEgg = new ItemStack(Items.spawn_egg, 1, id);
 					event.entityLiving.entityDropItem(dropEgg, 0.0F);}
 				else{
