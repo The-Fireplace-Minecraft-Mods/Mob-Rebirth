@@ -52,7 +52,7 @@ public class ModBase {
 	private static String prereleaseVersion;
 	private static final String downloadURL = "http://goo.gl/esuQuX";
 	//For Dynious's Version Checker
-	public static NBTTagCompound update;
+	public static NBTTagCompound update = new NBTTagCompound();
 	
 	
 	public static Configuration file;
@@ -102,6 +102,7 @@ public class ModBase {
 		SUNLIGHTAPOCALYPSEFIX_PROPERTY.comment = "Fixes the 'Sunlight Apocalypse'";
 		syncConfig();
 		retriveCurrentVersions();
+		FireCoreBaseFile.addUpdateInfo(update, this.MODNAME, this.VERSION, this.prereleaseVersion, this.releaseVersion, this.downloadURL, this.MODID);
 	}
 	@EventHandler
 	public void Init(FMLInitializationEvent event) {
