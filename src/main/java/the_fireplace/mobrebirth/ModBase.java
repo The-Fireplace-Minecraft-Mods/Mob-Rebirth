@@ -44,7 +44,7 @@ public class ModBase {
 	public static ModBase instance;
 	public static final String MODID = "mobrebirth";
 	public static final String MODNAME = "Mob Rebirth";
-	public static final String VERSION = "2.1.0.3";
+	public static final String VERSION = "2.1.0.4";
 	
 	private static int updateNotification;
 	private static String releaseVersion;
