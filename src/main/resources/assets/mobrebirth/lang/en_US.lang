@@ -12,3 +12,5 @@ mrb6=Multi Mob Rebirth Chance
 mrb6.tooltip=Chance for extra mobs to be reborn.
 mrb7=Multi Mob Mode
 mrb7.tooltip=Options are 'continuous' or 'all'. Continual applies the chance per extra mob, All applies the chance once.
+solar_apocalypse_fix=Fix the Sunlight Apocalypse?
+solar_apocalypse_fix.tooltip=Fixes the apocalypse in the sunlight created by certain configurations
