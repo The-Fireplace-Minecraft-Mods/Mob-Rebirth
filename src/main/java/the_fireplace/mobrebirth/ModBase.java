@@ -18,6 +18,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.Achievement;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.AchievementPage;
@@ -50,6 +51,8 @@ public class ModBase {
 	private static String releaseVersion;
 	private static String prereleaseVersion;
 	private static final String downloadURL = "http://goo.gl/esuQuX";
+	//For Dynious's Version Checker
+	public static NBTTagCompound update;
 	
 	
 	public static Configuration file;
