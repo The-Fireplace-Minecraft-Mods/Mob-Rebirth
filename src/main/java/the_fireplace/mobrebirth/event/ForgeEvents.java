@@ -61,34 +61,20 @@ public void onEntityLivingDeath(LivingDropsEvent event) {
 }
 private void makeMobReborn(LivingDropsEvent event){
 	double rand = Math.random();
-	EntityLivingBase storedEntity = event.entityLiving;
-	Entity entity;
-	World worldIn = event.entityLiving.worldObj;
-	NBTTagCompound storedData = event.entityLiving.getEntityData();
 	int id = EntityList.getEntityID(event.entityLiving);
-	ItemStack weapon = event.entityLiving.getHeldItem();
 	if (rand <= ConfigValues.SPAWNMOBCHANCE) {
-		if (id > 0) {
 				if (ConfigValues.SPAWNMOB == false && EntityList.entityEggs.containsKey(id)){
 					ItemStack dropEgg = new ItemStack(Items.spawn_egg, 1, id);
 					event.entityLiving.entityDropItem(dropEgg, 0.0F);}
 				else{
-					entity = EntityList.createEntityByID(id, worldIn);
-	                EntityLiving entityliving = (EntityLiving)entity;
-	                entity.setLocationAndAngles(event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ, MathHelper.wrapAngleTo180_float(worldIn.rand.nextFloat() * 360.0F), 0.0F);
-	                entityliving.rotationYawHead = entityliving.rotationYaw;
-	                entityliving.renderYawOffset = entityliving.rotationYaw;
-	                ((EntityLivingBase) entity).writeToNBT(storedData);
-	                entityliving.setCurrentItemOrArmor(0, weapon);
-	                worldIn.spawnEntityInWorld(entity);
-	                
+					createEntity(event);
 	                if(ConfigValues.EXTRAMOBCOUNT > 0){
 	            		double rand2 = Math.random();
 	            		if(ConfigValues.MULTIMOBMODE.toLowerCase() == "all"){
 	            			if(rand2 <= ConfigValues.MULTIMOBCHANCE){
 	            			int i = 0;
 	            				while(i < ConfigValues.EXTRAMOBCOUNT){
-	            					worldIn.spawnEntityInWorld(entity);
+	            					createEntity(event);
 	            					i = i+1;
 	            				}
 	            			}
@@ -97,7 +83,7 @@ private void makeMobReborn(LivingDropsEvent event){
 	            			int i = 0;
 	            			while(i < ConfigValues.EXTRAMOBCOUNT){
 	            				if(rand2 <= ConfigValues.MULTIMOBCHANCE){
-	            					worldIn.spawnEntityInWorld(entity);
+	            					createEntity(event);
 	            				}
 	            				i = i+1;
 	            			}
@@ -106,7 +92,23 @@ private void makeMobReborn(LivingDropsEvent event){
 	                
 	                }
 			}
-	}
+	
+}
+
+private void createEntity(LivingDropsEvent event){
+	NBTTagCompound storedData = event.entityLiving.getEntityData();
+	EntityLivingBase entity;
+	World worldIn = event.entityLiving.worldObj;
+	int id = EntityList.getEntityID(event.entityLiving);
+	ItemStack weapon = event.entityLiving.getHeldItem();
+	entity = (EntityLivingBase) EntityList.createEntityByID(id, worldIn);
+    EntityLiving entityliving = (EntityLiving)entity;
+    entity.setLocationAndAngles(event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ, MathHelper.wrapAngleTo180_float(worldIn.rand.nextFloat() * 360.0F), 0.0F);
+    entityliving.rotationYawHead = entityliving.rotationYaw;
+    entityliving.renderYawOffset = entityliving.rotationYaw;
+    ((EntityLivingBase) entity).writeToNBT(storedData);
+    entityliving.setCurrentItemOrArmor(0, weapon);
+	worldIn.spawnEntityInWorld(entity);
 }
 
 @SubscribeEvent
