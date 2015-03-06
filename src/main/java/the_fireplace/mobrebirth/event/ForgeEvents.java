@@ -102,25 +102,18 @@ private void createEntity(LivingDropsEvent event){
 	int id = EntityList.getEntityID(event.entityLiving);
 	ItemStack weapon = event.entityLiving.getHeldItem();
 	entity = (EntityLivingBase) EntityList.createEntityByID(id, worldIn);
-    EntityLiving entityliving = (EntityLiving)entity;
     entity.setLocationAndAngles(event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ, MathHelper.wrapAngleTo180_float(worldIn.rand.nextFloat() * 360.0F), 0.0F);
-    entityliving.rotationYawHead = entityliving.rotationYaw;
-    entityliving.renderYawOffset = entityliving.rotationYaw;
+    entity.rotationYawHead = entity.rotationYaw;
+    entity.renderYawOffset = entity.rotationYaw;
     ((EntityLivingBase) entity).writeToNBT(storedData);
-    entityliving.setCurrentItemOrArmor(0, weapon);
+    entity.setCurrentItemOrArmor(0, weapon);
 	worldIn.spawnEntityInWorld(entity);
 }
 
 @SubscribeEvent
 public void entityDamaged(LivingHurtEvent event){
-	if(event.source.isFireDamage()){
-		if(ConfigValues.SUNLIGHTAPOCALYPSEFIX == true){
-			if(event.entityLiving.isEntityUndead()){
-				if(event.entityLiving.worldObj.canBlockSeeSky(new BlockPos(MathHelper.floor_double(event.entityLiving.posX), MathHelper.floor_double(event.entityLiving.posY), MathHelper.floor_double(event.entityLiving.posZ)))){
-					event.setCanceled(true);
-				}
-			}
-		}
+	if(event.source.isFireDamage() && ConfigValues.SUNLIGHTAPOCALYPSEFIX == true && event.entityLiving.isEntityUndead() && event.entityLiving.worldObj.canBlockSeeSky(new BlockPos(MathHelper.floor_double(event.entityLiving.posX), MathHelper.floor_double(event.entityLiving.posY), MathHelper.floor_double(event.entityLiving.posZ)))){
+		event.setCanceled(true);
 	}
 }
 }
