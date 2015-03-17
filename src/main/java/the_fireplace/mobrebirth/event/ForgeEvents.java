@@ -96,16 +96,17 @@ private void makeMobReborn(LivingDropsEvent event){
 }
 
 private void createEntity(LivingDropsEvent event){
-	NBTTagCompound storedData = event.entityLiving.getEntityData();
 	EntityLivingBase entity;
 	World worldIn = event.entityLiving.worldObj;
 	int id = EntityList.getEntityID(event.entityLiving);
+	NBTTagCompound storedData = event.entityLiving.getEntityData();
 	ItemStack weapon = event.entityLiving.getHeldItem();
 	entity = (EntityLivingBase) EntityList.createEntityByID(id, worldIn);
     entity.setLocationAndAngles(event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ, MathHelper.wrapAngleTo180_float(worldIn.rand.nextFloat() * 360.0F), 0.0F);
     entity.rotationYawHead = entity.rotationYaw;
     entity.renderYawOffset = entity.rotationYaw;
-    ((EntityLivingBase) entity).writeToNBT(storedData);
+    storedData.setInteger("health", (int) event.entityLiving.getMaxHealth());
+    ((EntityLivingBase) entity).readFromNBT(storedData);
     entity.setCurrentItemOrArmor(0, weapon);
 	worldIn.spawnEntityInWorld(entity);
 }
