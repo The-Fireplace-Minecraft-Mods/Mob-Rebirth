@@ -50,7 +50,7 @@ public class ModBase {
 	private static int updateNotification;
 	private static String releaseVersion;
 	private static String prereleaseVersion;
-	private static final String downloadURL = "http://goo.gl/esuQuX";
+	private static final String downloadURL = "http://goo.gl/EQw3Ha";
 	//For Dynious's Version Checker
 	public static NBTTagCompound update = new NBTTagCompound();
 	
