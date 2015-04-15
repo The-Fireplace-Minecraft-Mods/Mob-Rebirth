@@ -1,0 +1,16 @@
+mrb1=Sollte mobs vollständig wiedergeboren werden?
+mrb1.tooltip=Wenn nicht, wird Mobs Eier anstatt vollständig wiedergeboren sinken.
+mrb2=Chance für einen Mob wiedergeboren zu werden
+mrb2.tooltip=0,25 ist gleich 25 Prozent
+mrb3=Sollten die Tiere als auch wiedergeboren werden?
+mrb3.tooltip=Wenn das stimmt, werden Tiere in der gleichen Weise Mobs sind wiedergeboren zu werden.
+mrb5=natürliche Rebirth
+mrb5.tooltip=Wenn das stimmt, kann Mobs von jeder Art von Tod wiedergeboren zu werden.
+mrb4=Zusätzliche Mob Graf
+mrb4.tooltip=Die Zahl der zusätzlichen Mobs wiedergeboren zu werden. Lassen Sie bei 0 deaktiviert zusätzliche Mobs wiedergeboren.
+mrb6=Mehrere Mob Rebirth Chance
+mrb6.tooltip=Chance für zusätzliche Mobs wiedergeboren zu werden.
+mrb7=Mehrere Mob-Modus
+mrb7.tooltip=Die Optionen sind 'continuous'(kontinuierliche) oder 'all'(Alle). Kontinuierliche gilt die Chance pro zusätzliche mob, All gilt die Chance sofort.
+solar_apocalypse_fix=Befestigen Sie das Sonnenlicht Apokalypse?
+solar_apocalypse_fix.tooltip=Behebt die Apokalypse im Sonnenlicht die durch bestimmte Konfigurationen

@@ -1,0 +1,16 @@
+mrb1=En caso de turbas ser totalmente renacido?
+mrb1.tooltip=Si es falso, turbas bajarán los huevos en lugar de ser completamente renacido.
+mrb2=Probabilidad para una turba para renacer
+mrb2.tooltip=0,25 es 25 por ciento
+mrb3=¿Deben los animales renacer así?
+mrb3.tooltip=Si es verdad, animales renacerá en la misma forma turbas son.
+mrb4=Contador monstruo extra
+mrb4.tooltip=El número de mobs adicionales para renacer. Deja a 0 para deshabilitar monstruos adicionales renaciendo.
+mrb5=Renacer Natural
+mrb5.tooltip=Si es verdad, turbas puede renacer de cualquier tipo de muerte.
+mrb6=Múltiple Monstruo Renacimiento Probabilidad
+mrb6.tooltip=Probabilidad para mobs adicionales para renacer.
+mrb7=Múltiple Modo Monstruo
+mrb7.tooltip=Las opciones son 'continuous'(continua) o 'all'(todos). Continua aplica la oportunidad por la monstruo extra, todo aplica la oportunidad de una vez.
+solar_apocalypse_fix=Fijar el Apocalipsis luz del sol?
+solar_apocalypse_fix.tooltip=Fija el apocalipsis en la luz del sol creado por ciertas configuraciones
