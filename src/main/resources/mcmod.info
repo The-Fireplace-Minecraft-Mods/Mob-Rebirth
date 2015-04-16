@@ -3,16 +3,16 @@
   "modid": "mobrebirth",
   "name": "Mob Rebirth",
   "description": "A mod allowing creatures to be reborn in various ways",
-  "version": "2.1.1.0",
+  "version": "2.1.2.0",
   "mcversion": "1.8",
   "url": "http://goo.gl/EQw3Ha",
   "updateUrl": "http://goo.gl/EQw3Ha",
   "authorList": ["The_Fireplace"],
   "credits": "The_Fireplace",
-  "logoFile": "",
+  "logoFile": "logo.png",
   "screenshots": [],
   "dependencies": [ "fireplacecore", "VersionChecker" ],
-  "requiredMods": [ "fireplacecore@[2.1.1.0,)" ],
+  "requiredMods": [ "fireplacecore@[2.1.3.0,)" ],
   "useDependencyInformation": true
 }
 ]
