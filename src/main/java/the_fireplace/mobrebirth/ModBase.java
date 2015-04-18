@@ -47,7 +47,7 @@ public class ModBase {
 	public static ModBase instance;
 	public static final String MODID = "mobrebirth";
 	public static final String MODNAME = "Mob Rebirth";
-	public static final String VERSION = "2.1.2.0";
+	public static final String VERSION = "2.1.3.0";
 	
 	private static int updateNotification;
 	private static String releaseVersion;
@@ -102,9 +102,11 @@ public class ModBase {
 		MULTIMOBMODE_PROPERTY.comment = "Extra Mob Mode, Options are 'continuous' or 'all'. Continual applies the chance per extra mob, All applies the chance once.";
 		SUNLIGHTAPOCALYPSEFIX_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SUNLIGHTAPOCALYPSEFIX_NAME, ConfigValues.SUNLIGHTAPOCALYPSEFIX_DEFAULT);
 		SUNLIGHTAPOCALYPSEFIX_PROPERTY.comment = "Fixes the 'Sunlight Apocalypse'";
+		if(event.getSide().isClient())
 		SPAWNMOBCHANCE_PROPERTY.setConfigEntryClass(RebirthChanceSlider.class);
 		SPAWNMOBCHANCE_PROPERTY.setMaxValue(1.0);
 		SPAWNMOBCHANCE_PROPERTY.setMinValue(0.0);
+		if(event.getSide().isClient())
 		MULTIMOBCHANCE_PROPERTY.setConfigEntryClass(RebirthChanceSlider.class);
 		MULTIMOBCHANCE_PROPERTY.setMaxValue(1.0);
 		MULTIMOBCHANCE_PROPERTY.setMinValue(0.0);
