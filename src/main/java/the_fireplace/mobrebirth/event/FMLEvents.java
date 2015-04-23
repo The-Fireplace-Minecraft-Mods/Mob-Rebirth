@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToSe
 public class FMLEvents {
 	@SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-	     if(eventArgs.modID.equals("mobrebirth"))
+	     if(eventArgs.modID.equals(ModBase.MODID))
 	         ModBase.syncConfig();
 	}
 	@SubscribeEvent
