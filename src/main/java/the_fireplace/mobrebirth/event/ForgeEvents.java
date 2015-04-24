@@ -10,6 +10,8 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.entity.player.EntityPlayer;
@@ -39,24 +41,40 @@ public static double storedZ;
 @SubscribeEvent
 public void onEntityLivingDeath(LivingDropsEvent event) {
 	if(ConfigValues.NATURALREBIRTH == true){
-		if ((event.entityLiving instanceof IMob)) {//Checks to see if it was a Mob
-			makeMobReborn(event);
+		if ((event.entityLiving instanceof IMob)) {
+			makeMobRebornTransition(event);
 		}else if ((event.entityLiving instanceof IAnimals)) {
 			if (ConfigValues.SPAWNANIMALS == true){
-				makeMobReborn(event);
+				makeMobRebornTransition(event);
 			}
 		}
 	}
 	else{
 		if(event.source.getEntity() instanceof EntityPlayer){
-			if ((event.entityLiving instanceof IMob)) {//Checks to see if it was a Mob
-				makeMobReborn(event);
+			if ((event.entityLiving instanceof IMob)) {
+				makeMobRebornTransition(event);
 			}else if ((event.entityLiving instanceof IAnimals)) {
 				if (ConfigValues.SPAWNANIMALS == true){
-					makeMobReborn(event);
+					makeMobRebornTransition(event);
 				}
 			}
 		}
+	}
+}
+private void makeMobRebornTransition(LivingDropsEvent event){
+	if(ConfigValues.ALLOWBOSSES == true){
+		if(event.entityLiving instanceof EntityWither || event.entityLiving instanceof EntityDragon){
+			makeMobReborn(event);
+			return;
+		}
+	}
+	if(ConfigValues.VANILLAONLY == true){
+		if((event.entityLiving.getClass().getPackage().toString().contains("net.minecraft"))){
+			makeMobReborn(event);
+			return;
+		}
+	}else{
+		makeMobReborn(event);
 	}
 }
 private void makeMobReborn(LivingDropsEvent event){
