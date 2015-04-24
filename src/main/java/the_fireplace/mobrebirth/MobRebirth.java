@@ -22,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.Achievement;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.AchievementPage;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -41,13 +42,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
 import net.minecraftforge.fml.common.registry.LanguageRegistry;
 
-@Mod(modid = ModBase.MODID, name = ModBase.MODNAME, version = ModBase.VERSION, acceptedMinecraftVersions="1.8", canBeDeactivated = true, guiFactory = "the_fireplace.mobrebirth.config.MobRebirthGuiFactory")
-public class ModBase {
-	@Instance(ModBase.MODID)
-	public static ModBase instance;
+@Mod(modid = MobRebirth.MODID, name = MobRebirth.MODNAME, version = MobRebirth.VERSION, acceptedMinecraftVersions="1.8", canBeDeactivated = true, guiFactory = "the_fireplace.mobrebirth.config.MobRebirthGuiFactory")
+public class MobRebirth {
+	@Instance(MobRebirth.MODID)
+	public static MobRebirth instance;
 	public static final String MODID = "mobrebirth";
 	public static final String MODNAME = "Mob Rebirth";
-	public static final String VERSION = "2.1.4.0";
+	public static final String VERSION = "2.2.0.1";
 	
 	private static int updateNotification;
 	private static String releaseVersion;
@@ -55,7 +56,6 @@ public class ModBase {
 	private static final String downloadURL = "http://goo.gl/EQw3Ha";
 	//For Dynious's Version Checker
 	public static NBTTagCompound update = new NBTTagCompound();
-	
 	
 	public static Configuration file;
 	
@@ -67,6 +67,8 @@ public class ModBase {
 	public static Property MULTIMOBCHANCE_PROPERTY;
 	public static Property MULTIMOBMODE_PROPERTY;
 	public static Property SUNLIGHTAPOCALYPSEFIX_PROPERTY;
+	public static Property VANILLAONLY_PROPERTY;
+	public static Property ALLOWBOSSES_PROPERTY;
 	
 	public static void syncConfig(){
 		ConfigValues.SPAWNMOBCHANCE = SPAWNMOBCHANCE_PROPERTY.getDouble();
@@ -77,6 +79,8 @@ public class ModBase {
 		ConfigValues.MULTIMOBCHANCE = MULTIMOBCHANCE_PROPERTY.getDouble();
 		ConfigValues.MULTIMOBMODE = MULTIMOBMODE_PROPERTY.getString();
 		ConfigValues.SUNLIGHTAPOCALYPSEFIX = SUNLIGHTAPOCALYPSEFIX_PROPERTY.getBoolean();
+		ConfigValues.ALLOWBOSSES = ALLOWBOSSES_PROPERTY.getBoolean();
+		ConfigValues.VANILLAONLY = VANILLAONLY_PROPERTY.getBoolean();
 		if(file.hasChanged()){
 	        file.save();
 		}
@@ -87,21 +91,25 @@ public class ModBase {
 		file = new Configuration(event.getSuggestedConfigurationFile());
 		file.load();
 		SPAWNMOBCHANCE_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNMOBCHANCE_NAME, ConfigValues.SPAWNMOBCHANCE_DEFAULT);
-		SPAWNMOBCHANCE_PROPERTY.comment = "The chance for the mob to be reborn";
+		SPAWNMOBCHANCE_PROPERTY.comment = StatCollector.translateToLocal("mrb2.tooltip");
 		SPAWNMOB_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNMOB_NAME, ConfigValues.SPAWNMOB_DEFAULT);
-		SPAWNMOB_PROPERTY.comment = "Whether or not rebirth means spawning the mob. True means the mob will spawn for Rebirth, False means an egg will drop.";
+		SPAWNMOB_PROPERTY.comment = StatCollector.translateToLocal("mrb1.tooltip");
 		NATURALREBIRTH_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.NATURALREBIRTH_NAME, ConfigValues.NATURALREBIRTH_DEFAULT);
-		NATURALREBIRTH_PROPERTY.comment = "Should mobs be reborn from any kind of death? If false, they will only die when killed by a player.";
+		NATURALREBIRTH_PROPERTY.comment = StatCollector.translateToLocal("mrb5.tooltip");
 		SPAWNANIMALS_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNANIMALS_NAME, ConfigValues.SPAWNANIMALS_DEFAULT);
-		SPAWNANIMALS_PROPERTY.comment = "Whether or not animals can be reborn like mobs.";
+		SPAWNANIMALS_PROPERTY.comment = StatCollector.translateToLocal("mrb3.tooltip");
 		EXTRAMOBCOUNT_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.EXTRAMOBCOUNT_NAME, ConfigValues.EXTRAMOBCOUNT_DEFAULT);
-		EXTRAMOBCOUNT_PROPERTY.comment = "The number of extra mobs to be reborn. Leave at 0 to disable extra mobs being reborn.";
+		EXTRAMOBCOUNT_PROPERTY.comment = StatCollector.translateToLocal("mrb4.tooltip");
 		MULTIMOBCHANCE_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.MULTIMOBCHANCE_NAME, ConfigValues.MULTIMOBCHANCE_DEFAULT);
-		MULTIMOBCHANCE_PROPERTY.comment = "Chance for extra mobs to be reborn.";
+		MULTIMOBCHANCE_PROPERTY.comment = StatCollector.translateToLocal("mrb6.tooltip");
 		MULTIMOBMODE_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.MULTIMOBMODE_NAME, ConfigValues.MULTIMOBMODE_DEFAULT);
-		MULTIMOBMODE_PROPERTY.comment = "Extra Mob Mode, Options are 'continuous' or 'all'. Continual applies the chance per extra mob, All applies the chance once.";
+		MULTIMOBMODE_PROPERTY.comment = StatCollector.translateToLocal("mrb7.tooltip");
 		SUNLIGHTAPOCALYPSEFIX_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SUNLIGHTAPOCALYPSEFIX_NAME, ConfigValues.SUNLIGHTAPOCALYPSEFIX_DEFAULT);
-		SUNLIGHTAPOCALYPSEFIX_PROPERTY.comment = "Fixes the 'Sunlight Apocalypse'";
+		SUNLIGHTAPOCALYPSEFIX_PROPERTY.comment = StatCollector.translateToLocal("solar_apocalypse_fix.tooltip");
+		ALLOWBOSSES_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.ALLOWBOSSES_NAME, ConfigValues.ALLOWBOSSES_DEFAULT);
+		ALLOWBOSSES_PROPERTY.comment = StatCollector.translateToLocal("allowbosses.tooltip");
+		VANILLAONLY_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.VANILLAONLY_NAME, ConfigValues.VANILLAONLY_DEFAULT);
+		VANILLAONLY_PROPERTY.comment = StatCollector.translateToLocal("vanillaonly.tooltip");
 		if(event.getSide().isClient())
 		SPAWNMOBCHANCE_PROPERTY.setConfigEntryClass(RebirthChanceSlider.class);
 		SPAWNMOBCHANCE_PROPERTY.setMaxValue(1.0);
