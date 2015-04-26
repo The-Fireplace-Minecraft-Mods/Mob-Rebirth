@@ -8,7 +8,7 @@
   "url": "http://goo.gl/EQw3Ha",
   "updateUrl": "http://goo.gl/EQw3Ha",
   "authorList": ["The_Fireplace"],
-  "credits": "The_Fireplace",
+  "credits": "Authored by The_Fireplace",
   "logoFile": "logo.png",
   "screenshots": [],
   "dependencies": [ "fireplacecore", "VersionChecker" ],

@@ -6,42 +6,30 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.logging.Level;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
 import the_fireplace.fireplacecore.FireCoreBaseFile;
 import the_fireplace.mobrebirth.config.ConfigValues;
 import the_fireplace.mobrebirth.event.FMLEvents;
 import the_fireplace.mobrebirth.event.ForgeEvents;
 import the_fireplace.mobrebirth.gui.RebirthChanceSlider;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.stats.Achievement;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.StatCollector;
-import net.minecraftforge.common.AchievementPage;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.client.config.GuiConfigEntries.NumberSliderEntry;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.FMLLog;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
-import net.minecraftforge.fml.common.registry.LanguageRegistry;
-
+/**
+ * 
+ * @author The_Fireplace
+ *
+ */
 @Mod(modid = MobRebirth.MODID, name = MobRebirth.MODNAME, version = MobRebirth.VERSION, acceptedMinecraftVersions="1.8", canBeDeactivated = true, guiFactory = "the_fireplace.mobrebirth.config.MobRebirthGuiFactory")
 public class MobRebirth {
 	@Instance(MobRebirth.MODID)
@@ -49,16 +37,16 @@ public class MobRebirth {
 	public static final String MODID = "mobrebirth";
 	public static final String MODNAME = "Mob Rebirth";
 	public static final String VERSION = "2.2.0.1";
-	
+
 	private static int updateNotification;
 	private static String releaseVersion;
 	private static String prereleaseVersion;
 	private static final String downloadURL = "http://goo.gl/EQw3Ha";
 	//For Dynious's Version Checker
 	public static NBTTagCompound update = new NBTTagCompound();
-	
+
 	public static Configuration file;
-	
+
 	public static Property SPAWNMOBCHANCE_PROPERTY;
 	public static Property SPAWNMOB_PROPERTY;
 	public static Property NATURALREBIRTH_PROPERTY;
@@ -69,7 +57,7 @@ public class MobRebirth {
 	public static Property SUNLIGHTAPOCALYPSEFIX_PROPERTY;
 	public static Property VANILLAONLY_PROPERTY;
 	public static Property ALLOWBOSSES_PROPERTY;
-	
+
 	public static void syncConfig(){
 		ConfigValues.SPAWNMOBCHANCE = SPAWNMOBCHANCE_PROPERTY.getDouble();
 		ConfigValues.SPAWNMOB = SPAWNMOB_PROPERTY.getBoolean();
@@ -82,10 +70,10 @@ public class MobRebirth {
 		ConfigValues.ALLOWBOSSES = ALLOWBOSSES_PROPERTY.getBoolean();
 		ConfigValues.VANILLAONLY = VANILLAONLY_PROPERTY.getBoolean();
 		if(file.hasChanged()){
-	        file.save();
+			file.save();
 		}
 	}
-	
+
 	@EventHandler
 	public void PreInit(FMLPreInitializationEvent event) {
 		file = new Configuration(event.getSuggestedConfigurationFile());
@@ -111,14 +99,14 @@ public class MobRebirth {
 		VANILLAONLY_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.VANILLAONLY_NAME, ConfigValues.VANILLAONLY_DEFAULT);
 		VANILLAONLY_PROPERTY.comment = StatCollector.translateToLocal("vanillaonly.tooltip");
 		if(event.getSide().isClient())
-		SPAWNMOBCHANCE_PROPERTY.setConfigEntryClass(RebirthChanceSlider.class);
+			SPAWNMOBCHANCE_PROPERTY.setConfigEntryClass(RebirthChanceSlider.class);
 		SPAWNMOBCHANCE_PROPERTY.setMaxValue(1.0);
 		SPAWNMOBCHANCE_PROPERTY.setMinValue(0.0);
 		if(event.getSide().isClient())
-		MULTIMOBCHANCE_PROPERTY.setConfigEntryClass(RebirthChanceSlider.class);
+			MULTIMOBCHANCE_PROPERTY.setConfigEntryClass(RebirthChanceSlider.class);
 		MULTIMOBCHANCE_PROPERTY.setMaxValue(1.0);
 		MULTIMOBCHANCE_PROPERTY.setMinValue(0.0);
-		
+
 		syncConfig();
 		retriveCurrentVersions();
 		FireCoreBaseFile.addUpdateInfo(update, this.MODNAME, this.VERSION, this.prereleaseVersion, this.releaseVersion, this.downloadURL, this.MODID);
@@ -152,7 +140,7 @@ public class MobRebirth {
 				}
 				break;
 			case 2:
-				
+
 				break;
 			}
 		}
@@ -203,11 +191,11 @@ public class MobRebirth {
 		try {
 			releaseVersion = get_content(new URL(
 					"https://dl.dropboxusercontent.com/s/xpf1swir6n9rx3c/release.version?dl=0")
-					.openConnection());
+			.openConnection());
 
 			prereleaseVersion = get_content(new URL(
 					"https://dl.dropboxusercontent.com/s/x4a9lubkolghoge/prerelease.version?dl=0")
-					.openConnection());
+			.openConnection());
 
 		} catch (final MalformedURLException e) {
 			System.out.println("Malformed URL Exception");
