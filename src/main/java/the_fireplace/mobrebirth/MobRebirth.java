@@ -57,6 +57,7 @@ public class MobRebirth {
 	public static Property SUNLIGHTAPOCALYPSEFIX_PROPERTY;
 	public static Property VANILLAONLY_PROPERTY;
 	public static Property ALLOWBOSSES_PROPERTY;
+	public static Property ALLOWSLIMES_PROPERTY;
 
 	public static void syncConfig(){
 		ConfigValues.SPAWNMOBCHANCE = SPAWNMOBCHANCE_PROPERTY.getDouble();
@@ -69,6 +70,7 @@ public class MobRebirth {
 		ConfigValues.SUNLIGHTAPOCALYPSEFIX = SUNLIGHTAPOCALYPSEFIX_PROPERTY.getBoolean();
 		ConfigValues.ALLOWBOSSES = ALLOWBOSSES_PROPERTY.getBoolean();
 		ConfigValues.VANILLAONLY = VANILLAONLY_PROPERTY.getBoolean();
+		ConfigValues.ALLOWSLIMES = ALLOWSLIMES_PROPERTY.getBoolean();
 		if(file.hasChanged()){
 			file.save();
 		}
@@ -98,6 +100,8 @@ public class MobRebirth {
 		ALLOWBOSSES_PROPERTY.comment = StatCollector.translateToLocal("allowbosses.tooltip");
 		VANILLAONLY_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.VANILLAONLY_NAME, ConfigValues.VANILLAONLY_DEFAULT);
 		VANILLAONLY_PROPERTY.comment = StatCollector.translateToLocal("vanillaonly.tooltip");
+		ALLOWSLIMES_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.ALLOWSLIMES_NAME, ConfigValues.ALLOWSLIMES_DEFAULT);
+		ALLOWSLIMES_PROPERTY.comment = StatCollector.translateToLocal("allowslimes.tooltip");
 		if(event.getSide().isClient())
 			SPAWNMOBCHANCE_PROPERTY.setConfigEntryClass(RebirthChanceSlider.class);
 		SPAWNMOBCHANCE_PROPERTY.setMaxValue(1.0);

@@ -36,6 +36,9 @@ public class ConfigValues {
 	public static final boolean ALLOWBOSSES_DEFAULT = false;
 	public static boolean ALLOWBOSSES;
 
+	public static final boolean ALLOWSLIMES_DEFAULT = true;
+	public static boolean ALLOWSLIMES;
+
 	public static final String SPAWNMOB_NAME = "mrb1";
 	public static final String SPAWNMOBCHANCE_NAME = "mrb2";
 	public static final String SPAWNANIMALS_NAME = "mrb3";
@@ -46,4 +49,5 @@ public class ConfigValues {
 	public static final String SUNLIGHTAPOCALYPSEFIX_NAME = "solar_apocalypse_fix";
 	public static final String VANILLAONLY_NAME = "vanillaonly";
 	public static final String ALLOWBOSSES_NAME = "allowbosses";
+	public static final String ALLOWSLIMES_NAME = "allowslimes";
 }

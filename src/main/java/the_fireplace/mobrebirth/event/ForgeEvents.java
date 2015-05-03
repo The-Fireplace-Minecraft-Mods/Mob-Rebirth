@@ -4,6 +4,8 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
+import net.minecraft.entity.monster.EntityMagmaCube;
+import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.entity.player.EntityPlayer;
@@ -57,6 +59,16 @@ public class ForgeEvents {
 		if(ConfigValues.ALLOWBOSSES == true){
 			if(event.entityLiving instanceof EntityWither || event.entityLiving instanceof EntityDragon){
 				makeMobReborn(event);
+				return;
+			}
+		}
+		if(ConfigValues.ALLOWSLIMES == true){
+			if(event.entityLiving instanceof EntitySlime || event.entityLiving instanceof EntityMagmaCube){
+				makeMobReborn(event);
+				return;
+			}
+		}else{
+			if(event.entityLiving instanceof EntitySlime || event.entityLiving instanceof EntityMagmaCube){
 				return;
 			}
 		}
