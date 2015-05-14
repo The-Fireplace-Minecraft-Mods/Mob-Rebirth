@@ -1,11 +1,8 @@
 package the_fireplace.mobrebirth;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -36,7 +33,7 @@ public class MobRebirth {
 	public static MobRebirth instance;
 	public static final String MODID = "mobrebirth";
 	public static final String MODNAME = "Mob Rebirth";
-	public static final String VERSION = "2.2.0.1";
+	public static final String VERSION = "2.2.0.2";
 
 	private static int updateNotification;
 	private static String releaseVersion;
@@ -113,7 +110,7 @@ public class MobRebirth {
 
 		syncConfig();
 		retriveCurrentVersions();
-		FireCoreBaseFile.addUpdateInfo(update, this.MODNAME, this.VERSION, this.prereleaseVersion, this.releaseVersion, this.downloadURL, this.MODID);
+		FireCoreBaseFile.instance.addUpdateInfo(update, this.MODNAME, this.VERSION, this.prereleaseVersion, this.releaseVersion, this.downloadURL, this.MODID);
 	}
 	@EventHandler
 	public void Init(FMLInitializationEvent event) {
@@ -126,20 +123,20 @@ public class MobRebirth {
 	 */
 	public static void onPlayerJoinClient(EntityPlayer player,
 			ClientConnectedToServerEvent event) {
-		updateNotification=FireCoreBaseFile.getUpdateNotification();
+		updateNotification=FireCoreBaseFile.instance.getUpdateNotification();
 		if (!prereleaseVersion.equals("")
 				&& !releaseVersion.equals("")) {
 			switch (updateNotification) {
 			case 0:
-				if (isHigherVersion(VERSION, releaseVersion) && isHigherVersion(prereleaseVersion, releaseVersion)) {
+				if (FireCoreBaseFile.isHigherVersion(VERSION, releaseVersion) && FireCoreBaseFile.isHigherVersion(prereleaseVersion, releaseVersion)) {
 					FireCoreBaseFile.sendClientUpdateNotification(player, MODNAME, releaseVersion, downloadURL);
-				}else if(isHigherVersion(VERSION, prereleaseVersion)){
+				}else if(FireCoreBaseFile.isHigherVersion(VERSION, prereleaseVersion)){
 					FireCoreBaseFile.sendClientUpdateNotification(player, MODNAME, prereleaseVersion, downloadURL);
 				}
 
 				break;
 			case 1:
-				if (isHigherVersion(VERSION, releaseVersion)) {
+				if (FireCoreBaseFile.isHigherVersion(VERSION, releaseVersion)) {
 					FireCoreBaseFile.sendClientUpdateNotification(player, MODNAME, releaseVersion, downloadURL);
 				}
 				break;
@@ -149,55 +146,17 @@ public class MobRebirth {
 			}
 		}
 	}
-	/**
-	 * Checks if the new version is higher than the current one
-	 * 
-	 * @param currentVersion
-	 *            The version which is considered current
-	 * @param newVersion
-	 *            The version which is considered new
-	 * @return Whether the new version is higher than the current one or not
-	 */
-	private static boolean isHigherVersion(String currentVersion,
-			String newVersion) {
-		final int[] _current = splitVersion(currentVersion);
-		final int[] _new = splitVersion(newVersion);
-
-		return (_current[0] < _new[0])
-				|| ((_current[0] == _new[0]) && (_current[1] < _new[1]))
-				|| ((_current[0] == _new[0]) && (_current[1] == _new[1]) && (_current[2] < _new[2]))
-				|| ((_current[0] == _new[0]) && (_current[1] == _new[1]) && (_current[2] == _new[2]) && (_current[3] < _new[3]));
-	}
-
-	/**
-	 * Splits a version in its number components (Format ".\d+\.\d+\.\d+.*" )
-	 * 
-	 * @param Version
-	 *            The version to be splitted (Format is important!
-	 * @return The numeric version components as an integer array
-	 */
-	private static int[] splitVersion(String Version) {
-		final String[] tmp = Version.split("\\.");
-		final int size = tmp.length;
-		final int out[] = new int[size];
-
-		for (int i = 0; i < size; i++) {
-			out[i] = Integer.parseInt(tmp[i]);
-		}
-
-		return out;
-	}
 
 	/**
 	 * Retrieves what the latest version is from Dropbox
 	 */
 	private static void retriveCurrentVersions() {
 		try {
-			releaseVersion = get_content(new URL(
+			releaseVersion = FireCoreBaseFile.get_content(new URL(
 					"https://dl.dropboxusercontent.com/s/xpf1swir6n9rx3c/release.version?dl=0")
 			.openConnection());
 
-			prereleaseVersion = get_content(new URL(
+			prereleaseVersion = FireCoreBaseFile.get_content(new URL(
 					"https://dl.dropboxusercontent.com/s/x4a9lubkolghoge/prerelease.version?dl=0")
 			.openConnection());
 
@@ -210,23 +169,5 @@ public class MobRebirth {
 			releaseVersion = "";
 			prereleaseVersion = "";
 		}
-	}
-
-	private static String get_content(URLConnection con) throws IOException {
-		String output = "";
-
-		if (con != null) {
-			final BufferedReader br = new BufferedReader(new InputStreamReader(
-					con.getInputStream()));
-
-			String input;
-
-			while ((input = br.readLine()) != null) {
-				output = output + input;
-			}
-			br.close();
-		}
-
-		return output;
 	}
 }
