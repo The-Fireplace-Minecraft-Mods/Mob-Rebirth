@@ -109,7 +109,7 @@ public class MobRebirth {
 		MULTIMOBCHANCE_PROPERTY.setMinValue(0.0);
 
 		syncConfig();
-		retriveCurrentVersions();
+		retrieveCurrentVersions();
 		FireCoreBaseFile.instance.addUpdateInfo(update, this.MODNAME, this.VERSION, this.prereleaseVersion, this.releaseVersion, this.downloadURL, this.MODID);
 	}
 	@EventHandler
@@ -150,7 +150,7 @@ public class MobRebirth {
 	/**
 	 * Retrieves what the latest version is from Dropbox
 	 */
-	private static void retriveCurrentVersions() {
+	private static void retrieveCurrentVersions() {
 		try {
 			releaseVersion = FireCoreBaseFile.get_content(new URL(
 					"https://dl.dropboxusercontent.com/s/xpf1swir6n9rx3c/release.version?dl=0")
