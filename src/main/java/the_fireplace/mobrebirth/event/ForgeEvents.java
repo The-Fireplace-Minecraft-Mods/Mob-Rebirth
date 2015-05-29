@@ -114,7 +114,6 @@ public class ForgeEvents {
 
 			}
 		}
-
 	}
 
 	private void createEntity(LivingDropsEvent event){
@@ -131,7 +130,8 @@ public class ForgeEvents {
 		entity.setPosition(event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ);
 		entity.readFromNBT(storedData);
 		entity.setPosition(event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ);
-		entity.setCurrentItemOrArmor(0, weapon);
+		if(weapon != null)
+			entity.setCurrentItemOrArmor(0, weapon);
 		worldIn.spawnEntityInWorld(entity);
 		entity.setPosition(event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ);
 	}
