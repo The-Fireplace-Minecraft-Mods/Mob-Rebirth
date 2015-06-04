@@ -92,7 +92,7 @@ public class ForgeEvents {
 				createEntity(event);
 				if(ConfigValues.EXTRAMOBCOUNT > 0){
 					double rand2 = Math.random();
-					if(ConfigValues.MULTIMOBMODE.toLowerCase() == "all"){
+					if((ConfigValues.MULTIMOBMODE.toLowerCase()).equals("all")){
 						if(rand2 <= ConfigValues.MULTIMOBCHANCE){
 							int i = 0;
 							while(i < ConfigValues.EXTRAMOBCOUNT){
