@@ -42,7 +42,7 @@ public class MobRebirth {
 	//For Dynious's Version Checker
 	public static NBTTagCompound update = new NBTTagCompound();
 
-	public static Configuration file;
+	public static Configuration config;
 
 	public static Property SPAWNMOBCHANCE_PROPERTY;
 	public static Property SPAWNMOB_PROPERTY;
@@ -68,36 +68,36 @@ public class MobRebirth {
 		ConfigValues.ALLOWBOSSES = ALLOWBOSSES_PROPERTY.getBoolean();
 		ConfigValues.VANILLAONLY = VANILLAONLY_PROPERTY.getBoolean();
 		ConfigValues.ALLOWSLIMES = ALLOWSLIMES_PROPERTY.getBoolean();
-		if(file.hasChanged()){
-			file.save();
+		if(config.hasChanged()){
+			config.save();
 		}
 	}
 
 	@EventHandler
 	public void PreInit(FMLPreInitializationEvent event) {
-		file = new Configuration(event.getSuggestedConfigurationFile());
-		file.load();
-		SPAWNMOBCHANCE_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNMOBCHANCE_NAME, ConfigValues.SPAWNMOBCHANCE_DEFAULT);
+		config = new Configuration(event.getSuggestedConfigurationFile());
+		config.load();
+		SPAWNMOBCHANCE_PROPERTY = config.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNMOBCHANCE_NAME, ConfigValues.SPAWNMOBCHANCE_DEFAULT);
 		SPAWNMOBCHANCE_PROPERTY.comment = StatCollector.translateToLocal("mrb2.tooltip");
-		SPAWNMOB_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNMOB_NAME, ConfigValues.SPAWNMOB_DEFAULT);
+		SPAWNMOB_PROPERTY = config.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNMOB_NAME, ConfigValues.SPAWNMOB_DEFAULT);
 		SPAWNMOB_PROPERTY.comment = StatCollector.translateToLocal("mrb1.tooltip");
-		NATURALREBIRTH_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.NATURALREBIRTH_NAME, ConfigValues.NATURALREBIRTH_DEFAULT);
+		NATURALREBIRTH_PROPERTY = config.get(Configuration.CATEGORY_GENERAL, ConfigValues.NATURALREBIRTH_NAME, ConfigValues.NATURALREBIRTH_DEFAULT);
 		NATURALREBIRTH_PROPERTY.comment = StatCollector.translateToLocal("mrb5.tooltip");
-		SPAWNANIMALS_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNANIMALS_NAME, ConfigValues.SPAWNANIMALS_DEFAULT);
+		SPAWNANIMALS_PROPERTY = config.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNANIMALS_NAME, ConfigValues.SPAWNANIMALS_DEFAULT);
 		SPAWNANIMALS_PROPERTY.comment = StatCollector.translateToLocal("mrb3.tooltip");
-		EXTRAMOBCOUNT_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.EXTRAMOBCOUNT_NAME, ConfigValues.EXTRAMOBCOUNT_DEFAULT);
+		EXTRAMOBCOUNT_PROPERTY = config.get(Configuration.CATEGORY_GENERAL, ConfigValues.EXTRAMOBCOUNT_NAME, ConfigValues.EXTRAMOBCOUNT_DEFAULT);
 		EXTRAMOBCOUNT_PROPERTY.comment = StatCollector.translateToLocal("mrb4.tooltip");
-		MULTIMOBCHANCE_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.MULTIMOBCHANCE_NAME, ConfigValues.MULTIMOBCHANCE_DEFAULT);
+		MULTIMOBCHANCE_PROPERTY = config.get(Configuration.CATEGORY_GENERAL, ConfigValues.MULTIMOBCHANCE_NAME, ConfigValues.MULTIMOBCHANCE_DEFAULT);
 		MULTIMOBCHANCE_PROPERTY.comment = StatCollector.translateToLocal("mrb6.tooltip");
-		MULTIMOBMODE_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.MULTIMOBMODE_NAME, ConfigValues.MULTIMOBMODE_DEFAULT);
+		MULTIMOBMODE_PROPERTY = config.get(Configuration.CATEGORY_GENERAL, ConfigValues.MULTIMOBMODE_NAME, ConfigValues.MULTIMOBMODE_DEFAULT);
 		MULTIMOBMODE_PROPERTY.comment = StatCollector.translateToLocal("mrb7.tooltip");
-		SUNLIGHTAPOCALYPSEFIX_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.SUNLIGHTAPOCALYPSEFIX_NAME, ConfigValues.SUNLIGHTAPOCALYPSEFIX_DEFAULT);
+		SUNLIGHTAPOCALYPSEFIX_PROPERTY = config.get(Configuration.CATEGORY_GENERAL, ConfigValues.SUNLIGHTAPOCALYPSEFIX_NAME, ConfigValues.SUNLIGHTAPOCALYPSEFIX_DEFAULT);
 		SUNLIGHTAPOCALYPSEFIX_PROPERTY.comment = StatCollector.translateToLocal("solar_apocalypse_fix.tooltip");
-		ALLOWBOSSES_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.ALLOWBOSSES_NAME, ConfigValues.ALLOWBOSSES_DEFAULT);
+		ALLOWBOSSES_PROPERTY = config.get(Configuration.CATEGORY_GENERAL, ConfigValues.ALLOWBOSSES_NAME, ConfigValues.ALLOWBOSSES_DEFAULT);
 		ALLOWBOSSES_PROPERTY.comment = StatCollector.translateToLocal("allowbosses.tooltip");
-		VANILLAONLY_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.VANILLAONLY_NAME, ConfigValues.VANILLAONLY_DEFAULT);
+		VANILLAONLY_PROPERTY = config.get(Configuration.CATEGORY_GENERAL, ConfigValues.VANILLAONLY_NAME, ConfigValues.VANILLAONLY_DEFAULT);
 		VANILLAONLY_PROPERTY.comment = StatCollector.translateToLocal("vanillaonly.tooltip");
-		ALLOWSLIMES_PROPERTY = file.get(Configuration.CATEGORY_GENERAL, ConfigValues.ALLOWSLIMES_NAME, ConfigValues.ALLOWSLIMES_DEFAULT);
+		ALLOWSLIMES_PROPERTY = config.get(Configuration.CATEGORY_GENERAL, ConfigValues.ALLOWSLIMES_NAME, ConfigValues.ALLOWSLIMES_DEFAULT);
 		ALLOWSLIMES_PROPERTY.comment = StatCollector.translateToLocal("allowslimes.tooltip");
 		if(event.getSide().isClient())
 			SPAWNMOBCHANCE_PROPERTY.setConfigEntryClass(RebirthChanceSlider.class);

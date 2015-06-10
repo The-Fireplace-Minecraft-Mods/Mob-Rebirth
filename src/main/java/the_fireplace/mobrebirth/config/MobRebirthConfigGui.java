@@ -14,8 +14,8 @@ public class MobRebirthConfigGui extends GuiConfig {
 
 	public MobRebirthConfigGui(GuiScreen parentScreen) {
 		super(parentScreen, 
-				new ConfigElement(MobRebirth.file.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), MobRebirth.MODID, false,
-				false, GuiConfig.getAbridgedConfigPath(MobRebirth.file.toString()));
+				new ConfigElement(MobRebirth.config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), MobRebirth.MODID, false,
+				false, GuiConfig.getAbridgedConfigPath(MobRebirth.config.toString()));
 	}
 
 }
