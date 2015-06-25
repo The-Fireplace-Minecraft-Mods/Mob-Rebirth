@@ -33,11 +33,11 @@ public class MobRebirth {
 	public static MobRebirth instance;
 	public static final String MODID = "mobrebirth";
 	public static final String MODNAME = "Mob Rebirth";
-	public static final String VERSION = "2.2.0.2";
 
 	private static int updateNotification;
 	private static String releaseVersion;
 	private static String prereleaseVersion;
+	public static final String VERSION = "2.2.1.0";
 	private static final String downloadURL = "http://goo.gl/EQw3Ha";
 	//For Dynious's Version Checker
 	public static NBTTagCompound update = new NBTTagCompound();
