@@ -19,6 +19,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
 import the_fireplace.fireplacecore.FireCoreBaseFile;
 import the_fireplace.fireplacecore.api.FCAPI;
+import the_fireplace.fireplacecore.logger.Logger;
 import the_fireplace.fireplacecore.math.VersionMath;
 import the_fireplace.mobrebirth.config.ConfigValues;
 import the_fireplace.mobrebirth.event.FMLEvents;
@@ -73,6 +74,7 @@ public class MobRebirth {
 
 	@EventHandler
 	public void PreInit(FMLPreInitializationEvent event) {
+		Logger.create(MODID);
 		config = new Configuration(event.getSuggestedConfigurationFile());
 		config.load();
 		SPAWNMOBCHANCE_PROPERTY = config.get(Configuration.CATEGORY_GENERAL, ConfigValues.SPAWNMOBCHANCE_NAME, ConfigValues.SPAWNMOBCHANCE_DEFAULT);
