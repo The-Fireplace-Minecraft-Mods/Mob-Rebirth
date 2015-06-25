@@ -16,21 +16,4 @@ public class FMLEvents {
 		if(eventArgs.modID.equals(MobRebirth.MODID))
 			MobRebirth.syncConfig();
 	}
-	@SubscribeEvent
-	public void onPlayerJoinClient(final ClientConnectedToServerEvent event) {
-		(new Thread() {
-			@Override
-			public void run() {
-				while (FMLClientHandler.instance().getClientPlayerEntity() == null)
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-					}
-
-				MobRebirth.onPlayerJoinClient(FMLClientHandler.instance()
-						.getClientPlayerEntity(), event);
-			}
-		}).start();
-
-	}
 }

@@ -18,6 +18,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
 import the_fireplace.fireplacecore.FireCoreBaseFile;
+import the_fireplace.fireplacecore.api.FCAPI;
+import the_fireplace.fireplacecore.math.VersionMath;
 import the_fireplace.mobrebirth.config.ConfigValues;
 import the_fireplace.mobrebirth.event.FMLEvents;
 import the_fireplace.mobrebirth.event.ForgeEvents;
@@ -33,10 +35,6 @@ public class MobRebirth {
 	public static MobRebirth instance;
 	public static final String MODID = "mobrebirth";
 	public static final String MODNAME = "Mob Rebirth";
-
-	private static int updateNotification;
-	private static String releaseVersion;
-	private static String prereleaseVersion;
 	public static final String VERSION = "2.2.1.0";
 	private static final String downloadURL = "http://goo.gl/EQw3Ha";
 	//For Dynious's Version Checker
@@ -109,65 +107,11 @@ public class MobRebirth {
 		MULTIMOBCHANCE_PROPERTY.setMinValue(0.0);
 
 		syncConfig();
-		retrieveCurrentVersions();
-		FireCoreBaseFile.instance.addUpdateInfo(update, this.MODNAME, this.VERSION, this.prereleaseVersion, this.releaseVersion, this.downloadURL, this.MODID);
+		FCAPI.registerModToVersionChecker(update, this.MODNAME, this.VERSION, VersionMath.getVersionFor("https://dl.dropboxusercontent.com/s/x4a9lubkolghoge/prerelease.version?dl=0"), VersionMath.getVersionFor("https://dl.dropboxusercontent.com/s/xpf1swir6n9rx3c/release.version?dl=0"), this.downloadURL, this.MODID);
 	}
 	@EventHandler
 	public void Init(FMLInitializationEvent event) {
 		FMLCommonHandler.instance().bus().register(new FMLEvents());
 		MinecraftForge.EVENT_BUS.register(new ForgeEvents());
-	}
-	/**
-	 * This method is client side called when a player joins the game. Both for
-	 * a server or a single player world.
-	 */
-	public static void onPlayerJoinClient(EntityPlayer player,
-			ClientConnectedToServerEvent event) {
-		updateNotification=FireCoreBaseFile.instance.getUpdateNotification();
-		if (!prereleaseVersion.equals("")
-				&& !releaseVersion.equals("")) {
-			switch (updateNotification) {
-			case 0:
-				if (FireCoreBaseFile.isHigherVersion(VERSION, releaseVersion) && FireCoreBaseFile.isHigherVersion(prereleaseVersion, releaseVersion)) {
-					FireCoreBaseFile.sendClientUpdateNotification(player, MODNAME, releaseVersion, downloadURL);
-				}else if(FireCoreBaseFile.isHigherVersion(VERSION, prereleaseVersion)){
-					FireCoreBaseFile.sendClientUpdateNotification(player, MODNAME, prereleaseVersion, downloadURL);
-				}
-
-				break;
-			case 1:
-				if (FireCoreBaseFile.isHigherVersion(VERSION, releaseVersion)) {
-					FireCoreBaseFile.sendClientUpdateNotification(player, MODNAME, releaseVersion, downloadURL);
-				}
-				break;
-			case 2:
-
-				break;
-			}
-		}
-	}
-
-	/**
-	 * Retrieves what the latest version is from Dropbox
-	 */
-	private static void retrieveCurrentVersions() {
-		try {
-			releaseVersion = FireCoreBaseFile.get_content(new URL(
-					"https://dl.dropboxusercontent.com/s/xpf1swir6n9rx3c/release.version?dl=0")
-			.openConnection());
-
-			prereleaseVersion = FireCoreBaseFile.get_content(new URL(
-					"https://dl.dropboxusercontent.com/s/x4a9lubkolghoge/prerelease.version?dl=0")
-			.openConnection());
-
-		} catch (final MalformedURLException e) {
-			System.out.println("Malformed URL Exception");
-			releaseVersion = "";
-			prereleaseVersion = "";
-		} catch (final IOException e) {
-			System.out.println("IO Exception");
-			releaseVersion = "";
-			prereleaseVersion = "";
-		}
 	}
 }
