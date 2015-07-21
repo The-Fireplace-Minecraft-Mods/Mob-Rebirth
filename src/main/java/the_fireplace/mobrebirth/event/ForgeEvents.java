@@ -124,6 +124,7 @@ public class ForgeEvents {
 		World worldIn = event.entityLiving.worldObj;
 		int id = EntityList.getEntityID(event.entityLiving);
 		NBTTagCompound storedData = event.entityLiving.getEntityData();
+		event.entityLiving.writeEntityToNBT(storedData);
 		ItemStack weapon = event.entityLiving.getHeldItem();
 		float health = event.entityLiving.getMaxHealth();
 		//Read
