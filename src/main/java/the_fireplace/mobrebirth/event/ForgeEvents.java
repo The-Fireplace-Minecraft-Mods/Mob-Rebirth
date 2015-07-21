@@ -18,7 +18,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import the_fireplace.fireplacecore.logger.Logger;
 import the_fireplace.mobrebirth.MobRebirth;
 import the_fireplace.mobrebirth.config.ConfigValues;
 /**
@@ -119,7 +118,7 @@ public class ForgeEvents {
 	}
 
 	private void createEntity(LivingDropsEvent event){
-		Logger.addToLog(MobRebirth.MODID, event.entityLiving.getName()+" being created.");
+		MobRebirth.logger.addToLog(event.entityLiving.getName()+" being created.");
 		EntityLivingBase entity;
 		World worldIn = event.entityLiving.worldObj;
 		int id = EntityList.getEntityID(event.entityLiving);
@@ -137,7 +136,7 @@ public class ForgeEvents {
 			entity.setCurrentItemOrArmor(0, weapon);
 		worldIn.spawnEntityInWorld(entity);
 		entity.setPosition(event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ);
-		Logger.addToLog(MobRebirth.MODID, "Success!");
+		MobRebirth.logger.addToLog("Entity creation completed.");
 	}
 
 	@SubscribeEvent

@@ -19,8 +19,6 @@ public class RebirthChanceSlider extends NumberSliderEntry {
 	@Override
 	public void updateValueButtonText()
 	{
-		//try limiting the number displayed here
-		//this.btnValue.displayString = String.valueOf(round(Double.parseDouble(this.btnValue.displayString), 2));
 		((GuiSlider) this.btnValue).updateSlider();
 	}
 }
