@@ -119,23 +119,24 @@ public class ForgeEvents {
 
 	private void createEntity(LivingDropsEvent event){
 		MobRebirth.logger.addToLog(event.entityLiving.getName()+" being created.");
+		//Store
 		EntityLivingBase entity;
 		World worldIn = event.entityLiving.worldObj;
 		int id = EntityList.getEntityID(event.entityLiving);
 		NBTTagCompound storedData = event.entityLiving.getEntityData();
 		ItemStack weapon = event.entityLiving.getHeldItem();
+		float health = event.entityLiving.getMaxHealth();
+		//Read
 		entity = (EntityLivingBase) EntityList.createEntityByID(id, worldIn);
 		entity.rotationYawHead = entity.rotationYaw;
 		entity.renderYawOffset = entity.rotationYaw;
-		entity.setHealth(event.entityLiving.getMaxHealth());
-		storedData.setInteger("Health", (int)event.entityLiving.getMaxHealth());
-		entity.setPosition(event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ);
+		storedData.setInteger("Health", (int)health);
 		entity.readFromNBT(storedData);
-		entity.setPosition(event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ);
+		entity.setHealth(health);
 		if(weapon != null)
 			entity.setCurrentItemOrArmor(0, weapon);
-		worldIn.spawnEntityInWorld(entity);
 		entity.setPosition(event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ);
+		worldIn.spawnEntityInWorld(entity);
 		MobRebirth.logger.addToLog("Entity creation completed.");
 	}
 
