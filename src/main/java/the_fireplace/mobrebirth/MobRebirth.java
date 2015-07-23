@@ -35,7 +35,7 @@ public class MobRebirth {
 	public static MobRebirth instance;
 	public static final String MODID = "mobrebirth";
 	public static final String MODNAME = "Mob Rebirth";
-	public static final String VERSION = "2.2.1.0";
+	public static final String VERSION = "2.2.3.0";
 	private static final String downloadURL = "http://goo.gl/EQw3Ha";
 	public static Logger logger = new Logger(MODID);
 

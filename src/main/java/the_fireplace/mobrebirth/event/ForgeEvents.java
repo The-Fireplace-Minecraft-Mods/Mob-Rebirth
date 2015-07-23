@@ -122,13 +122,17 @@ public class ForgeEvents {
 		//Store
 		EntityLivingBase entity;
 		World worldIn = event.entityLiving.worldObj;
-		int id = EntityList.getEntityID(event.entityLiving);
+		String sid = EntityList.getEntityString(event.entityLiving);
 		NBTTagCompound storedData = event.entityLiving.getEntityData();
 		event.entityLiving.writeEntityToNBT(storedData);
 		ItemStack weapon = event.entityLiving.getHeldItem();
 		float health = event.entityLiving.getMaxHealth();
 		//Read
-		entity = (EntityLivingBase) EntityList.createEntityByID(id, worldIn);
+		entity = (EntityLivingBase) EntityList.createEntityByName(sid, worldIn);
+		if(entity == null){
+			MobRebirth.logger.addToLog("Entity is null when recreated, cancelling rebirth");
+			return;
+		}
 		entity.rotationYawHead = entity.rotationYaw;
 		entity.renderYawOffset = entity.rotationYaw;
 		storedData.setInteger("Health", (int)health);
