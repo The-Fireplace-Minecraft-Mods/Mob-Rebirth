@@ -1,6 +1,6 @@
 package the_fireplace.mobrebirth.config;
 /**
- * 
+ *
  * @author The_Fireplace
  *
  */
@@ -11,7 +11,7 @@ public class ConfigValues {
 
 	public static final boolean ALLOWSLIMES_DEFAULT = true;
 	public static boolean ALLOWSLIMES;
-	
+
 	public static final boolean ANIMALREBIRTH_DEFAULT = false;
 	public static boolean ANIMALREBIRTH;
 	//Chance Controls
@@ -39,11 +39,11 @@ public class ConfigValues {
 	public static final boolean VANILLAONLY_DEFAULT = false;
 	public static boolean VANILLAONLY;
 
-	
+
 	public static final String ALLOWBOSSES_NAME = "allowbosses";
 	public static final String ALLOWSLIMES_NAME = "allowslimes";
 	public static final String ANIMALREBIRTH_NAME = "animalrebirth";
-	
+
 	public static final String REBIRTHCHANCE_NAME = "rebirthchance";
 	public static final String MULTIMOBCHANCE_NAME = "multimobchance";
 
@@ -52,6 +52,6 @@ public class ConfigValues {
 	public static final String EXTRAMOBCOUNT_NAME = "extramobcount";
 	public static final String MULTIMOBMODE_NAME = "multimobmode";
 	public static final String REBIRTHFROMNONPLAYER_NAME = "rebirthfromnonplayer";
-	
+
 	public static final String VANILLAONLY_NAME = "vanillaonly";
 }

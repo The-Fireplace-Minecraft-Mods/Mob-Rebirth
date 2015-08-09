@@ -6,7 +6,7 @@ import net.minecraftforge.fml.client.config.GuiConfigEntries.NumberSliderEntry;
 import net.minecraftforge.fml.client.config.GuiSlider;
 import net.minecraftforge.fml.client.config.IConfigElement;
 /**
- * 
+ *
  * @author The_Fireplace
  *
  */

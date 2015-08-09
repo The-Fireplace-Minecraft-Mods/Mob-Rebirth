@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import the_fireplace.mobrebirth.MobRebirth;
 import the_fireplace.mobrebirth.config.ConfigValues;
 /**
- * 
+ *
  * @author The_Fireplace
  *
  */
@@ -37,35 +37,34 @@ public class ForgeEvents {
 
 	@SubscribeEvent
 	public void onEntityLivingDeath(LivingDropsEvent event) {
-		if(ConfigValues.REBIRTHFROMNONPLAYER == true){
-			if ((event.entityLiving instanceof IMob)) {
+		if(ConfigValues.REBIRTHFROMNONPLAYER){
+			if (event.entityLiving instanceof IMob) {
 				makeMobRebornTransition(event);
-			}else if ((event.entityLiving instanceof IAnimals)) {
-				if (ConfigValues.ANIMALREBIRTH == true){
-					makeMobRebornTransition(event);
-				}
+			}else if (event.entityLiving instanceof IAnimals && ConfigValues.ANIMALREBIRTH) {
+				makeMobRebornTransition(event);
 			}
-		}
-		else{
+		}else{
 			if(event.source.getEntity() instanceof EntityPlayer){
-				if ((event.entityLiving instanceof IMob)) {
+				if (event.entityLiving instanceof IMob) {
 					makeMobRebornTransition(event);
-				}else if ((event.entityLiving instanceof IAnimals)) {
-					if (ConfigValues.ANIMALREBIRTH == true){
-						makeMobRebornTransition(event);
-					}
+				}else if (event.entityLiving instanceof IAnimals && ConfigValues.ANIMALREBIRTH) {
+					makeMobRebornTransition(event);
 				}
 			}
 		}
 	}
 	private void makeMobRebornTransition(LivingDropsEvent event){
-		if(ConfigValues.ALLOWBOSSES == true){
+		if(ConfigValues.ALLOWBOSSES){
 			if(event.entityLiving instanceof EntityWither || event.entityLiving instanceof EntityDragon){
 				makeMobReborn(event);
 				return;
 			}
+		}else{
+			if(event.entityLiving instanceof EntityWither || event.entityLiving instanceof EntityDragon){
+				return;
+			}
 		}
-		if(ConfigValues.ALLOWSLIMES == true){
+		if(ConfigValues.ALLOWSLIMES){
 			if(event.entityLiving instanceof EntitySlime || event.entityLiving instanceof EntityMagmaCube){
 				makeMobReborn(event);
 				return;
@@ -75,7 +74,7 @@ public class ForgeEvents {
 				return;
 			}
 		}
-		if(ConfigValues.VANILLAONLY == true){
+		if(ConfigValues.VANILLAONLY){
 			if((event.entityLiving.getClass().getPackage().toString().contains("net.minecraft"))){
 				makeMobReborn(event);
 				return;
@@ -88,7 +87,7 @@ public class ForgeEvents {
 		double rand = Math.random();
 		int id = EntityList.getEntityID(event.entityLiving);
 		if (rand <= ConfigValues.REBIRTHCHANCE) {
-			if (!ConfigValues.DROPEGG && EntityList.entityEggs.containsKey(id)){
+			if (ConfigValues.DROPEGG && EntityList.entityEggs.containsKey(id)){
 				ItemStack dropEgg = new ItemStack(Items.spawn_egg, 1, id);
 				event.entityLiving.entityDropItem(dropEgg, 0.0F);}
 			else{
@@ -152,7 +151,7 @@ public class ForgeEvents {
 
 	@SubscribeEvent
 	public void entityDamaged(LivingHurtEvent event){
-		if(event.source.isFireDamage() && ConfigValues.DAMAGEFROMSUNLIGHT == true && event.entityLiving.isEntityUndead() && event.entityLiving.worldObj.canBlockSeeSky(new BlockPos(MathHelper.floor_double(event.entityLiving.posX), MathHelper.floor_double(event.entityLiving.posY), MathHelper.floor_double(event.entityLiving.posZ)))){
+		if(event.source.isFireDamage() && !ConfigValues.DAMAGEFROMSUNLIGHT && event.entityLiving.isEntityUndead() && event.entityLiving.worldObj.canBlockSeeSky(new BlockPos(MathHelper.floor_double(event.entityLiving.posX), MathHelper.floor_double(event.entityLiving.posY), MathHelper.floor_double(event.entityLiving.posZ)))){
 			event.setCanceled(true);
 		}
 	}

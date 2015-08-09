@@ -6,21 +6,21 @@ import java.util.List;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.client.config.DummyConfigElement.DummyCategoryElement;
 import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.GuiConfigEntries;
 import net.minecraftforge.fml.client.config.GuiConfigEntries.CategoryEntry;
 import net.minecraftforge.fml.client.config.IConfigElement;
-import net.minecraftforge.fml.client.config.DummyConfigElement.DummyCategoryElement;
 import the_fireplace.mobrebirth.MobRebirth;
 /**
- * 
+ *
  * @author The_Fireplace
  *
  */
 public class MobRebirthConfigGui extends GuiConfig {
 
 	public MobRebirthConfigGui(GuiScreen parentScreen) {
-		super(parentScreen, 
+		super(parentScreen,
 				getConfigElements(), MobRebirth.MODID, false,
 				false, GuiConfig.getAbridgedConfigPath(MobRebirth.mobcontrols.toString()));
 	}
@@ -39,7 +39,7 @@ public class MobRebirthConfigGui extends GuiConfig {
 		}
 		@Override
 		protected GuiScreen buildChildScreen(){
-			return new GuiConfig(owningScreen, 
+			return new GuiConfig(owningScreen,
 					new ConfigElement(MobRebirth.mobcontrols.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), MobRebirth.MODID, false,
 					false, GuiConfig.getAbridgedConfigPath(MobRebirth.mobcontrols.toString()));
 		}
@@ -51,7 +51,7 @@ public class MobRebirthConfigGui extends GuiConfig {
 		}
 		@Override
 		protected GuiScreen buildChildScreen(){
-			return new GuiConfig(owningScreen, 
+			return new GuiConfig(owningScreen,
 					new ConfigElement(MobRebirth.chancecontrols.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), MobRebirth.MODID, false,
 					false, GuiConfig.getAbridgedConfigPath(MobRebirth.chancecontrols.toString()));
 		}
@@ -63,7 +63,7 @@ public class MobRebirthConfigGui extends GuiConfig {
 		}
 		@Override
 		protected GuiScreen buildChildScreen(){
-			return new GuiConfig(owningScreen, 
+			return new GuiConfig(owningScreen,
 					new ConfigElement(MobRebirth.behaviorcontrols.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), MobRebirth.MODID, false,
 					false, GuiConfig.getAbridgedConfigPath(MobRebirth.behaviorcontrols.toString()));
 		}
@@ -75,7 +75,7 @@ public class MobRebirthConfigGui extends GuiConfig {
 		}
 		@Override
 		protected GuiScreen buildChildScreen(){
-			return new GuiConfig(owningScreen, 
+			return new GuiConfig(owningScreen,
 					new ConfigElement(MobRebirth.debugcontrols.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), MobRebirth.MODID, false,
 					false, GuiConfig.getAbridgedConfigPath(MobRebirth.debugcontrols.toString()));
 		}

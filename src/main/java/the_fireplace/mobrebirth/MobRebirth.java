@@ -1,15 +1,7 @@
 package the_fireplace.mobrebirth;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Map;
 
-import com.google.common.collect.Maps;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.ConfigCategory;
@@ -21,18 +13,16 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
 import net.minecraftforge.fml.relauncher.FMLInjectionData;
 import the_fireplace.fulcrum.api.API;
 import the_fireplace.fulcrum.logger.Logger;
-import the_fireplace.fulcrum.math.MathTools;
 import the_fireplace.fulcrum.math.VersionMath;
 import the_fireplace.mobrebirth.config.ConfigValues;
 import the_fireplace.mobrebirth.event.FMLEvents;
 import the_fireplace.mobrebirth.event.ForgeEvents;
 import the_fireplace.mobrebirth.gui.RebirthChanceSlider;
 /**
- * 
+ *
  * @author The_Fireplace
  *
  */
@@ -42,7 +32,7 @@ public class MobRebirth {
 	public static MobRebirth instance;
 	public static final String MODID = "mobrebirth";
 	public static final String MODNAME = "Mob Rebirth";
-	public static final String VERSION = "2.3.0.1";
+	public static final String VERSION = "2.3.1.0";
 	private static final String downloadURL = "http://goo.gl/EQw3Ha";
 	public static Logger logger = new Logger(MODID);
 	private static final File configDir = new File((File) FMLInjectionData.data()[6], "config/MobRebirth/");
@@ -55,7 +45,7 @@ public class MobRebirth {
 	public static Property ALLOWBOSSES_PROPERTY;
 	public static Property ALLOWSLIMES_PROPERTY;
 	public static Property ANIMALREBIRTH_PROPERTY;
-	
+
 	public static Property REBIRTHCHANCE_PROPERTY;
 	public static Property MULTIMOBCHANCE_PROPERTY;
 
@@ -64,14 +54,14 @@ public class MobRebirth {
 	public static Property EXTRAMOBCOUNT_PROPERTY;
 	public static Property MULTIMOBMODE_PROPERTY;
 	public static Property REBIRTHFROMNONPLAYER_PROPERTY;
-	
+
 	public static Property VANILLAONLY_PROPERTY;
 
 	public static void syncConfig(){
 		ConfigValues.ALLOWBOSSES = ALLOWBOSSES_PROPERTY.getBoolean();
 		ConfigValues.ALLOWSLIMES = ALLOWSLIMES_PROPERTY.getBoolean();
 		ConfigValues.ANIMALREBIRTH = ANIMALREBIRTH_PROPERTY.getBoolean();
-		
+
 		ConfigValues.REBIRTHCHANCE = REBIRTHCHANCE_PROPERTY.getDouble();
 		ConfigValues.MULTIMOBCHANCE = MULTIMOBCHANCE_PROPERTY.getDouble();
 
@@ -80,7 +70,7 @@ public class MobRebirth {
 		ConfigValues.EXTRAMOBCOUNT = EXTRAMOBCOUNT_PROPERTY.getInt();
 		ConfigValues.MULTIMOBMODE = MULTIMOBMODE_PROPERTY.getString();
 		ConfigValues.REBIRTHFROMNONPLAYER = REBIRTHFROMNONPLAYER_PROPERTY.getBoolean();
-		
+
 		ConfigValues.VANILLAONLY = VANILLAONLY_PROPERTY.getBoolean();
 		if(mobcontrols.hasChanged())
 			mobcontrols.save();
@@ -118,7 +108,7 @@ public class MobRebirth {
 		REBIRTHFROMNONPLAYER_PROPERTY = behaviorcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.REBIRTHFROMNONPLAYER_NAME, ConfigValues.REBIRTHFROMNONPLAYER_DEFAULT, StatCollector.translateToLocal(ConfigValues.REBIRTHFROMNONPLAYER_NAME+".tooltip"));
 		//Debug Controls
 		VANILLAONLY_PROPERTY = debugcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.VANILLAONLY_NAME, ConfigValues.VANILLAONLY_DEFAULT, StatCollector.translateToLocal(ConfigValues.VANILLAONLY_NAME+".tooltip"));
-		
+
 		if(event.getSide().isClient())
 			REBIRTHCHANCE_PROPERTY.setConfigEntryClass(RebirthChanceSlider.class);
 		REBIRTHCHANCE_PROPERTY.setMaxValue(1.0);
@@ -127,7 +117,7 @@ public class MobRebirth {
 			MULTIMOBCHANCE_PROPERTY.setConfigEntryClass(RebirthChanceSlider.class);
 		MULTIMOBCHANCE_PROPERTY.setMaxValue(1.0);
 		MULTIMOBCHANCE_PROPERTY.setMinValue(0.0);
-		
+
 		MULTIMOBMODE_PROPERTY.setValidValues(new String[]{"all","continuous","per-mob"});
 		transferOldConfig(event.getSuggestedConfigurationFile());
 		syncConfig();

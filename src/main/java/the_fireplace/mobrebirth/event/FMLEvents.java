@@ -1,12 +1,10 @@
 package the_fireplace.mobrebirth.event;
 
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
 import the_fireplace.mobrebirth.MobRebirth;
 /**
- * 
+ *
  * @author The_Fireplace
  *
  */
