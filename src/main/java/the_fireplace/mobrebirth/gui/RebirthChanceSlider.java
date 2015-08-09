@@ -15,10 +15,7 @@ public class RebirthChanceSlider extends NumberSliderEntry {
 	public RebirthChanceSlider(GuiConfig owningScreen,
 			GuiConfigEntries owningEntryList, IConfigElement configElement) {
 		super(owningScreen, owningEntryList, configElement);
-	}
-	@Override
-	public void updateValueButtonText()
-	{
+		((GuiSlider) this.btnValue).precision=2;
 		((GuiSlider) this.btnValue).updateSlider();
 	}
 }
