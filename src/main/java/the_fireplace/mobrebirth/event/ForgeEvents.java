@@ -1,5 +1,7 @@
 package the_fireplace.mobrebirth.event;
 
+import java.util.Random;
+
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
@@ -95,10 +97,8 @@ public class ForgeEvents {
 					double rand2 = Math.random();
 					if((ConfigValues.MULTIMOBMODE.toLowerCase()).equals("all")){
 						if(rand2 <= ConfigValues.MULTIMOBCHANCE){
-							int i = 0;
-							while(i < ConfigValues.EXTRAMOBCOUNT){
+							for(int i=0;i<ConfigValues.EXTRAMOBCOUNT;i++){
 								createEntity(event);
-								i += 1;
 							}
 						}
 					}
