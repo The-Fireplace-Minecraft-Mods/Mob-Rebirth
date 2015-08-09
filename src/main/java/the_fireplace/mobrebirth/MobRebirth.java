@@ -94,6 +94,8 @@ public class MobRebirth {
 			MULTIMOBCHANCE_PROPERTY.setConfigEntryClass(RebirthChanceSlider.class);
 		MULTIMOBCHANCE_PROPERTY.setMaxValue(1.0);
 		MULTIMOBCHANCE_PROPERTY.setMinValue(0.0);
+		
+		MULTIMOBMODE_PROPERTY.setValidValues(new String[]{"all","continuous","per-mob"});
 
 		syncConfig();
 		API.registerModToVersionChecker(this.MODNAME, this.VERSION, VersionMath.getVersionFor("https://dl.dropboxusercontent.com/s/x4a9lubkolghoge/prerelease.version?dl=0"), VersionMath.getVersionFor("https://dl.dropboxusercontent.com/s/xpf1swir6n9rx3c/release.version?dl=0"), this.downloadURL, this.MODID);
