@@ -37,11 +37,11 @@ public class ForgeEvents {
 
 	@SubscribeEvent
 	public void onEntityLivingDeath(LivingDropsEvent event) {
-		if(ConfigValues.NATURALREBIRTH == true){
+		if(ConfigValues.REBIRTHFROMNONPLAYER == true){
 			if ((event.entityLiving instanceof IMob)) {
 				makeMobRebornTransition(event);
 			}else if ((event.entityLiving instanceof IAnimals)) {
-				if (ConfigValues.SPAWNANIMALS == true){
+				if (ConfigValues.ANIMALREBIRTH == true){
 					makeMobRebornTransition(event);
 				}
 			}
@@ -51,7 +51,7 @@ public class ForgeEvents {
 				if ((event.entityLiving instanceof IMob)) {
 					makeMobRebornTransition(event);
 				}else if ((event.entityLiving instanceof IAnimals)) {
-					if (ConfigValues.SPAWNANIMALS == true){
+					if (ConfigValues.ANIMALREBIRTH == true){
 						makeMobRebornTransition(event);
 					}
 				}
@@ -87,25 +87,32 @@ public class ForgeEvents {
 	private void makeMobReborn(LivingDropsEvent event){
 		double rand = Math.random();
 		int id = EntityList.getEntityID(event.entityLiving);
-		if (rand <= ConfigValues.SPAWNMOBCHANCE) {
-			if (!ConfigValues.SPAWNMOB && EntityList.entityEggs.containsKey(id)){
+		if (rand <= ConfigValues.REBIRTHCHANCE) {
+			if (!ConfigValues.DROPEGG && EntityList.entityEggs.containsKey(id)){
 				ItemStack dropEgg = new ItemStack(Items.spawn_egg, 1, id);
 				event.entityLiving.entityDropItem(dropEgg, 0.0F);}
 			else{
 				createEntity(event);
 				if(ConfigValues.EXTRAMOBCOUNT > 0){
 					double rand2 = Math.random();
-					if((ConfigValues.MULTIMOBMODE.toLowerCase()).equals("all")){
+					if(ConfigValues.MULTIMOBMODE.toLowerCase().equals("all")){
 						if(rand2 <= ConfigValues.MULTIMOBCHANCE){
 							for(int i=0;i<ConfigValues.EXTRAMOBCOUNT;i++){
 								createEntity(event);
 							}
 						}
-					}
-					else{
+					}else if(ConfigValues.MULTIMOBMODE.toLowerCase().equals("per-mob")){
 						for(int i=0;i<ConfigValues.EXTRAMOBCOUNT;i++,rand2=new Random().nextDouble()){
 							if(rand2 <= ConfigValues.MULTIMOBCHANCE){
 								createEntity(event);
+							}
+						}
+					}else{
+						for(int i=0;i<ConfigValues.EXTRAMOBCOUNT;i++,rand2=new Random().nextDouble()){
+							if(rand2 <= ConfigValues.MULTIMOBCHANCE){
+								createEntity(event);
+							}else{
+								break;
 							}
 						}
 					}
@@ -145,7 +152,7 @@ public class ForgeEvents {
 
 	@SubscribeEvent
 	public void entityDamaged(LivingHurtEvent event){
-		if(event.source.isFireDamage() && ConfigValues.SUNLIGHTAPOCALYPSEFIX == true && event.entityLiving.isEntityUndead() && event.entityLiving.worldObj.canBlockSeeSky(new BlockPos(MathHelper.floor_double(event.entityLiving.posX), MathHelper.floor_double(event.entityLiving.posY), MathHelper.floor_double(event.entityLiving.posZ)))){
+		if(event.source.isFireDamage() && ConfigValues.DAMAGEFROMSUNLIGHT == true && event.entityLiving.isEntityUndead() && event.entityLiving.worldObj.canBlockSeeSky(new BlockPos(MathHelper.floor_double(event.entityLiving.posX), MathHelper.floor_double(event.entityLiving.posY), MathHelper.floor_double(event.entityLiving.posZ)))){
 			event.setCanceled(true);
 		}
 	}

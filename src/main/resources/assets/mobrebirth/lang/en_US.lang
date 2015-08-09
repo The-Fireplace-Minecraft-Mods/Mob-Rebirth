@@ -1,22 +1,34 @@
-mrb1=Should mobs be fully reborn?
-mrb1.tooltip=If false, mobs will drop eggs instead of being completely reborn.
-mrb2=Rebirth Chance
-mrb2.tooltip=Chance for a mob to be reborn
-mrb3=Should animals be reborn as well?
-mrb3.tooltip=If true, animals will be reborn in the same way mobs are.
-mrb4=Extra Mob Count
-mrb4.tooltip=The number of extra mobs to be reborn. Leave at 0 to disable extra mobs being reborn.
-mrb5=Natural Rebirth
-mrb5.tooltip=If true, mobs can be reborn from any kind of death.
-mrb6=Multi Mob Rebirth Chance
-mrb6.tooltip=Chance for extra mobs to be reborn.
-mrb7=Multi Mob Mode
-mrb7.tooltip=Options are 'continuous' or 'all'. Continual applies the chance per extra mob, All applies the chance once.
-solar_apocalypse_fix=Fix the Sunlight Apocalypse?
-solar_apocalypse_fix.tooltip=Fixes the apocalypse in the sunlight created by certain configurations
 allowbosses=Allow Boss Rebirth
 allowbosses.tooltip=Set to true to allow bosses like the Wither and Ender Dragon to be reborn.
-vanillaonly=Vanilla Mob Rebirth only
-vanillaonly.tooltip=Set to true to prevent any mobs or animals not in vanilla Minecraft from being reborn
 allowslimes=Allow Slime Rebirth
-allowslimes.tooltip=Sets whether or not Slimes can be reborn
+allowslimes.tooltip=Sets whether or not Slimes can be reborn because of this mod.
+animalrebirth=Should animals be reborn as well?
+animalrebirth.tooltip=If true, animals will be reborn in the same way mobs are.
+
+rebirthchance=Rebirth Chance
+rebirthchance.tooltip=Chance for a mob to be reborn
+multimobchance=Multi Mob Rebirth Chance
+multimobchance.tooltip=Chance for extra mobs to be reborn.
+
+damagefromsunlight=Enable sunlight damage to undead mobs?
+damagefromsunlight.tooltip=Disabling fixes the apocalypse in the sunlight created by certain configurations(>50% rebirth chance + Rebirth from non-player kill + Extra Mob Count > 0)
+dropegg=Should eggs drop instead of rebirth?
+dropegg.tooltip=If true, mobs will drop eggs instead of respawning when they are reborn.
+extramobcount=Extra Mob Count
+extramobcount.tooltip=The number of extra mobs to be reborn. Leave at 0 to disable extra mobs being reborn.
+multimobmode=Multi Mob Mode
+multimobmode.tooltip=Options are 'continuous', 'per-mob', or 'all'.\n'Continuous' applies the chance to each extra mob, and stops when one doesn't spawn\n'Per-Mob' applies the chance to each extra mob\n'All' applies the chance once.
+rebirthfromnonplayer=Rebirth from non-player kills
+rebirthfromnonplayer.tooltip=If true, mobs can be reborn from any kind of death, not just being killed by a player.
+
+vanillaonly=Vanilla Mob Rebirth only
+vanillaonly.tooltip=Set to true to prevent any mobs or animals not in vanilla Minecraft from being reborn\nMeant to temporarily fix issues with modded mobs, should they arise\nAnything that makes you need to use this should be reported.
+
+mobCfg=Mob Configuration
+mobCfg.tooltip=Configure which mobs can be reborn here
+chanceCfg=Chance Configuration
+chanceCfg.tooltip=Configure the chances here
+behaviorCfg=Behavior Configuration
+behaviorCfg.tooltip=Configure rebirth behavior here
+debugCfg=Debug Configuration
+debugCfg.tooltip=These settings are intended for debugging and temporary blanket bugfixes
