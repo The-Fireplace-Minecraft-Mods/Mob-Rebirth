@@ -103,12 +103,10 @@ public class ForgeEvents {
 						}
 					}
 					else{
-						int i = 0;
-						while(i < ConfigValues.EXTRAMOBCOUNT){
+						for(int i=0;i<ConfigValues.EXTRAMOBCOUNT;i++,rand2=new Random().nextDouble()){
 							if(rand2 <= ConfigValues.MULTIMOBCHANCE){
 								createEntity(event);
 							}
-							i += 1;
 						}
 					}
 				}
