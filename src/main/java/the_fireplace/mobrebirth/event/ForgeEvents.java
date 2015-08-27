@@ -20,7 +20,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import the_fireplace.mobrebirth.MobRebirth;
 import the_fireplace.mobrebirth.config.ConfigValues;
 /**
  *
@@ -122,7 +121,6 @@ public class ForgeEvents {
 	}
 
 	private void createEntity(LivingDropsEvent event){
-		MobRebirth.logger.addToLog(event.entityLiving.getName()+" being created.");
 		//Store
 		EntityLivingBase entity;
 		World worldIn = event.entityLiving.worldObj;
@@ -134,7 +132,6 @@ public class ForgeEvents {
 		//Read
 		entity = (EntityLivingBase) EntityList.createEntityByName(sid, worldIn);
 		if(entity == null){
-			MobRebirth.logger.addToLog("Entity is null when recreated, cancelling rebirth");
 			return;
 		}
 		entity.rotationYawHead = entity.rotationYaw;
@@ -146,7 +143,6 @@ public class ForgeEvents {
 			entity.setCurrentItemOrArmor(0, weapon);
 		entity.setPosition(event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ);
 		worldIn.spawnEntityInWorld(entity);
-		MobRebirth.logger.addToLog("Entity creation completed.");
 	}
 
 	@SubscribeEvent

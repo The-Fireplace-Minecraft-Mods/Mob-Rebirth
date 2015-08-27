@@ -14,17 +14,12 @@ import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.FMLInjectionData;
-import the_fireplace.fulcrum.api.API;
-import the_fireplace.fulcrum.logger.Logger;
-import the_fireplace.fulcrum.math.VersionMath;
 import the_fireplace.mobrebirth.config.ConfigValues;
 import the_fireplace.mobrebirth.event.FMLEvents;
 import the_fireplace.mobrebirth.event.ForgeEvents;
 import the_fireplace.mobrebirth.gui.RebirthChanceSlider;
 /**
- *
  * @author The_Fireplace
- *
  */
 @Mod(modid = MobRebirth.MODID, name = MobRebirth.MODNAME, version = MobRebirth.VERSION, acceptedMinecraftVersions="1.8", canBeDeactivated = true, guiFactory = "the_fireplace.mobrebirth.config.MobRebirthGuiFactory")
 public class MobRebirth {
@@ -33,8 +28,7 @@ public class MobRebirth {
 	public static final String MODID = "mobrebirth";
 	public static final String MODNAME = "Mob Rebirth";
 	public static final String VERSION = "2.3.1.0";
-	private static final String downloadURL = "http://goo.gl/EQw3Ha";
-	public static Logger logger = new Logger(MODID);
+	public static final String downloadURL = "http://goo.gl/EQw3Ha";
 	private static final File configDir = new File((File) FMLInjectionData.data()[6], "config/MobRebirth/");
 
 	public static Configuration mobcontrols;
@@ -84,7 +78,6 @@ public class MobRebirth {
 
 	@EventHandler
 	public void PreInit(FMLPreInitializationEvent event) {
-		logger.create();
 		mobcontrols = new Configuration(new File(configDir, "mobcontrols.cfg"));
 		chancecontrols = new Configuration(new File(configDir, "chancecontrols.cfg"));
 		behaviorcontrols = new Configuration(new File(configDir, "behaviorcontrols.cfg"));
@@ -121,7 +114,6 @@ public class MobRebirth {
 		MULTIMOBMODE_PROPERTY.setValidValues(new String[]{"all","continuous","per-mob"});
 		transferOldConfig(event.getSuggestedConfigurationFile());
 		syncConfig();
-		API.registerModToVersionChecker(this.MODNAME, this.VERSION, VersionMath.getVersionFor("https://dl.dropboxusercontent.com/s/x4a9lubkolghoge/prerelease.version?dl=0"), VersionMath.getVersionFor("https://dl.dropboxusercontent.com/s/xpf1swir6n9rx3c/release.version?dl=0"), this.downloadURL, this.MODID);
 	}
 	@EventHandler
 	public void Init(FMLInitializationEvent event) {
@@ -168,4 +160,5 @@ public class MobRebirth {
 			file.delete();
 		}
 	}
+	public static final String LATEST = "https://dl.dropboxusercontent.com/s/xpf1swir6n9rx3c/release.version?dl=0";
 }
