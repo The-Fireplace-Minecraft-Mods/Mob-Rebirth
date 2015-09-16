@@ -27,8 +27,8 @@ public class MobRebirth {
 	public static MobRebirth instance;
 	public static final String MODID = "mobrebirth";
 	public static final String MODNAME = "Mob Rebirth";
-	public static final String VERSION = "2.3.1.0";
-	public static final String downloadURL = "http://goo.gl/EQw3Ha";
+	public static final String VERSION = "2.3.2.0";
+	public static final String downloadURL = "http://goo.gl/Wll9vH";
 	private static final File configDir = new File((File) FMLInjectionData.data()[6], "config/MobRebirth/");
 
 	public static Configuration mobcontrols;
