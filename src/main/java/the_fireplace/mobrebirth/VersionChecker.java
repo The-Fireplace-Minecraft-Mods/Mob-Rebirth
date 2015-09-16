@@ -38,7 +38,7 @@ public class VersionChecker {
 	private static final String HostVERSION=MobRebirth.VERSION;
 	static final String MODID=HostMODID+"vc";
 	static final String MODNAME=HostMODNAME+" Version Checker";
-	static final String VERSION="1.0";
+	static final String VERSION="1.1";
 	private String latest;
 	private String downloadURL;
 
@@ -46,7 +46,6 @@ public class VersionChecker {
 		latest = stringAt(MobRebirth.LATEST);//The link to the url leading to a text file with the latest version number
 		downloadURL = MobRebirth.downloadURL;
 	}
-
 
 	private void tryNotifyClient(EntityPlayer player){
 		if(!Loader.isModLoaded("VersionChecker") && isHigherVersion()){
