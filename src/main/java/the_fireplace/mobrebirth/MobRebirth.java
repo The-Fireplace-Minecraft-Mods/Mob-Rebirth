@@ -1,7 +1,5 @@
 package the_fireplace.mobrebirth;
 
-import java.io.File;
-
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.ConfigCategory;
@@ -18,16 +16,18 @@ import the_fireplace.mobrebirth.config.ConfigValues;
 import the_fireplace.mobrebirth.event.FMLEvents;
 import the_fireplace.mobrebirth.event.ForgeEvents;
 import the_fireplace.mobrebirth.gui.RebirthChanceSlider;
+
+import java.io.File;
 /**
  * @author The_Fireplace
  */
-@Mod(modid = MobRebirth.MODID, name = MobRebirth.MODNAME, version = MobRebirth.VERSION, acceptedMinecraftVersions="1.8", canBeDeactivated = true, guiFactory = "the_fireplace.mobrebirth.config.MobRebirthGuiFactory")
+@Mod(modid = MobRebirth.MODID, name = MobRebirth.MODNAME, version = MobRebirth.VERSION, acceptedMinecraftVersions="1.8.8", canBeDeactivated = true, guiFactory = "the_fireplace.mobrebirth.config.MobRebirthGuiFactory")
 public class MobRebirth {
 	@Instance(MobRebirth.MODID)
 	public static MobRebirth instance;
 	public static final String MODID = "mobrebirth";
 	public static final String MODNAME = "Mob Rebirth";
-	public static final String VERSION = "2.3.2.0";
+	public static final String VERSION = "3.0.0.1";
 	public static final String downloadURL = "http://goo.gl/Wll9vH";
 	private static final File configDir = new File((File) FMLInjectionData.data()[6], "config/MobRebirth/");
 

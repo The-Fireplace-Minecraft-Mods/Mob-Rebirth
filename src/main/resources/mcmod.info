@@ -3,8 +3,8 @@
   "modid": "mobrebirth",
   "name": "Mob Rebirth",
   "description": "A mod allowing mobs to be reborn in various ways",
-  "version": "2.3.2.0",
-  "mcversion": "1.8",
+  "version": "3.0.0.1",
+  "mcversion": "1.8.8",
   "url": "http://goo.gl/Wll9vH",
   "updateUrl": "http://goo.gl/Wll9vH",
   "authorList": ["The_Fireplace"],
@@ -12,7 +12,7 @@
   "logoFile": "logo.png",
   "screenshots": [],
   "dependencies": ["VersionChecker"],
-  "requiredMods": ["Forge@[11.14.1.*,)"],
+  "requiredMods": ["Forge@[11.14.4.1579,)"],
   "useDependencyInformation": true
 }
 ]
