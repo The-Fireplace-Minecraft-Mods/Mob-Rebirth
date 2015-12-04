@@ -27,8 +27,8 @@ public class MobRebirth {
 	public static MobRebirth instance;
 	public static final String MODID = "mobrebirth";
 	public static final String MODNAME = "Mob Rebirth";
-	public static final String VERSION = "3.0.0.1";
-	public static final String downloadURL = "http://goo.gl/Wll9vH";
+	public static final String VERSION = "3.0.1.0";
+	public static final String curseCode = "226212-mob-rebirth";
 	private static final File configDir = new File((File) FMLInjectionData.data()[6], "config/MobRebirth/");
 
 	public static Configuration mobcontrols;
@@ -160,5 +160,4 @@ public class MobRebirth {
 			file.delete();
 		}
 	}
-	public static final String LATEST = "https://dl.dropboxusercontent.com/s/xpf1swir6n9rx3c/release.version?dl=0";
 }
