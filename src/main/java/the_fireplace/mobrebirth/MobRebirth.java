@@ -21,13 +21,13 @@ import java.io.File;
 /**
  * @author The_Fireplace
  */
-@Mod(modid = MobRebirth.MODID, name = MobRebirth.MODNAME, version = MobRebirth.VERSION, acceptedMinecraftVersions="1.8.8", canBeDeactivated = true, guiFactory = "the_fireplace.mobrebirth.config.MobRebirthGuiFactory")
+@Mod(modid = MobRebirth.MODID, name = MobRebirth.MODNAME, canBeDeactivated = true, guiFactory = "the_fireplace.mobrebirth.config.MobRebirthGuiFactory")
 public class MobRebirth {
 	@Instance(MobRebirth.MODID)
 	public static MobRebirth instance;
 	public static final String MODID = "mobrebirth";
 	public static final String MODNAME = "Mob Rebirth";
-	public static final String VERSION = "3.0.1.0";
+	public static String VERSION;
 	public static final String curseCode = "226212-mob-rebirth";
 	private static final File configDir = new File((File) FMLInjectionData.data()[6], "config/MobRebirth/");
 
@@ -78,6 +78,11 @@ public class MobRebirth {
 
 	@EventHandler
 	public void PreInit(FMLPreInitializationEvent event) {
+		String[] version = event.getModMetadata().version.split("\\.");
+		if(version[3].equals("BUILDNUMBER"))//Dev environment
+			VERSION = event.getModMetadata().version.replace("BUILDNUMBER", "9001");
+		else//Released build
+			VERSION = event.getModMetadata().version;
 		mobcontrols = new Configuration(new File(configDir, "mobcontrols.cfg"));
 		chancecontrols = new Configuration(new File(configDir, "chancecontrols.cfg"));
 		behaviorcontrols = new Configuration(new File(configDir, "behaviorcontrols.cfg"));
