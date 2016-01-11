@@ -5,7 +5,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -13,7 +12,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.FMLInjectionData;
 import the_fireplace.mobrebirth.config.ConfigValues;
-import the_fireplace.mobrebirth.event.FMLEvents;
 import the_fireplace.mobrebirth.event.ForgeEvents;
 import the_fireplace.mobrebirth.gui.RebirthChanceSlider;
 
@@ -122,46 +120,34 @@ public class MobRebirth {
 	}
 	@EventHandler
 	public void Init(FMLInitializationEvent event) {
-		FMLCommonHandler.instance().bus().register(new FMLEvents());
 		MinecraftForge.EVENT_BUS.register(new ForgeEvents());
 	}
 	private void transferOldConfig(File file){
 		if(file.exists()){
 			Configuration temp = new Configuration(file);
 			ConfigCategory cat = temp.getCategory(Configuration.CATEGORY_GENERAL);
-			if(cat.containsKey("mrb1")){
+			if(cat.containsKey("mrb1"))
 				DROPEGG_PROPERTY.set(!cat.get("mrb1").getBoolean());
-			}
-			if(cat.containsKey("mrb2")){
+			if(cat.containsKey("mrb2"))
 				REBIRTHCHANCE_PROPERTY.set(cat.get("mrb2").getDouble());
-			}
-			if(cat.containsKey("mrb3")){
+			if(cat.containsKey("mrb3"))
 				ANIMALREBIRTH_PROPERTY.set(cat.get("mrb3").getBoolean());
-			}
-			if(cat.containsKey("mrb4")){
+			if(cat.containsKey("mrb4"))
 				EXTRAMOBCOUNT_PROPERTY.set(cat.get("mrb4").getInt());
-			}
-			if(cat.containsKey("mrb5")){
+			if(cat.containsKey("mrb5"))
 				REBIRTHFROMNONPLAYER_PROPERTY.set(cat.get("mrb5").getBoolean());
-			}
-			if(cat.containsKey("mrb6")){
+			if(cat.containsKey("mrb6"))
 				MULTIMOBCHANCE_PROPERTY.set(cat.get("mrb6").getDouble());
-			}
-			if(cat.containsKey("mrb7")){
+			if(cat.containsKey("mrb7"))
 				MULTIMOBMODE_PROPERTY.set(cat.get("mrb7").getString());
-			}
-			if(cat.containsKey("solar_apocalypse_fix")){
+			if(cat.containsKey("solar_apocalypse_fix"))
 				DAMAGEFROMSUNLIGHT_PROPERTY.set(!cat.get("solar_apocalypse_fix").getBoolean());
-			}
-			if(cat.containsKey("allowbosses")){
+			if(cat.containsKey("allowbosses"))
 				ALLOWBOSSES_PROPERTY.set(cat.get("allowbosses").getBoolean());
-			}
-			if(cat.containsKey("allowslimes")){
+			if(cat.containsKey("allowslimes"))
 				ALLOWSLIMES_PROPERTY.set(cat.get("allowslimes").getBoolean());
-			}
-			if(cat.containsKey("vanillaonly")){
+			if(cat.containsKey("vanillaonly"))
 				VANILLAONLY_PROPERTY.set(cat.get("vanillaonly").getBoolean());
-			}
 			file.delete();
 		}
 	}

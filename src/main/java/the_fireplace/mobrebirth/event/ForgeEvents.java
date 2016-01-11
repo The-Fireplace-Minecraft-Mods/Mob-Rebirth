@@ -1,7 +1,5 @@
 package the_fireplace.mobrebirth.event;
 
-import java.util.Random;
-
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
@@ -19,14 +17,24 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import the_fireplace.mobrebirth.MobRebirth;
 import the_fireplace.mobrebirth.config.ConfigValues;
+
+import java.util.Random;
 /**
  *
  * @author The_Fireplace
  *
  */
 public class ForgeEvents {
+
+	@SubscribeEvent
+	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
+		if(eventArgs.modID.equals(MobRebirth.MODID))
+			MobRebirth.syncConfig();
+	}
 
 	public static EntityLivingBase storedEntity;
 	public static NBTTagCompound storedNBT;
@@ -36,21 +44,16 @@ public class ForgeEvents {
 
 	@SubscribeEvent
 	public void onEntityLivingDeath(LivingDropsEvent event) {
-		if(ConfigValues.REBIRTHFROMNONPLAYER){
-			if (event.entityLiving instanceof IMob) {
+		if(ConfigValues.REBIRTHFROMNONPLAYER)
+			if (event.entityLiving instanceof IMob)
 				makeMobRebornTransition(event);
-			}else if (event.entityLiving instanceof IAnimals && ConfigValues.ANIMALREBIRTH) {
+			else if (event.entityLiving instanceof IAnimals && ConfigValues.ANIMALREBIRTH)
 				makeMobRebornTransition(event);
-			}
-		}else{
-			if(event.source.getEntity() instanceof EntityPlayer){
-				if (event.entityLiving instanceof IMob) {
+		else if(event.source.getEntity() instanceof EntityPlayer)
+				if (event.entityLiving instanceof IMob)
 					makeMobRebornTransition(event);
-				}else if (event.entityLiving instanceof IAnimals && ConfigValues.ANIMALREBIRTH) {
+				else if (event.entityLiving instanceof IAnimals && ConfigValues.ANIMALREBIRTH)
 					makeMobRebornTransition(event);
-				}
-			}
-		}
 	}
 	private void makeMobRebornTransition(LivingDropsEvent event){
 		if(ConfigValues.ALLOWBOSSES){
@@ -59,9 +62,8 @@ public class ForgeEvents {
 				return;
 			}
 		}else{
-			if(event.entityLiving instanceof EntityWither || event.entityLiving instanceof EntityDragon){
+			if(event.entityLiving instanceof EntityWither || event.entityLiving instanceof EntityDragon)
 				return;
-			}
 		}
 		if(ConfigValues.ALLOWSLIMES){
 			if(event.entityLiving instanceof EntitySlime || event.entityLiving instanceof EntityMagmaCube){
@@ -69,14 +71,12 @@ public class ForgeEvents {
 				return;
 			}
 		}else{
-			if(event.entityLiving instanceof EntitySlime || event.entityLiving instanceof EntityMagmaCube){
+			if(event.entityLiving instanceof EntitySlime || event.entityLiving instanceof EntityMagmaCube)
 				return;
-			}
 		}
 		if(ConfigValues.VANILLAONLY){
 			if((event.entityLiving.getClass().getPackage().toString().contains("net.minecraft"))){
 				makeMobReborn(event);
-				return;
 			}
 		}else{
 			makeMobReborn(event);
