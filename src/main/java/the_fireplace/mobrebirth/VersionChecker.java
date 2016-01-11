@@ -2,7 +2,6 @@ package the_fireplace.mobrebirth;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.ClickEvent.Action;
@@ -10,6 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -17,7 +17,6 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.IModGuiFactory;
 import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -28,6 +27,8 @@ import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
 import net.minecraftforge.fml.relauncher.FMLInjectionData;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.io.*;
 import java.net.URL;
@@ -37,17 +38,17 @@ import java.util.Set;
 
 /**
  * This is the embeddable version checker I made. Designed for convenience, all you have to do is paste this class, change the HostMORNAME, HostMODID, HostVERSION, and how it retrieves the latest version and link to the download page.
- * Now uses Curse to find out the latest version. File name must be "HostMODNAME w.x.y.z.jar" or it will probably crash.
+ * Now uses Curse to find out the latest version. File name must be "HostMODNAME(nospaces)-w.x.y.z.jar" or it will probably crash.
  *  @author The_Fireplace
  */
 @Mod(modid=VersionChecker.MODID, name=VersionChecker.MODNAME, version=VersionChecker.VERSION, guiFactory = "the_fireplace."+VersionChecker.HostMODID+".VersionChecker")
 public class VersionChecker implements IModGuiFactory {
 	static final String HostMODID=MobRebirth.MODID;
 	private static final String HostMODNAME=MobRebirth.MODNAME;
-	private static final String HostVERSION=MobRebirth.VERSION;
+	private static String HostVERSION;
 	static final String MODID=HostMODID+"vc";
 	static final String MODNAME=HostMODNAME+" Version Checker";
-	static final String VERSION="1.2";
+	static final String VERSION="1.4";
 	private String curseCode, latest="0.0.0.0";
 
 	private static Configuration config;
@@ -89,11 +90,10 @@ public class VersionChecker implements IModGuiFactory {
 
 	private void tryNotifyClient(EntityPlayer player){
 		if(!Loader.isModLoaded("VersionChecker") && isHigherVersion() && canNotify()){
-			ICommandSender ics = player;
-			ics.addChatMessage(new ChatComponentText("A new version of "+HostMODNAME+" is available!"));
-			ics.addChatMessage(new ChatComponentText("=========="+latest+"=========="));
-			ics.addChatMessage(new ChatComponentText("Get it at the following link:"));
-			ics.addChatMessage(new ChatComponentText(getDownloadUrl()).setChatStyle(new ChatStyle().setItalic(true).setUnderlined(true).setColor(EnumChatFormatting.BLUE).setChatClickEvent(new ClickEvent(Action.OPEN_URL, getDownloadUrl()))));
+			player.addChatMessage(new ChatComponentText("A new version of "+HostMODNAME+" is available!"));
+			player.addChatMessage(new ChatComponentText("=========="+latest+"=========="));
+			player.addChatMessage(new ChatComponentText("Get it at the following link:"));
+			player.addChatMessage(new ChatComponentText(getDownloadUrl()).setChatStyle(new ChatStyle().setItalic(true).setUnderlined(true).setColor(EnumChatFormatting.BLUE).setChatClickEvent(new ClickEvent(Action.OPEN_URL, getDownloadUrl()))));
 			setChecked();
 		}
 	}
@@ -115,7 +115,7 @@ public class VersionChecker implements IModGuiFactory {
 		config.load();
 		FREQUENCY_PROPERTY = config.get(Configuration.CATEGORY_GENERAL, "Frequency", "Always");
 		FREQUENCY_PROPERTY.setValidValues(new String[]{"Always","Daily","Weekly"});
-		LASTCHECKED_PROPERTY = config.get("hidden", "Last Checked", "00.00.0000");
+		LASTCHECKED_PROPERTY = config.get("hidden", "Last Checked", "0.0.0");
 		syncConfig();
 		cacheJson();
 		latest=getVersionFromJson();
@@ -128,8 +128,10 @@ public class VersionChecker implements IModGuiFactory {
 	}
 	@EventHandler
 	public void init(FMLInitializationEvent event){
+		HostVERSION=MobRebirth.VERSION;
 		tryNotifyDynious();
-		FMLCommonHandler.instance().bus().register(this);
+		if(event.getSide().isClient())
+			MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@EventHandler
@@ -138,6 +140,7 @@ public class VersionChecker implements IModGuiFactory {
 			tryNotifyServer();
 	}
 
+	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void onPlayerJoinClient(final ClientConnectedToServerEvent event){
 		(new Thread(){
@@ -154,9 +157,10 @@ public class VersionChecker implements IModGuiFactory {
 		}).start();
 	}
 
+	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void configChanged(ConfigChangedEvent.OnConfigChangedEvent event){
-		if(event.modID == MODID)
+		if(event.modID.equals(MODID))
 			syncConfig();
 	}
 
@@ -185,15 +189,14 @@ public class VersionChecker implements IModGuiFactory {
 
 	private boolean isNotToday(int[] date){
 		final int[] _current = splitVersion(lc);
-		final int[] _new = date;
 
-		for(int i=0;i<Math.max(_current.length, _new.length);i++){
+		for(int i=0;i<Math.max(_current.length, date.length);i++){
 			int curv=0;
 			if(i < _current.length)
 				curv = _current[i];
 			int newv=0;
-			if(i<_new.length)
-				newv=_new[i];
+			if(i<date.length)
+				newv=date[i];
 			if(newv>curv)
 				return true;
 			else if(curv>newv)
@@ -233,13 +236,14 @@ public class VersionChecker implements IModGuiFactory {
 			File file = new File(cachedir, curseCode+".json");
 			if(file.exists()) {
 				BufferedReader in = new BufferedReader(new FileReader(file));
-				String contents = in.readLine().toLowerCase();
-				int jarindex = contents.indexOf(HostMODNAME.toLowerCase()+" ");
-				int versionindex = jarindex + HostMODNAME.length()+1;
-				int dotjarindex = contents.indexOf(".jar");
+				String contents = in.readLine();
+				int jarindex = contents.indexOf(HostMODNAME.replace(" ", "")+"-");
+				int versionindex = jarindex + HostMODNAME.replace(" ", "").length()+1;
+				int dotjarindex = contents.indexOf(".jar", versionindex);
 				String versionnumber = contents.substring(versionindex, dotjarindex);
 				in.close();
-				return versionnumber;
+				if(jarindex != -1)
+					return versionnumber;
 			}
 		}catch(IOException e){}
 		return "0.0.0.0";
