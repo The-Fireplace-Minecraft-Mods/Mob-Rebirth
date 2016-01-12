@@ -41,14 +41,14 @@ import java.util.Set;
  * Now uses Curse to find out the latest version. File name must be "HostMODNAME(nospaces)-w.x.y.z.jar" or it will probably crash.
  *  @author The_Fireplace
  */
-@Mod(modid=VersionChecker.MODID, name=VersionChecker.MODNAME, version=VersionChecker.VERSION, guiFactory = "the_fireplace."+VersionChecker.HostMODID+".VersionChecker")
-public class VersionChecker implements IModGuiFactory {
+@Mod(modid=VersionChecker.MODID, name=VersionChecker.MODNAME, version=VersionChecker.VERSION, guiFactory = "the_fireplace."+VersionChecker.HostMODID+".VersionChecker#VCGui")
+public class VersionChecker {
 	static final String HostMODID=MobRebirth.MODID;
 	private static final String HostMODNAME=MobRebirth.MODNAME;
 	private static String HostVERSION;
 	static final String MODID=HostMODID+"vc";
 	static final String MODNAME=HostMODNAME+" Version Checker";
-	static final String VERSION="1.4";
+	static final String VERSION="1.5";
 	private String curseCode, latest="0.0.0.0";
 
 	private static Configuration config;
@@ -275,28 +275,33 @@ public class VersionChecker implements IModGuiFactory {
 			e.printStackTrace();
 		}
 	}
-	@Override
-	public void initialize(Minecraft minecraftInstance) {}
+	@SideOnly(Side.CLIENT)
+	public static class VCGui implements IModGuiFactory {
+		@Override
+		public void initialize(Minecraft minecraftInstance) {
+		}
 
-	@Override
-	public Class<? extends GuiScreen> mainConfigGuiClass() {
-		return VCCG.class;
-	}
+		@Override
+		public Class<? extends GuiScreen> mainConfigGuiClass() {
+			return VCCG.class;
+		}
 
-	@Override
-	public Set<IModGuiFactory.RuntimeOptionCategoryElement> runtimeGuiCategories() {
-		return null;
-	}
+		@Override
+		public Set<IModGuiFactory.RuntimeOptionCategoryElement> runtimeGuiCategories() {
+			return null;
+		}
 
-	@Override
-	public IModGuiFactory.RuntimeOptionGuiHandler getHandlerFor(
-			IModGuiFactory.RuntimeOptionCategoryElement element) {
-		return null;
-	}
-	public static class VCCG extends GuiConfig {
-		public VCCG(GuiScreen parentScreen) {
-			super(parentScreen, new ConfigElement(config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), MODID, false,
-					false, GuiConfig.getAbridgedConfigPath(config.toString()));
+		@Override
+		public IModGuiFactory.RuntimeOptionGuiHandler getHandlerFor(
+				IModGuiFactory.RuntimeOptionCategoryElement element) {
+			return null;
+		}
+
+		public static class VCCG extends GuiConfig {
+			public VCCG(GuiScreen parentScreen) {
+				super(parentScreen, new ConfigElement(config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), MODID, false,
+						false, GuiConfig.getAbridgedConfigPath(config.toString()));
+			}
 		}
 	}
 }
