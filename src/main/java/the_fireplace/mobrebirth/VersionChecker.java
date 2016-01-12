@@ -41,7 +41,7 @@ import java.util.Set;
  * Now uses Curse to find out the latest version. File name must be "HostMODNAME(nospaces)-w.x.y.z.jar" or it will probably crash.
  *  @author The_Fireplace
  */
-@Mod(modid=VersionChecker.MODID, name=VersionChecker.MODNAME, version=VersionChecker.VERSION, guiFactory = "the_fireplace."+VersionChecker.HostMODID+".VersionChecker#VCGui")
+@Mod(modid=VersionChecker.MODID, name=VersionChecker.MODNAME, version=VersionChecker.VERSION, guiFactory = "the_fireplace."+VersionChecker.HostMODID+".VersionChecker$VCGui")
 public class VersionChecker {
 	static final String HostMODID=MobRebirth.MODID;
 	private static final String HostMODNAME=MobRebirth.MODNAME;
