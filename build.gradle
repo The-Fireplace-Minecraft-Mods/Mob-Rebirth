@@ -23,11 +23,7 @@ curseforge {
     changelog = file('changelog.txt')
     releaseType = 'release'
 	addGameVersion '1.8.9'
-    mainArtifact(jar) {
-      relations {
-        
-      }
-    }    
+    mainArtifact jar
   }
 }
 
@@ -36,7 +32,7 @@ group= "the_fireplace.mobrebirth"
 archivesBaseName = "MobRebirth"
 
 minecraft {
-    version = "1.8.9-11.15.0.1673"
+    version = "1.8.9-11.15.0.1697"
     runDir = "run"
     mappings = "stable_20"
 }
