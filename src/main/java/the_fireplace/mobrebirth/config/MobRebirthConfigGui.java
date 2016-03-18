@@ -25,7 +25,7 @@ public class MobRebirthConfigGui extends GuiConfig {
 				false, GuiConfig.getAbridgedConfigPath(MobRebirth.mobcontrols.toString()));
 	}
 	public static List<IConfigElement> getConfigElements(){
-		List<IConfigElement> list = new ArrayList<IConfigElement>();
+		List<IConfigElement> list = new ArrayList<>();
 		list.add(new DummyCategoryElement("mobCfg", "mobCfg", MobEntry.class));
 		list.add(new DummyCategoryElement("chanceCfg", "chanceCfg", ChanceEntry.class));
 		list.add(new DummyCategoryElement("behaviorCfg", "behaviorCfg", BehaviorEntry.class));

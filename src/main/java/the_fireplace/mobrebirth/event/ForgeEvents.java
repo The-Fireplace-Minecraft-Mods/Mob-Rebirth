@@ -4,7 +4,6 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
-import net.minecraft.entity.monster.EntityMagmaCube;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.IAnimals;
@@ -36,20 +35,14 @@ public class ForgeEvents {
 			MobRebirth.syncConfig();
 	}
 
-	public static EntityLivingBase storedEntity;
-	public static NBTTagCompound storedNBT;
-	public static double storedX;
-	public static double storedY;
-	public static double storedZ;
-
 	@SubscribeEvent
 	public void onEntityLivingDeath(LivingDropsEvent event) {
-		if(ConfigValues.REBIRTHFROMNONPLAYER)
+		if(ConfigValues.REBIRTHFROMNONPLAYER) {
 			if (event.entityLiving instanceof IMob)
 				makeMobRebornTransition(event);
 			else if (event.entityLiving instanceof IAnimals && ConfigValues.ANIMALREBIRTH)
 				makeMobRebornTransition(event);
-		else if(event.source.getEntity() instanceof EntityPlayer)
+		}else if(event.source.getEntity() instanceof EntityPlayer)
 				if (event.entityLiving instanceof IMob)
 					makeMobRebornTransition(event);
 				else if (event.entityLiving instanceof IAnimals && ConfigValues.ANIMALREBIRTH)
@@ -61,19 +54,15 @@ public class ForgeEvents {
 				makeMobReborn(event);
 				return;
 			}
-		}else{
-			if(event.entityLiving instanceof EntityWither || event.entityLiving instanceof EntityDragon)
-				return;
-		}
+		}else if(event.entityLiving instanceof EntityWither || event.entityLiving instanceof EntityDragon)
+			return;
 		if(ConfigValues.ALLOWSLIMES){
-			if(event.entityLiving instanceof EntitySlime || event.entityLiving instanceof EntityMagmaCube){
+			if(event.entityLiving instanceof EntitySlime){
 				makeMobReborn(event);
 				return;
 			}
-		}else{
-			if(event.entityLiving instanceof EntitySlime || event.entityLiving instanceof EntityMagmaCube)
-				return;
-		}
+		}else if(event.entityLiving instanceof EntitySlime)
+			return;
 		if(ConfigValues.VANILLAONLY){
 			if((event.entityLiving.getClass().getPackage().toString().contains("net.minecraft"))){
 				makeMobReborn(event);
@@ -88,8 +77,8 @@ public class ForgeEvents {
 		if (rand <= ConfigValues.REBIRTHCHANCE) {
 			if (ConfigValues.DROPEGG && EntityList.entityEggs.containsKey(id)){
 				ItemStack dropEgg = new ItemStack(Items.spawn_egg, 1, id);
-				event.entityLiving.entityDropItem(dropEgg, 0.0F);}
-			else{
+				event.entityLiving.entityDropItem(dropEgg, 0.0F);
+			} else {
 				createEntity(event);
 				if(ConfigValues.EXTRAMOBCOUNT > 0){
 					double rand2 = Math.random();
@@ -115,7 +104,6 @@ public class ForgeEvents {
 						}
 					}
 				}
-
 			}
 		}
 	}
@@ -131,9 +119,8 @@ public class ForgeEvents {
 		float health = event.entityLiving.getMaxHealth();
 		//Read
 		entity = (EntityLivingBase) EntityList.createEntityByName(sid, worldIn);
-		if(entity == null){
+		if(entity == null)
 			return;
-		}
 		entity.rotationYawHead = entity.rotationYaw;
 		entity.renderYawOffset = entity.rotationYaw;
 		storedData.setInteger("Health", (int)health);
