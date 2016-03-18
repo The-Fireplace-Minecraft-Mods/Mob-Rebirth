@@ -1,6 +1,6 @@
 package the_fireplace.mobrebirth;
 
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
@@ -87,20 +87,20 @@ public class MobRebirth {
 		behaviorcontrols.load();
 		debugcontrols.load();
 		//Mob Controls
-		ALLOWBOSSES_PROPERTY = mobcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.ALLOWBOSSES_NAME, ConfigValues.ALLOWBOSSES_DEFAULT, StatCollector.translateToLocal(ConfigValues.ALLOWBOSSES_NAME+".tooltip"));
-		ALLOWSLIMES_PROPERTY = mobcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.ALLOWSLIMES_NAME, ConfigValues.ALLOWSLIMES_DEFAULT, StatCollector.translateToLocal(ConfigValues.ALLOWSLIMES_NAME+".tooltip"));
-		ANIMALREBIRTH_PROPERTY = mobcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.ANIMALREBIRTH_NAME, ConfigValues.ANIMALREBIRTH_DEFAULT, StatCollector.translateToLocal(ConfigValues.ANIMALREBIRTH_NAME+".tooltip"));
+		ALLOWBOSSES_PROPERTY = mobcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.ALLOWBOSSES_NAME, ConfigValues.ALLOWBOSSES_DEFAULT, I18n.translateToLocal(ConfigValues.ALLOWBOSSES_NAME+".tooltip"));
+		ALLOWSLIMES_PROPERTY = mobcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.ALLOWSLIMES_NAME, ConfigValues.ALLOWSLIMES_DEFAULT, I18n.translateToLocal(ConfigValues.ALLOWSLIMES_NAME+".tooltip"));
+		ANIMALREBIRTH_PROPERTY = mobcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.ANIMALREBIRTH_NAME, ConfigValues.ANIMALREBIRTH_DEFAULT, I18n.translateToLocal(ConfigValues.ANIMALREBIRTH_NAME+".tooltip"));
 		//Chance Controls
-		REBIRTHCHANCE_PROPERTY = chancecontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.REBIRTHCHANCE_NAME, ConfigValues.REBIRTHCHANCE_DEFAULT, StatCollector.translateToLocal(ConfigValues.REBIRTHCHANCE_NAME+".tooltip"));
-		MULTIMOBCHANCE_PROPERTY = chancecontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.MULTIMOBCHANCE_NAME, ConfigValues.MULTIMOBCHANCE_DEFAULT, StatCollector.translateToLocal(ConfigValues.MULTIMOBCHANCE_NAME+".tooltip"));
+		REBIRTHCHANCE_PROPERTY = chancecontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.REBIRTHCHANCE_NAME, ConfigValues.REBIRTHCHANCE_DEFAULT, I18n.translateToLocal(ConfigValues.REBIRTHCHANCE_NAME+".tooltip"));
+		MULTIMOBCHANCE_PROPERTY = chancecontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.MULTIMOBCHANCE_NAME, ConfigValues.MULTIMOBCHANCE_DEFAULT, I18n.translateToLocal(ConfigValues.MULTIMOBCHANCE_NAME+".tooltip"));
 		//Behavior Controls
-		DAMAGEFROMSUNLIGHT_PROPERTY = behaviorcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.DAMAGEFROMSUNLIGHT_NAME, ConfigValues.DAMAGEFROMSUNLIGHT_DEFAULT, StatCollector.translateToLocal(ConfigValues.DAMAGEFROMSUNLIGHT_NAME+".tooltip"));
-		DROPEGG_PROPERTY = behaviorcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.DROPEGG_NAME, ConfigValues.DROPEGG_DEFAULT, StatCollector.translateToLocal(ConfigValues.DROPEGG_NAME+".tooltip"));
-		EXTRAMOBCOUNT_PROPERTY = behaviorcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.EXTRAMOBCOUNT_NAME, ConfigValues.EXTRAMOBCOUNT_DEFAULT, StatCollector.translateToLocal(ConfigValues.EXTRAMOBCOUNT_NAME+".tooltip"));
-		MULTIMOBMODE_PROPERTY = behaviorcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.MULTIMOBMODE_NAME, ConfigValues.MULTIMOBMODE_DEFAULT, StatCollector.translateToLocal(ConfigValues.MULTIMOBMODE_NAME+".tooltip"));
-		REBIRTHFROMNONPLAYER_PROPERTY = behaviorcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.REBIRTHFROMNONPLAYER_NAME, ConfigValues.REBIRTHFROMNONPLAYER_DEFAULT, StatCollector.translateToLocal(ConfigValues.REBIRTHFROMNONPLAYER_NAME+".tooltip"));
+		DAMAGEFROMSUNLIGHT_PROPERTY = behaviorcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.DAMAGEFROMSUNLIGHT_NAME, ConfigValues.DAMAGEFROMSUNLIGHT_DEFAULT, I18n.translateToLocal(ConfigValues.DAMAGEFROMSUNLIGHT_NAME+".tooltip"));
+		DROPEGG_PROPERTY = behaviorcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.DROPEGG_NAME, ConfigValues.DROPEGG_DEFAULT, I18n.translateToLocal(ConfigValues.DROPEGG_NAME+".tooltip"));
+		EXTRAMOBCOUNT_PROPERTY = behaviorcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.EXTRAMOBCOUNT_NAME, ConfigValues.EXTRAMOBCOUNT_DEFAULT, I18n.translateToLocal(ConfigValues.EXTRAMOBCOUNT_NAME+".tooltip"));
+		MULTIMOBMODE_PROPERTY = behaviorcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.MULTIMOBMODE_NAME, ConfigValues.MULTIMOBMODE_DEFAULT, I18n.translateToLocal(ConfigValues.MULTIMOBMODE_NAME+".tooltip"));
+		REBIRTHFROMNONPLAYER_PROPERTY = behaviorcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.REBIRTHFROMNONPLAYER_NAME, ConfigValues.REBIRTHFROMNONPLAYER_DEFAULT, I18n.translateToLocal(ConfigValues.REBIRTHFROMNONPLAYER_NAME+".tooltip"));
 		//Debug Controls
-		VANILLAONLY_PROPERTY = debugcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.VANILLAONLY_NAME, ConfigValues.VANILLAONLY_DEFAULT, StatCollector.translateToLocal(ConfigValues.VANILLAONLY_NAME+".tooltip"));
+		VANILLAONLY_PROPERTY = debugcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.VANILLAONLY_NAME, ConfigValues.VANILLAONLY_DEFAULT, I18n.translateToLocal(ConfigValues.VANILLAONLY_NAME+".tooltip"));
 
 		if(event.getSide().isClient())
 			REBIRTHCHANCE_PROPERTY.setConfigEntryClass(RebirthChanceSlider.class);

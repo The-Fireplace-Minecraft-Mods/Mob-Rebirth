@@ -21,8 +21,8 @@ curseforge {
   project {
     id = '226212'
     changelog = file('changelog.txt')
-    releaseType = 'release'
-	addGameVersion '1.8.9'
+    releaseType = 'beta'
+	addGameVersion '1.9'
     mainArtifact jar
   }
 }
@@ -32,9 +32,9 @@ group= "the_fireplace.mobrebirth"
 archivesBaseName = "MobRebirth"
 
 minecraft {
-    version = "1.8.9-11.15.0.1697"
+    version = "1.9-12.16.0.1767-1.9"
     runDir = "run"
-    mappings = "stable_20"
+    mappings = "snapshot_20160312"
 }
 
 dependencies {

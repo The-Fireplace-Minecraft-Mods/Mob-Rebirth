@@ -9,10 +9,12 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -115,7 +117,7 @@ public class ForgeEvents {
 		String sid = EntityList.getEntityString(event.entityLiving);
 		NBTTagCompound storedData = event.entityLiving.getEntityData();
 		event.entityLiving.writeEntityToNBT(storedData);
-		ItemStack weapon = event.entityLiving.getHeldItem();
+		ItemStack weapon = event.entityLiving.getHeldItem(EnumHand.MAIN_HAND);
 		float health = event.entityLiving.getMaxHealth();
 		//Read
 		entity = (EntityLivingBase) EntityList.createEntityByName(sid, worldIn);
@@ -127,7 +129,7 @@ public class ForgeEvents {
 		entity.readFromNBT(storedData);
 		entity.setHealth(health);
 		if(weapon != null)
-			entity.setCurrentItemOrArmor(0, weapon);
+			entity.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, weapon);
 		entity.setPosition(event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ);
 		worldIn.spawnEntityInWorld(entity);
 	}

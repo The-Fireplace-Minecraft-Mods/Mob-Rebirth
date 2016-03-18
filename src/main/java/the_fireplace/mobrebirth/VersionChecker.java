@@ -3,12 +3,11 @@ package the_fireplace.mobrebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.event.ClickEvent.Action;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatStyle;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
@@ -48,7 +47,7 @@ public class VersionChecker {
 	private static String HostVERSION;
 	static final String MODID=HostMODID+"vc";
 	static final String MODNAME=HostMODNAME+" Version Checker";
-	static final String VERSION="1.5";
+	static final String VERSION="2.0";
 	private String curseCode, latest="0.0.0.0";
 
 	private static Configuration config;
@@ -90,10 +89,10 @@ public class VersionChecker {
 
 	private void tryNotifyClient(EntityPlayer player){
 		if(!Loader.isModLoaded("VersionChecker") && isHigherVersion() && canNotify()){
-			player.addChatMessage(new ChatComponentText("A new version of "+HostMODNAME+" is available!"));
-			player.addChatMessage(new ChatComponentText("=========="+latest+"=========="));
-			player.addChatMessage(new ChatComponentText("Get it at the following link:"));
-			player.addChatMessage(new ChatComponentText(getDownloadUrl()).setChatStyle(new ChatStyle().setItalic(true).setUnderlined(true).setColor(EnumChatFormatting.BLUE).setChatClickEvent(new ClickEvent(Action.OPEN_URL, getDownloadUrl()))));
+			player.addChatMessage(new TextComponentString("A new version of "+HostMODNAME+" is available!"));
+			player.addChatMessage(new TextComponentString("=========="+latest+"=========="));
+			player.addChatMessage(new TextComponentString("Get it at the following link:"));
+			player.addChatMessage(new TextComponentString(getDownloadUrl()).setChatStyle(new Style().setItalic(true).setUnderlined(true).setColor(TextFormatting.BLUE).setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, getDownloadUrl()))));
 			setChecked();
 		}
 	}
@@ -165,7 +164,7 @@ public class VersionChecker {
 	}
 
 	private String getDownloadUrl(){
-		return "http://www.curse.com/mc-mods/minecraft/"+curseCode;
+		return "http://mods.curse.com/mc-mods/minecraft/"+curseCode;
 	}
 
 	private boolean isHigherVersion(){
@@ -272,7 +271,7 @@ public class VersionChecker {
 			is.close();
 			os.close();
 		}catch(IOException e){
-			e.printStackTrace();
+			System.out.println("Error retrieving latest version information.");
 		}
 	}
 	@SideOnly(Side.CLIENT)

@@ -3,16 +3,16 @@
   "modid": "mobrebirth",
   "name": "Mob Rebirth",
   "description": "A mod allowing mobs to be reborn in various ways",
-  "version": "4.0.1.BUILDNUMBER",
-  "mcversion": "1.8.9",
-  "url": "http://goo.gl/Wll9vH",
-  "updateUrl": "http://goo.gl/Wll9vH",
+  "version": "5.0.0.BUILDNUMBER",
+  "mcversion": "1.9",
+  "url": "http://mods.curse.com/mc-mods/minecraft/226212-mob-rebirth",
+  "updateUrl": "http://mods.curse.com/mc-mods/minecraft/226212-mob-rebirth",
   "authorList": ["The_Fireplace"],
   "credits": "Authored by The_Fireplace",
   "logoFile": "logo.png",
   "screenshots": [],
-  "dependencies": ["VersionChecker"],
-  "requiredMods": ["Forge@[11.15.0.1673,)"],
+  "dependencies": [],
+  "requiredMods": [],
   "useDependencyInformation": true
 }
 ]
