@@ -11,7 +11,7 @@ multimobchance=Multi Mob Rebirth Chance
 multimobchance.tooltip=Chance for extra mobs to be reborn.
 
 damagefromsunlight=Enable sunlight damage to undead mobs?
-damagefromsunlight.tooltip=Disabling fixes the apocalypse in the sunlight created by certain configurations(>50% rebirth chance + Rebirth from non-player kill + Extra Mob Count > 0)
+damagefromsunlight.tooltip=Disabling fixes the apocalypse in the sunlight created by certain configurations
 dropegg=Should eggs drop instead of rebirth?
 dropegg.tooltip=If true, mobs will drop eggs instead of respawning when they are reborn.
 extramobcount=Extra Mob Count
