@@ -256,7 +256,7 @@ public class VersionChecker {
 		try{
 			Files.createDirectory(cachedir.toPath());
 		}catch(IOException e){
-			e.printStackTrace();
+			System.out.println("Version checking directory detected.");
 		}
 		try{
 			URL url = new URL(String.format("https://widget.mcf.li/mc-mods/minecraft/%s.json", curseCode));
