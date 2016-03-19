@@ -2,11 +2,9 @@ package the_fireplace.mobrebirth.event;
 
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.boss.EntityDragon;
-import net.minecraft.entity.boss.EntityWither;
-import net.minecraft.entity.monster.EntitySlime;
-import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.passive.IAnimals;
+import net.minecraft.entity.boss.*;
+import net.minecraft.entity.monster.*;
+import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -64,7 +62,7 @@ public class ForgeEvents {
 		}else if(event.entityLiving instanceof EntitySlime)
 			return;
 		if(ConfigValues.VANILLAONLY){
-			if((event.entityLiving.getClass().getPackage().toString().contains("net.minecraft"))){
+			if(isVanilla(event.entityLiving)){
 				makeMobReborn(event);
 			}
 		}else{
@@ -141,5 +139,9 @@ public class ForgeEvents {
 		if(event.source.isFireDamage() && !ConfigValues.DAMAGEFROMSUNLIGHT && event.entityLiving.isEntityUndead() && !event.entityLiving.isInLava() && event.entityLiving.worldObj.canBlockSeeSky(new BlockPos(MathHelper.floor_double(event.entityLiving.posX), MathHelper.floor_double(event.entityLiving.posY), MathHelper.floor_double(event.entityLiving.posZ)))){
 			event.setCanceled(true);
 		}
+	}
+
+	public static boolean isVanilla(EntityLivingBase entity){
+		return entity.getClass() == EntityDragon.class || entity.getClass() == EntityWither.class || entity.getClass() == EntityBlaze.class || entity.getClass() == EntityCaveSpider.class || entity.getClass() == EntityCreeper.class || entity.getClass() == EntityEnderman.class || entity.getClass() == EntityEndermite.class || entity.getClass() == EntityGhast.class || entity.getClass() == EntityGiantZombie.class || entity.getClass() == EntityGuardian.class || entity.getClass() == EntityIronGolem.class || entity.getClass() == EntityMagmaCube.class || entity.getClass() == EntityPigZombie.class || entity.getClass() == EntityShulker.class || entity.getClass() == EntitySilverfish.class || entity.getClass() == EntitySkeleton.class || entity.getClass() == EntitySlime.class || entity.getClass() == EntitySnowman.class || entity.getClass() == EntitySpider.class || entity.getClass() == EntityWitch.class || entity.getClass() == EntityZombie.class || entity.getClass() == EntityBat.class || entity.getClass() == EntityChicken.class || entity.getClass() == EntityCow.class || entity.getClass() == EntityHorse.class || entity.getClass() == EntityMooshroom.class || entity.getClass() == EntityOcelot.class || entity.getClass() == EntityPig.class || entity.getClass() == EntityRabbit.class || entity.getClass() == EntitySheep.class || entity.getClass() == EntitySquid.class || entity.getClass() == EntityVillager.class || entity.getClass() == EntityWolf.class;
 	}
 }
