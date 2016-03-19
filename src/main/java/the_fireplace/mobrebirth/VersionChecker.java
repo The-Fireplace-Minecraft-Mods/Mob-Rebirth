@@ -149,7 +149,7 @@ public class VersionChecker {
 					try{
 						Thread.sleep(100);
 					}catch(InterruptedException e){
-
+						e.printStackTrace();
 					}
 				tryNotifyClient(FMLClientHandler.instance().getClientPlayerEntity());
 			}
@@ -244,7 +244,9 @@ public class VersionChecker {
 				if(jarindex != -1)
 					return versionnumber;
 			}
-		}catch(IOException e){}
+		}catch(IOException e){
+			e.printStackTrace();
+		}
 		return "0.0.0.0";
 	}
 
@@ -253,23 +255,26 @@ public class VersionChecker {
 		File file = new File(cachedir, curseCode+".json");
 		try{
 			Files.createDirectory(cachedir.toPath());
-		}catch(IOException e){}
+		}catch(IOException e){
+			e.printStackTrace();
+		}
 		try{
 			URL url = new URL(String.format("https://widget.mcf.li/mc-mods/minecraft/%s.json", curseCode));
 			InputStream is = url.openStream();
 			if(file.exists())
 				file.delete();
-			file.createNewFile();
-			OutputStream os = new FileOutputStream(file);
+			if(file.createNewFile()) {
+				OutputStream os = new FileOutputStream(file);
 
-			byte[] b = new byte[2048];
-			int length;
+				byte[] b = new byte[2048];
+				int length;
 
-			while((length = is.read(b)) != -1)
-				os.write(b, 0, length);
+				while ((length = is.read(b)) != -1)
+					os.write(b, 0, length);
 
-			is.close();
-			os.close();
+				is.close();
+				os.close();
+			}
 		}catch(IOException e){
 			System.out.println("Error retrieving latest version information.");
 		}

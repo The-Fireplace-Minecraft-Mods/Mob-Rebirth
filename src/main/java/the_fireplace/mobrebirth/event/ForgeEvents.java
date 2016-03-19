@@ -25,9 +25,7 @@ import the_fireplace.mobrebirth.config.ConfigValues;
 
 import java.util.Random;
 /**
- *
  * @author The_Fireplace
- *
  */
 public class ForgeEvents {
 
@@ -76,8 +74,9 @@ public class ForgeEvents {
 	private void makeMobReborn(LivingDropsEvent event){
 		double rand = Math.random();
 		int id = EntityList.getEntityID(event.entityLiving);
+		String name = EntityList.getEntityString(event.entityLiving);
 		if (rand <= ConfigValues.REBIRTHCHANCE) {
-			if (ConfigValues.DROPEGG && EntityList.entityEggs.containsKey(id)){
+			if (ConfigValues.DROPEGG && EntityList.entityEggs.containsKey(name)){
 				ItemStack dropEgg = new ItemStack(Items.spawn_egg, 1, id);
 				event.entityLiving.entityDropItem(dropEgg, 0.0F);
 			} else {
@@ -118,6 +117,7 @@ public class ForgeEvents {
 		NBTTagCompound storedData = event.entityLiving.getEntityData();
 		event.entityLiving.writeEntityToNBT(storedData);
 		ItemStack weapon = event.entityLiving.getHeldItem(EnumHand.MAIN_HAND);
+		ItemStack offhand = event.entityLiving.getHeldItem(EnumHand.OFF_HAND);
 		float health = event.entityLiving.getMaxHealth();
 		//Read
 		entity = (EntityLivingBase) EntityList.createEntityByName(sid, worldIn);
@@ -130,6 +130,8 @@ public class ForgeEvents {
 		entity.setHealth(health);
 		if(weapon != null)
 			entity.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, weapon);
+		if(offhand != null)
+			entity.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, offhand);
 		entity.setPosition(event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ);
 		worldIn.spawnEntityInWorld(entity);
 	}

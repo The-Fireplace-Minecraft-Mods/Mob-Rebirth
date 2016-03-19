@@ -16,13 +16,20 @@ plugins {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
+allprojects {
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+}
+
 curseforge {
   apiKey = project.curseForgeApiKey
   project {
     id = '226212'
     changelog = file('changelog.txt')
-    releaseType = 'beta'
+    releaseType = 'release'
 	addGameVersion '1.9'
+	addGameVersion 'Java 7'
+	addGameVersion 'Java 8'
     mainArtifact jar
   }
 }

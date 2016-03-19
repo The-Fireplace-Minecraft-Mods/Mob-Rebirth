@@ -145,7 +145,8 @@ public class MobRebirth {
 				ALLOWSLIMES_PROPERTY.set(cat.get("allowslimes").getBoolean());
 			if(cat.containsKey("vanillaonly"))
 				VANILLAONLY_PROPERTY.set(cat.get("vanillaonly").getBoolean());
-			file.delete();
+			if(file.delete())
+				System.out.println("Old config transferred");
 		}
 	}
 }
