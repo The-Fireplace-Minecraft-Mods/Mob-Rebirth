@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.FMLInjectionData;
 import the_fireplace.mobrebirth.config.ConfigValues;
-import the_fireplace.mobrebirth.event.ForgeEvents;
+import the_fireplace.mobrebirth.event.CommonEvents;
 import the_fireplace.mobrebirth.gui.RebirthChanceSlider;
 
 import java.io.File;
@@ -117,7 +117,7 @@ public class MobRebirth {
 	}
 	@EventHandler
 	public void Init(FMLInitializationEvent event) {
-		MinecraftForge.EVENT_BUS.register(new ForgeEvents());
+		MinecraftForge.EVENT_BUS.register(new CommonEvents());
 	}
 	private void transferOldConfig(File file){
 		if(file.exists()){

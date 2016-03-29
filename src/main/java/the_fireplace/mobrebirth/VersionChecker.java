@@ -47,7 +47,7 @@ public class VersionChecker {
 	private static String HostVERSION;
 	static final String MODID=HostMODID+"vc";
 	static final String MODNAME=HostMODNAME+" Version Checker";
-	static final String VERSION="2.0";
+	static final String VERSION="2.1";
 	private String curseCode, latest="0.0.0.0";
 
 	private static Configuration config;
@@ -159,7 +159,7 @@ public class VersionChecker {
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void configChanged(ConfigChangedEvent.OnConfigChangedEvent event){
-		if(event.modID.equals(MODID))
+		if(event.getModID().equals(MODID))
 			syncConfig();
 	}
 

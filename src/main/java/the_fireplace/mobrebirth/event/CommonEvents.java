@@ -25,44 +25,44 @@ import java.util.Random;
 /**
  * @author The_Fireplace
  */
-public class ForgeEvents {
+public class CommonEvents {
 
 	@SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-		if(eventArgs.modID.equals(MobRebirth.MODID))
+		if(eventArgs.getModID().equals(MobRebirth.MODID))
 			MobRebirth.syncConfig();
 	}
 
 	@SubscribeEvent
 	public void onEntityLivingDeath(LivingDropsEvent event) {
 		if(ConfigValues.REBIRTHFROMNONPLAYER) {
-			if (event.entityLiving instanceof IMob)
+			if (event.getEntityLiving() instanceof IMob)
 				makeMobRebornTransition(event);
-			else if (event.entityLiving instanceof IAnimals && ConfigValues.ANIMALREBIRTH)
+			else if (event.getEntityLiving() instanceof IAnimals && ConfigValues.ANIMALREBIRTH)
 				makeMobRebornTransition(event);
-		}else if(event.source.getEntity() instanceof EntityPlayer)
-				if (event.entityLiving instanceof IMob)
+		}else if(event.getSource().getEntity() instanceof EntityPlayer)
+				if (event.getEntityLiving() instanceof IMob)
 					makeMobRebornTransition(event);
-				else if (event.entityLiving instanceof IAnimals && ConfigValues.ANIMALREBIRTH)
+				else if (event.getEntityLiving() instanceof IAnimals && ConfigValues.ANIMALREBIRTH)
 					makeMobRebornTransition(event);
 	}
 	private void makeMobRebornTransition(LivingDropsEvent event){
 		if(ConfigValues.ALLOWBOSSES){
-			if(event.entityLiving instanceof EntityWither || event.entityLiving instanceof EntityDragon){
+			if(event.getEntityLiving() instanceof EntityWither || event.getEntityLiving() instanceof EntityDragon){
 				makeMobReborn(event);
 				return;
 			}
-		}else if(event.entityLiving instanceof EntityWither || event.entityLiving instanceof EntityDragon)
+		}else if(event.getEntityLiving() instanceof EntityWither || event.getEntityLiving() instanceof EntityDragon)
 			return;
 		if(ConfigValues.ALLOWSLIMES){
-			if(event.entityLiving instanceof EntitySlime){
+			if(event.getEntityLiving() instanceof EntitySlime){
 				makeMobReborn(event);
 				return;
 			}
-		}else if(event.entityLiving instanceof EntitySlime)
+		}else if(event.getEntityLiving() instanceof EntitySlime)
 			return;
 		if(ConfigValues.VANILLAONLY){
-			if(isVanilla(event.entityLiving)){
+			if(isVanilla(event.getEntityLiving())){
 				makeMobReborn(event);
 			}
 		}else{
@@ -71,12 +71,12 @@ public class ForgeEvents {
 	}
 	private void makeMobReborn(LivingDropsEvent event){
 		double rand = Math.random();
-		int id = EntityList.getEntityID(event.entityLiving);
-		String name = EntityList.getEntityString(event.entityLiving);
+		int id = EntityList.getEntityID(event.getEntityLiving());
+		String name = EntityList.getEntityString(event.getEntityLiving());
 		if (rand <= ConfigValues.REBIRTHCHANCE) {
 			if (ConfigValues.DROPEGG && EntityList.entityEggs.containsKey(name)){
 				ItemStack dropEgg = new ItemStack(Items.spawn_egg, 1, id);
-				event.entityLiving.entityDropItem(dropEgg, 0.0F);
+				event.getEntityLiving().entityDropItem(dropEgg, 0.0F);
 			} else {
 				createEntity(event);
 				if(ConfigValues.EXTRAMOBCOUNT > 0){
@@ -110,13 +110,13 @@ public class ForgeEvents {
 	private void createEntity(LivingDropsEvent event){
 		//Store
 		EntityLivingBase entity;
-		World worldIn = event.entityLiving.worldObj;
-		String sid = EntityList.getEntityString(event.entityLiving);
-		NBTTagCompound storedData = event.entityLiving.getEntityData();
-		event.entityLiving.writeEntityToNBT(storedData);
-		ItemStack weapon = event.entityLiving.getHeldItem(EnumHand.MAIN_HAND);
-		ItemStack offhand = event.entityLiving.getHeldItem(EnumHand.OFF_HAND);
-		float health = event.entityLiving.getMaxHealth();
+		World worldIn = event.getEntityLiving().worldObj;
+		String sid = EntityList.getEntityString(event.getEntityLiving());
+		NBTTagCompound storedData = event.getEntityLiving().getEntityData();
+		event.getEntityLiving().writeEntityToNBT(storedData);
+		ItemStack weapon = event.getEntityLiving().getHeldItem(EnumHand.MAIN_HAND);
+		ItemStack offhand = event.getEntityLiving().getHeldItem(EnumHand.OFF_HAND);
+		float health = event.getEntityLiving().getMaxHealth();
 		//Read
 		entity = (EntityLivingBase) EntityList.createEntityByName(sid, worldIn);
 		if(entity == null)
@@ -130,13 +130,13 @@ public class ForgeEvents {
 			entity.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, weapon);
 		if(offhand != null)
 			entity.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, offhand);
-		entity.setPosition(event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ);
+		entity.setPosition(event.getEntityLiving().posX, event.getEntityLiving().posY, event.getEntityLiving().posZ);
 		worldIn.spawnEntityInWorld(entity);
 	}
 
 	@SubscribeEvent
 	public void entityDamaged(LivingHurtEvent event){
-		if(event.source.isFireDamage() && !ConfigValues.DAMAGEFROMSUNLIGHT && event.entityLiving.isEntityUndead() && !event.entityLiving.isInLava() && event.entityLiving.worldObj.canBlockSeeSky(new BlockPos(MathHelper.floor_double(event.entityLiving.posX), MathHelper.floor_double(event.entityLiving.posY), MathHelper.floor_double(event.entityLiving.posZ)))){
+		if(event.getSource().isFireDamage() && !ConfigValues.DAMAGEFROMSUNLIGHT && event.getEntityLiving().isEntityUndead() && !event.getEntityLiving().isInLava() && event.getEntityLiving().worldObj.canBlockSeeSky(new BlockPos(MathHelper.floor_double(event.getEntityLiving().posX), MathHelper.floor_double(event.getEntityLiving().posY), MathHelper.floor_double(event.getEntityLiving().posZ)))){
 			event.setCanceled(true);
 		}
 	}

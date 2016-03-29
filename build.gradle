@@ -39,7 +39,7 @@ group= "the_fireplace.mobrebirth"
 archivesBaseName = "MobRebirth"
 
 minecraft {
-    version = "1.9-12.16.0.1767-1.9"
+    version = "1.9-12.16.0.1811-1.9"
     runDir = "run"
     mappings = "snapshot_20160312"
 }
