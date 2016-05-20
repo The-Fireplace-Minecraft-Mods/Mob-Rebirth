@@ -74,8 +74,8 @@ public class CommonEvents {
 		int id = EntityList.getEntityID(event.getEntityLiving());
 		String name = EntityList.getEntityString(event.getEntityLiving());
 		if (rand <= ConfigValues.REBIRTHCHANCE) {
-			if (ConfigValues.DROPEGG && EntityList.entityEggs.containsKey(name)){
-				ItemStack dropEgg = new ItemStack(Items.spawn_egg, 1, id);
+			if (ConfigValues.DROPEGG && EntityList.ENTITY_EGGS.containsKey(name)){
+				ItemStack dropEgg = new ItemStack(Items.SPAWN_EGG, 1, id);
 				event.getEntityLiving().entityDropItem(dropEgg, 0.0F);
 			} else {
 				createEntity(event);
