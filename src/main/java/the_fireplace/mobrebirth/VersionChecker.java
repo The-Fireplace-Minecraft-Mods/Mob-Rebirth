@@ -33,22 +33,23 @@ import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Set;
 
 /**
- * This is the embeddable version checker I made. Designed for convenience, all you have to do is paste this class, change the HostMORNAME, HostMODID, HostVERSION, and how it retrieves the latest version and link to the download page.
- * Now uses Curse to find out the latest version. File name must be "HostMODNAME(nospaces)-w.x.y.z.jar" or it will probably crash.
- *  @author The_Fireplace
+ * This is the backup version checker for when my Forge json host fails.
+ *
+ * @author The_Fireplace
  */
-@Mod(modid=VersionChecker.MODID, name=VersionChecker.MODNAME, version=VersionChecker.VERSION, guiFactory = "the_fireplace."+VersionChecker.HostMODID+".VersionChecker$VCGui")
+@Mod(modid = VersionChecker.MODID, name = VersionChecker.MODNAME, version = VersionChecker.VERSION, guiFactory = "the_fireplace." + VersionChecker.HostMODID + ".VersionChecker$VCGui")
 public class VersionChecker {
-	static final String HostMODID=MobRebirth.MODID;
-	private static final String HostMODNAME=MobRebirth.MODNAME;
+	static final String HostMODID = MobRebirth.MODID;
+	private static final String HostMODNAME = MobRebirth.MODNAME;
 	private static String HostVERSION;
-	static final String MODID=HostMODID+"vc";
-	static final String MODNAME=HostMODNAME+" Version Checker";
-	static final String VERSION="2.1";
-	private String curseCode, latest="0.0.0.0";
+	static final String MODID = HostMODID + "vc";
+	static final String MODNAME = HostMODNAME + " Version Checker";
+	static final String VERSION = "3.2";
+	private String curseCode, latest = "0.0.0.0";
 
 	private static Configuration config;
 	private static Property FREQUENCY_PROPERTY;
@@ -56,99 +57,113 @@ public class VersionChecker {
 	private static String freq;
 	private static String lc;
 
-	public VersionChecker(){
+	private boolean hostFailed() {
+		Calendar comparative = new GregorianCalendar();
+		comparative.set(2016, GregorianCalendar.DECEMBER, 1);
+		return Calendar.getInstance().after(comparative);
+	}
+
+	public VersionChecker() {
 		curseCode = MobRebirth.curseCode;
 	}
 
-	private void syncConfig(){
+	private void syncConfig() {
 		freq = FREQUENCY_PROPERTY.getString();
 		lc = LASTCHECKED_PROPERTY.getString();
-		if(config.hasChanged())
+		if (config.hasChanged())
 			config.save();
 	}
 
-	private boolean canNotify(){
-		if(freq.equals("Always"))
+	private boolean canNotify() {
+		if (freq.equals("Always"))
 			return true;
 		int[] date = new int[3];
 		date[0] = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
 		date[1] = Calendar.getInstance().get(Calendar.MONTH);
 		date[2] = Calendar.getInstance().get(Calendar.YEAR);
-		if(freq.equals("Daily") && isNotToday(date))
+		if (freq.equals("Daily") && isNotToday(date))
 			return true;
-		if(freq.equals("Weekly")){
-			for(int i=2;i>=0;i--){
-				if(i != 0 && date[i] > splitVersion(lc)[i])
+		if (freq.equals("Weekly")) {
+			for (int i = 2; i >= 0; i--) {
+				if (i != 0 && date[i] > splitVersion(lc)[i])
 					return true;
-				if(i == 0 && date[i]-7 > splitVersion(lc)[i])
+				if (i == 0 && date[i] - 7 > splitVersion(lc)[i])
 					return true;
 			}
 		}
 		return false;
 	}
 
-	private void tryNotifyClient(EntityPlayer player){
-		if(!Loader.isModLoaded("VersionChecker") && isHigherVersion() && canNotify()){
-			player.addChatMessage(new TextComponentString("A new version of "+HostMODNAME+" is available!"));
-			player.addChatMessage(new TextComponentString("=========="+latest+"=========="));
+	private void tryNotifyClient(EntityPlayer player) {
+		if (!Loader.isModLoaded("VersionChecker") && isHigherVersion() && canNotify()) {
+			player.addChatMessage(new TextComponentString("A new version of " + HostMODNAME + " is available!"));
+			player.addChatMessage(new TextComponentString("==========" + latest + "=========="));
 			player.addChatMessage(new TextComponentString("Get it at the following link:"));
-			player.addChatMessage(new TextComponentString(getDownloadUrl()).setChatStyle(new Style().setItalic(true).setUnderlined(true).setColor(TextFormatting.BLUE).setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, getDownloadUrl()))));
+			player.addChatMessage(new TextComponentString(getDownloadUrl()).setStyle(new Style().setItalic(true).setUnderlined(true).setColor(TextFormatting.BLUE).setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, getDownloadUrl()))));
 			setChecked();
 		}
 	}
 
-	private void notifyServer(){
-		System.out.println("Version "+latest+" of "+HostMODNAME+" is available!");
-		System.out.println("Download it at "+getDownloadUrl());
+	private void notifyServer() {
+		System.out.println("Version " + latest + " of " + HostMODNAME + " is available!");
+		System.out.println("Download it at " + getDownloadUrl());
 		setChecked();
 	}
 
-	private void setChecked(){
-		LASTCHECKED_PROPERTY.set(Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+"."+Calendar.getInstance().get(Calendar.MONTH)+"."+Calendar.getInstance().get(Calendar.YEAR));
+	private void setChecked() {
+		LASTCHECKED_PROPERTY.set(Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "." + Calendar.getInstance().get(Calendar.MONTH) + "." + Calendar.getInstance().get(Calendar.YEAR));
 		syncConfig();
 	}
 
 	@EventHandler
-	public void preInit(FMLPreInitializationEvent event){
-		config = new Configuration(new File(event.getModConfigurationDirectory(), "fireplace_update_checker.cfg"));
-		config.load();
-		FREQUENCY_PROPERTY = config.get(Configuration.CATEGORY_GENERAL, "Frequency", "Always");
-		FREQUENCY_PROPERTY.setValidValues(new String[]{"Always","Daily","Weekly"});
-		LASTCHECKED_PROPERTY = config.get("hidden", "Last Checked", "0.0.0");
-		syncConfig();
-		cacheJson();
-		latest=getVersionFromJson();
-		event.getModMetadata().autogenerated=false;
-		event.getModMetadata().modId=MODID;
-		event.getModMetadata().name=MODNAME;
-		event.getModMetadata().description="The version checker for "+HostMODNAME;
-		event.getModMetadata().version=VERSION;
+	public void preInit(FMLPreInitializationEvent event) {
+		if (hostFailed()) {
+			config = new Configuration(new File(event.getModConfigurationDirectory(), "fireplace_update_checker.cfg"));
+			config.load();
+			FREQUENCY_PROPERTY = config.get(Configuration.CATEGORY_GENERAL, "Frequency", "Always");
+			FREQUENCY_PROPERTY.setValidValues(new String[]{"Always", "Daily", "Weekly"});
+			LASTCHECKED_PROPERTY = config.get("hidden", "Last Checked", "0.0.0");
+			syncConfig();
+			cacheJson();
+			latest = getVersionFromJson();
+		}
+		event.getModMetadata().autogenerated = false;
+		event.getModMetadata().modId = MODID;
+		event.getModMetadata().name = MODNAME;
+		event.getModMetadata().description = "The backup version checker for " + HostMODNAME;
+		event.getModMetadata().version = VERSION;
 		event.getModMetadata().authorList.add("The_Fireplace");
-	}
-	@EventHandler
-	public void init(FMLInitializationEvent event){
-		HostVERSION=MobRebirth.VERSION;
-		tryNotifyDynious();
-		if(event.getSide().isClient())
-			MinecraftForge.EVENT_BUS.register(this);
+		event.getModMetadata().parent = HostMODID;
 	}
 
 	@EventHandler
-	public void serverStarted(FMLServerStartedEvent event){
-		if(event.getSide().isServer())
-			tryNotifyServer();
+	public void init(FMLInitializationEvent event) {
+		if (hostFailed()) {
+			HostVERSION = MobRebirth.VERSION;
+			tryNotifyDynious();
+			if (event.getSide().isClient())
+				MinecraftForge.EVENT_BUS.register(this);
+		}
+	}
+
+	@EventHandler
+	public void serverStarted(FMLServerStartedEvent event) {
+		if (hostFailed()) {
+			if (event.getSide().isServer())
+				tryNotifyServer();
+		}
 	}
 
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
-	public void onPlayerJoinClient(final ClientConnectedToServerEvent event){
-		(new Thread(){
+	public void onPlayerJoinClient(final ClientConnectedToServerEvent event) {
+		(new Thread() {
 			@Override
-			public void run(){
-				while(FMLClientHandler.instance().getClientPlayerEntity() == null)
-					try{
+			public void run() {
+				while (FMLClientHandler.instance().getClientPlayerEntity() == null)
+					try {
 						Thread.sleep(100);
-					}catch(InterruptedException e){
+					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 				tryNotifyClient(FMLClientHandler.instance().getClientPlayerEntity());
@@ -158,68 +173,69 @@ public class VersionChecker {
 
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
-	public void configChanged(ConfigChangedEvent.OnConfigChangedEvent event){
-		if(event.getModID().equals(MODID))
+	public void configChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
+		if (event.getModID().equals(MODID))
 			syncConfig();
 	}
 
-	private String getDownloadUrl(){
-		return "http://mods.curse.com/mc-mods/minecraft/"+curseCode;
+	private String getDownloadUrl() {
+		return "http://mods.curse.com/mc-mods/minecraft/" + curseCode;
 	}
 
-	private boolean isHigherVersion(){
+	private boolean isHigherVersion() {
 		final int[] _current = splitVersion(HostVERSION);
 		final int[] _new = splitVersion(latest);
 
-		for(int i=0;i<Math.max(_current.length, _new.length);i++){
-			int curv=0;
-			if(i < _current.length)
+		for (int i = 0; i < Math.max(_current.length, _new.length); i++) {
+			int curv = 0;
+			if (i < _current.length)
 				curv = _current[i];
-			int newv=0;
-			if(i<_new.length)
-				newv=_new[i];
-			if(newv>curv)
+			int newv = 0;
+			if (i < _new.length)
+				newv = _new[i];
+			if (newv > curv)
 				return true;
-			else if(curv>newv)
+			else if (curv > newv)
 				return false;
 		}
 		return false;
 	}
 
-	private boolean isNotToday(int[] date){
+	private boolean isNotToday(int[] date) {
 		final int[] _current = splitVersion(lc);
 
-		for(int i=0;i<Math.max(_current.length, date.length);i++){
-			int curv=0;
-			if(i < _current.length)
+		for (int i = 0; i < Math.max(_current.length, date.length); i++) {
+			int curv = 0;
+			if (i < _current.length)
 				curv = _current[i];
-			int newv=0;
-			if(i<date.length)
-				newv=date[i];
-			if(newv>curv)
+			int newv = 0;
+			if (i < date.length)
+				newv = date[i];
+			if (newv > curv)
 				return true;
-			else if(curv>newv)
+			else if (curv > newv)
 				return false;
 		}
 		return false;
 	}
 
-	private int[] splitVersion(String version){
+	private int[] splitVersion(String version) {
 		final String[] tmp = version.split("\\.");
-		final int size=tmp.length;
+		final int size = tmp.length;
 		final int[] out = new int[size];
-		for(int i=0;i<size;i++){
-			out[i]=Integer.parseInt(tmp[i]);
+		for (int i = 0; i < size; i++) {
+			out[i] = Integer.parseInt(tmp[i]);
 		}
 		return out;
 	}
 
-	private void tryNotifyServer(){
-		if(isHigherVersion() && canNotify())
+	private void tryNotifyServer() {
+		if (isHigherVersion() && canNotify())
 			notifyServer();
 	}
-	private void tryNotifyDynious(){
-		if(isHigherVersion()){
+
+	private void tryNotifyDynious() {
+		if (isHigherVersion()) {
 			NBTTagCompound update = new NBTTagCompound();
 			update.setString("modDisplayName", HostMODNAME);
 			update.setString("oldVersion", HostVERSION);
@@ -230,40 +246,41 @@ public class VersionChecker {
 		}
 	}
 
-	private String getVersionFromJson(){
-		try{
-			File file = new File(cachedir, curseCode+".json");
-			if(file.exists()) {
+	private String getVersionFromJson() {
+		try {
+			File file = new File(cachedir, curseCode + ".json");
+			if (file.exists()) {
 				BufferedReader in = new BufferedReader(new FileReader(file));
 				String contents = in.readLine();
-				int jarindex = contents.indexOf(HostMODNAME.replace(" ", "")+"-");
-				int versionindex = jarindex + HostMODNAME.replace(" ", "").length()+1;
+				int jarindex = contents.indexOf(HostMODNAME.replace(" ", "").replace("\\'", "") + "-");
+				int versionindex = jarindex + HostMODNAME.replace(" ", "").replace("\\'", "").length() + 1;
 				int dotjarindex = contents.indexOf(".jar", versionindex);
 				String versionnumber = contents.substring(versionindex, dotjarindex);
 				in.close();
-				if(jarindex != -1)
+				if (jarindex != -1)
 					return versionnumber;
 			}
-		}catch(IOException e){
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return "0.0.0.0";
 	}
 
-	private File cachedir = new File(((File)FMLInjectionData.data()[6]).getAbsolutePath().substring(0,((File)FMLInjectionData.data()[6]).getAbsolutePath().length()-2), "cachedjsons/");
-	private void cacheJson(){
-		File file = new File(cachedir, curseCode+".json");
-		try{
+	private File cachedir = new File(((File) FMLInjectionData.data()[6]).getAbsolutePath().substring(0, ((File) FMLInjectionData.data()[6]).getAbsolutePath().length() - 2), "cachedjsons/");
+
+	private void cacheJson() {
+		File file = new File(cachedir, curseCode + ".json");
+		try {
 			Files.createDirectory(cachedir.toPath());
-		}catch(IOException e){
+		} catch (IOException e) {
 			System.out.println("Version checking directory detected.");
 		}
-		try{
+		try {
 			URL url = new URL(String.format("https://widget.mcf.li/mc-mods/minecraft/%s.json", curseCode));
 			InputStream is = url.openStream();
-			if(file.exists())
+			if (file.exists())
 				file.delete();
-			if(file.createNewFile()) {
+			if (file.createNewFile()) {
 				OutputStream os = new FileOutputStream(file);
 
 				byte[] b = new byte[2048];
@@ -275,10 +292,11 @@ public class VersionChecker {
 				is.close();
 				os.close();
 			}
-		}catch(IOException e){
+		} catch (IOException e) {
 			System.out.println("Error retrieving latest version information.");
 		}
 	}
+
 	@SideOnly(Side.CLIENT)
 	public static class VCGui implements IModGuiFactory {
 		@Override
