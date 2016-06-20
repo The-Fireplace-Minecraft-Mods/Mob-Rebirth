@@ -45,7 +45,6 @@ minecraft {
 }
 
 dependencies {
-
 }
 
 processResources
