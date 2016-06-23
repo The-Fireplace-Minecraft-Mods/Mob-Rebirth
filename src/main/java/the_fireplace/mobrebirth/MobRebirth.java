@@ -22,8 +22,6 @@ import java.io.File;
 public class MobRebirth {
 	public static final String MODID = "mobrebirth";
 	public static final String MODNAME = "Mob Rebirth";
-	public static String VERSION;
-	public static final String curseCode = "226212-mob-rebirth";
 	private static final File configDir = new File((File) FMLInjectionData.data()[6], "config/MobRebirth/");
 
 	public static Configuration mobcontrols;
@@ -73,11 +71,6 @@ public class MobRebirth {
 
 	@EventHandler
 	public void PreInit(FMLPreInitializationEvent event) {
-		String[] version = event.getModMetadata().version.split("\\.");
-		if(version[3].equals("BUILDNUMBER"))//Dev environment
-			VERSION = event.getModMetadata().version.replace("BUILDNUMBER", "9001");
-		else//Released build
-			VERSION = event.getModMetadata().version;
 		mobcontrols = new Configuration(new File(configDir, "mobcontrols.cfg"));
 		chancecontrols = new Configuration(new File(configDir, "chancecontrols.cfg"));
 		behaviorcontrols = new Configuration(new File(configDir, "behaviorcontrols.cfg"));
