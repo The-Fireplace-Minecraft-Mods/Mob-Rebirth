@@ -71,7 +71,6 @@ public class CommonEvents {
 	}
 	private void makeMobReborn(LivingDropsEvent event){
 		double rand = Math.random();
-		int id = EntityList.getEntityID(event.getEntityLiving());
 		String name = EntityList.getEntityString(event.getEntityLiving());
 		if (rand <= ConfigValues.REBIRTHCHANCE) {
 			if (ConfigValues.DROPEGG && EntityList.ENTITY_EGGS.containsKey(name)){
