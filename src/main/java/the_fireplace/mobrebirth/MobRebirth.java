@@ -18,7 +18,7 @@ import java.io.File;
 /**
  * @author The_Fireplace
  */
-@Mod(modid = MobRebirth.MODID, name = MobRebirth.MODNAME, canBeDeactivated = true, guiFactory = "the_fireplace.mobrebirth.config.MobRebirthGuiFactory", updateJSON = "http://caterpillar.bitnamiapp.com/jsons/mobrebirth.json", acceptedMinecraftVersions = "[1.9.4,1.10)")
+@Mod(modid = MobRebirth.MODID, name = MobRebirth.MODNAME, canBeDeactivated = true, guiFactory = "the_fireplace.mobrebirth.config.MobRebirthGuiFactory", updateJSON = "http://caterpillar.bitnamiapp.com/jsons/mobrebirth.json", acceptedMinecraftVersions = "[1.10,1.10.2]")
 public class MobRebirth {
 	public static final String MODID = "mobrebirth";
 	public static final String MODNAME = "Mob Rebirth";

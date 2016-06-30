@@ -1,9 +1,11 @@
 {
 	"homepage": "http://mods.curse.com/mc-mods/minecraft/226212-mob-rebirth",
 	"promos": {
+		"1.10.2-latest": "!!VERSION!!",
+		"1.10.2-recommended": "!!VERSION!!",
 		"1.10-latest": "!!VERSION!!",
 		"1.10-recommended": "!!VERSION!!",
-		"1.9.4-latest": "!!VERSION!!",
-		"1.9.4-recommended": "!!VERSION!!"
+		"1.9.4-latest": "6.0.0.13",
+		"1.9.4-recommended": "6.0.0.13"
 	}
 }
