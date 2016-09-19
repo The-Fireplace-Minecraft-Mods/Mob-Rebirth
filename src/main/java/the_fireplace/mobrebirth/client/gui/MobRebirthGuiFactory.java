@@ -1,10 +1,11 @@
-package the_fireplace.mobrebirth.config;
-
-import java.util.Set;
+package the_fireplace.mobrebirth.client.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.IModGuiFactory;
+
+import java.util.Set;
+
 /**
  *
  * @author The_Fireplace

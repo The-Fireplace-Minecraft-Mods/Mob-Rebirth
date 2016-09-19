@@ -1,4 +1,4 @@
-package the_fireplace.mobrebirth.gui;
+package the_fireplace.mobrebirth.client.gui;
 
 import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.GuiConfigEntries;

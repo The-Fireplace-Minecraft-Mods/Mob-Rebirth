@@ -10,15 +10,15 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.FMLInjectionData;
-import the_fireplace.mobrebirth.config.ConfigValues;
-import the_fireplace.mobrebirth.event.CommonEvents;
-import the_fireplace.mobrebirth.gui.RebirthChanceSlider;
+import the_fireplace.mobrebirth.common.ConfigValues;
+import the_fireplace.mobrebirth.common.CommonEvents;
+import the_fireplace.mobrebirth.client.gui.RebirthChanceSlider;
 
 import java.io.File;
 /**
  * @author The_Fireplace
  */
-@Mod(modid = MobRebirth.MODID, name = MobRebirth.MODNAME, canBeDeactivated = true, guiFactory = "the_fireplace.mobrebirth.config.MobRebirthGuiFactory", updateJSON = "http://caterpillar.bitnamiapp.com/jsons/mobrebirth.json", acceptedMinecraftVersions = "[1.10,1.10.2]")
+@Mod(modid = MobRebirth.MODID, name = MobRebirth.MODNAME, canBeDeactivated = true, guiFactory = "the_fireplace.mobrebirth.client.gui.MobRebirthGuiFactory", updateJSON = "http://caterpillar.bitnamiapp.com/jsons/mobrebirth.json", acceptedMinecraftVersions = "[1.10,1.10.2]")
 public class MobRebirth {
 	public static final String MODID = "mobrebirth";
 	public static final String MODNAME = "Mob Rebirth";

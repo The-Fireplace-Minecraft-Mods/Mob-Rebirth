@@ -1,7 +1,4 @@
-package the_fireplace.mobrebirth.config;
-
-import java.util.ArrayList;
-import java.util.List;
+package the_fireplace.mobrebirth.client.gui;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
@@ -12,6 +9,9 @@ import net.minecraftforge.fml.client.config.GuiConfigEntries;
 import net.minecraftforge.fml.client.config.GuiConfigEntries.CategoryEntry;
 import net.minecraftforge.fml.client.config.IConfigElement;
 import the_fireplace.mobrebirth.MobRebirth;
+
+import java.util.ArrayList;
+import java.util.List;
 /**
  *
  * @author The_Fireplace

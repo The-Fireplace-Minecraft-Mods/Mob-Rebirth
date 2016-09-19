@@ -1,4 +1,4 @@
-package the_fireplace.mobrebirth.config;
+package the_fireplace.mobrebirth.common;
 /**
  *
  * @author The_Fireplace
