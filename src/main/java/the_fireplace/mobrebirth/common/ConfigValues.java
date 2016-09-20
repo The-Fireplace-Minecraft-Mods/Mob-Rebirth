@@ -1,4 +1,9 @@
 package the_fireplace.mobrebirth.common;
+
+import com.google.common.collect.Maps;
+
+import java.util.Map;
+
 /**
  *
  * @author The_Fireplace
@@ -17,28 +22,35 @@ public class ConfigValues {
 	//Chance Controls
 	public static final double REBIRTHCHANCE_DEFAULT = 0.25;
 	public static double REBIRTHCHANCE;
+	public static Map<String, Double> REBIRTHCHANCEMAP = Maps.newHashMap();
 
 	public static final double MULTIMOBCHANCE_DEFAULT = 0.05;
 	public static double MULTIMOBCHANCE;
+	public static Map<String, Double> MULTIMOBCHANCEMAP = Maps.newHashMap();
 	//Behavior Controls
 	public static final boolean DROPEGG_DEFAULT = false;
 	public static boolean DROPEGG;
+	public static Map<String, Boolean> DROPEGGMAP = Maps.newHashMap();
 
 	public static final int EXTRAMOBCOUNT_DEFAULT = 0;
 	public static int EXTRAMOBCOUNT;
+	public static Map<String, Integer> EXTRAMOBCOUNTMAP = Maps.newHashMap();
 
 	public static final String MULTIMOBMODE_DEFAULT = "continuous";
 	public static String MULTIMOBMODE;
 
 	public static final boolean REBIRTHFROMNONPLAYER_DEFAULT = false;
 	public static boolean REBIRTHFROMNONPLAYER;
+	public static Map<String, Boolean> REBIRTHFROMNONPLAYERMAP = Maps.newHashMap();
 
 	public static final boolean DAMAGEFROMSUNLIGHT_DEFAULT = true;
 	public static boolean DAMAGEFROMSUNLIGHT;
 	//Debug Controls
 	public static final boolean VANILLAONLY_DEFAULT = false;
 	public static boolean VANILLAONLY;
-
+	//General
+	public static final String[] CUSTOMENTITIES_DEFAULT = new String[]{};
+	public static String[] CUSTOMENTITIES;
 
 	public static final String ALLOWBOSSES_NAME = "allowbosses";
 	public static final String ALLOWSLIMES_NAME = "allowslimes";
@@ -54,4 +66,6 @@ public class ConfigValues {
 	public static final String REBIRTHFROMNONPLAYER_NAME = "rebirthfromnonplayer";
 
 	public static final String VANILLAONLY_NAME = "vanillaonly";
+
+	public static final String CUSTOMENTITIES_NAME = "customentities";
 }

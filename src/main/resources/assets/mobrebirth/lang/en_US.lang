@@ -24,6 +24,9 @@ rebirthfromnonplayer.tooltip=If true, mobs can be reborn from any kind of death,
 vanillaonly=Vanilla Mob Rebirth only
 vanillaonly.tooltip=Set to true to prevent any mobs or animals not in vanilla Minecraft from being reborn\nMeant to temporarily fix issues with modded mobs, should they arise\nAnything that makes you need to use this should be reported.
 
+customentities=Custom Entity Settings
+customentities.tooltip=Add mob IDs here to allow configuring of their individual settings.
+
 mobCfg=Mob Configuration
 mobCfg.tooltip=Configure which mobs can be reborn here
 chanceCfg=Chance Configuration
@@ -32,3 +35,4 @@ behaviorCfg=Behavior Configuration
 behaviorCfg.tooltip=Configure rebirth behavior here
 debugCfg=Debug Configuration
 debugCfg.tooltip=These settings are intended for debugging and temporary blanket bugfixes
+invalidmob=Invalid Mob type detected! Please ensure that all mob IDs are spelled correctly.

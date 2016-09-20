@@ -1,6 +1,7 @@
 package the_fireplace.mobrebirth.client.gui;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.config.DummyConfigElement.DummyCategoryElement;
@@ -9,6 +10,7 @@ import net.minecraftforge.fml.client.config.GuiConfigEntries;
 import net.minecraftforge.fml.client.config.GuiConfigEntries.CategoryEntry;
 import net.minecraftforge.fml.client.config.IConfigElement;
 import the_fireplace.mobrebirth.MobRebirth;
+import the_fireplace.mobrebirth.common.ConfigValues;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +32,29 @@ public class MobRebirthConfigGui extends GuiConfig {
 		list.add(new DummyCategoryElement("chanceCfg", "chanceCfg", ChanceEntry.class));
 		list.add(new DummyCategoryElement("behaviorCfg", "behaviorCfg", BehaviorEntry.class));
 		list.add(new DummyCategoryElement("debugCfg", "debugCfg", DebugEntry.class));
+		list.addAll(new ConfigElement(MobRebirth.general.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements());
+		if(MobRebirth.instance.getHasCustomMobSettings())
+			list.add(new DummyCategoryElement("customMobs", "customMobs", CustomMobEntry.class));
 		return list;
+	}
+	public static class CustomMobEntry extends CategoryEntry{
+
+		public CustomMobEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement) {
+			super(owningScreen, owningEntryList, configElement);
+		}
+		@Override
+		protected GuiScreen buildChildScreen(){
+			return new GuiConfig(owningScreen,
+					getConfigElements(), MobRebirth.MODID, false,
+					false, I18n.format("customentities"));
+		}
+		public static List<IConfigElement> getConfigElements(){
+			List<IConfigElement> list = new ArrayList<>();
+			for(String mob:ConfigValues.CUSTOMENTITIES){
+				list.add(new DummyCategoryElement(mob, mob, new ConfigElement(MobRebirth.mobConfigs.get(mob).getCategory(Configuration.CATEGORY_GENERAL)).getChildElements()));
+			}
+			return list;
+		}
 	}
 	public static class MobEntry extends CategoryEntry{
 

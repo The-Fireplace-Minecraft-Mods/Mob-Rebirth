@@ -1,20 +1,25 @@
 package the_fireplace.mobrebirth;
 
-import net.minecraft.util.text.translation.I18n;
+import com.google.common.collect.Maps;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.FMLInjectionData;
-import the_fireplace.mobrebirth.common.ConfigValues;
-import the_fireplace.mobrebirth.common.CommonEvents;
+import net.minecraftforge.fml.relauncher.Side;
+import the_fireplace.mobrebirth.client.gui.CustomArrayEntry;
 import the_fireplace.mobrebirth.client.gui.RebirthChanceSlider;
+import the_fireplace.mobrebirth.common.CommonEvents;
+import the_fireplace.mobrebirth.common.ConfigValues;
 
 import java.io.File;
+import java.util.Map;
+
 /**
  * @author The_Fireplace
  */
@@ -23,26 +28,52 @@ public class MobRebirth {
 	public static final String MODID = "mobrebirth";
 	public static final String MODNAME = "Mob Rebirth";
 	private static final File configDir = new File((File) FMLInjectionData.data()[6], "config/MobRebirth/");
+	private static final File customConfigDir = new File(configDir, "mobs");
+	private boolean customProperties = false;
+	public static Map<String, Configuration> mobConfigs = Maps.newHashMap();
+
+	@Mod.Instance(MODID)
+	public static MobRebirth instance;
+
+	public boolean getHasCustomMobSettings(){
+		return customProperties;
+	}
 
 	public static Configuration mobcontrols;
 	public static Configuration chancecontrols;
 	public static Configuration behaviorcontrols;
 	public static Configuration debugcontrols;
+	public static Configuration general;
 
 	public static Property ALLOWBOSSES_PROPERTY;
 	public static Property ALLOWSLIMES_PROPERTY;
 	public static Property ANIMALREBIRTH_PROPERTY;
 
 	public static Property REBIRTHCHANCE_PROPERTY;
+	public static Map<String, Property> REBIRTHCHANCEMAP;
 	public static Property MULTIMOBCHANCE_PROPERTY;
+	public static Map<String, Property> MULTIMOBCHANCEMAP;
 
 	public static Property DAMAGEFROMSUNLIGHT_PROPERTY;
 	public static Property DROPEGG_PROPERTY;
+	public static Map<String, Property> DROPEGGMAP;
 	public static Property EXTRAMOBCOUNT_PROPERTY;
+	public static Map<String, Property> EXTRAMOBCOUNTMAP;
 	public static Property MULTIMOBMODE_PROPERTY;
 	public static Property REBIRTHFROMNONPLAYER_PROPERTY;
+	public static Map<String, Property> PLAYERREBIRTHMAP;
 
 	public static Property VANILLAONLY_PROPERTY;
+
+	public static Property CUSTOMENTITIES_PROPERTY;
+
+	public MobRebirth(){
+		REBIRTHCHANCEMAP = Maps.newHashMap();
+		MULTIMOBCHANCEMAP = Maps.newHashMap();
+		DROPEGGMAP = Maps.newHashMap();
+		EXTRAMOBCOUNTMAP = Maps.newHashMap();
+		PLAYERREBIRTHMAP = Maps.newHashMap();
+	}
 
 	public static void syncConfig(){
 		ConfigValues.ALLOWBOSSES = ALLOWBOSSES_PROPERTY.getBoolean();
@@ -59,6 +90,8 @@ public class MobRebirth {
 		ConfigValues.REBIRTHFROMNONPLAYER = REBIRTHFROMNONPLAYER_PROPERTY.getBoolean();
 
 		ConfigValues.VANILLAONLY = VANILLAONLY_PROPERTY.getBoolean();
+
+		ConfigValues.CUSTOMENTITIES = CUSTOMENTITIES_PROPERTY.getStringList();
 		if(mobcontrols.hasChanged())
 			mobcontrols.save();
 		if(chancecontrols.hasChanged())
@@ -67,6 +100,9 @@ public class MobRebirth {
 			behaviorcontrols.save();
 		if(debugcontrols.hasChanged())
 			debugcontrols.save();
+		if(general.hasChanged())
+			general.save();
+		instance.customProperties = ConfigValues.CUSTOMENTITIES != null && ConfigValues.CUSTOMENTITIES.length > 0;
 	}
 
 	@EventHandler
@@ -75,38 +111,45 @@ public class MobRebirth {
 		chancecontrols = new Configuration(new File(configDir, "chancecontrols.cfg"));
 		behaviorcontrols = new Configuration(new File(configDir, "behaviorcontrols.cfg"));
 		debugcontrols = new Configuration(new File(configDir, "debugcontrols.cfg"));
+		general = new Configuration(new File(configDir, "general.cfg"));
 		mobcontrols.load();
 		chancecontrols.load();
 		behaviorcontrols.load();
 		debugcontrols.load();
+		general.load();
 		//Mob Controls
-		ALLOWBOSSES_PROPERTY = mobcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.ALLOWBOSSES_NAME, ConfigValues.ALLOWBOSSES_DEFAULT, I18n.translateToLocal(ConfigValues.ALLOWBOSSES_NAME+".tooltip"));
-		ALLOWSLIMES_PROPERTY = mobcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.ALLOWSLIMES_NAME, ConfigValues.ALLOWSLIMES_DEFAULT, I18n.translateToLocal(ConfigValues.ALLOWSLIMES_NAME+".tooltip"));
-		ANIMALREBIRTH_PROPERTY = mobcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.ANIMALREBIRTH_NAME, ConfigValues.ANIMALREBIRTH_DEFAULT, I18n.translateToLocal(ConfigValues.ANIMALREBIRTH_NAME+".tooltip"));
+		ALLOWBOSSES_PROPERTY = mobcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.ALLOWBOSSES_NAME, ConfigValues.ALLOWBOSSES_DEFAULT);
+		ALLOWSLIMES_PROPERTY = mobcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.ALLOWSLIMES_NAME, ConfigValues.ALLOWSLIMES_DEFAULT);
+		ANIMALREBIRTH_PROPERTY = mobcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.ANIMALREBIRTH_NAME, ConfigValues.ANIMALREBIRTH_DEFAULT);
 		//Chance Controls
-		REBIRTHCHANCE_PROPERTY = chancecontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.REBIRTHCHANCE_NAME, ConfigValues.REBIRTHCHANCE_DEFAULT, I18n.translateToLocal(ConfigValues.REBIRTHCHANCE_NAME+".tooltip"));
-		MULTIMOBCHANCE_PROPERTY = chancecontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.MULTIMOBCHANCE_NAME, ConfigValues.MULTIMOBCHANCE_DEFAULT, I18n.translateToLocal(ConfigValues.MULTIMOBCHANCE_NAME+".tooltip"));
+		REBIRTHCHANCE_PROPERTY = chancecontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.REBIRTHCHANCE_NAME, ConfigValues.REBIRTHCHANCE_DEFAULT);
+		MULTIMOBCHANCE_PROPERTY = chancecontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.MULTIMOBCHANCE_NAME, ConfigValues.MULTIMOBCHANCE_DEFAULT);
 		//Behavior Controls
-		DAMAGEFROMSUNLIGHT_PROPERTY = behaviorcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.DAMAGEFROMSUNLIGHT_NAME, ConfigValues.DAMAGEFROMSUNLIGHT_DEFAULT, I18n.translateToLocal(ConfigValues.DAMAGEFROMSUNLIGHT_NAME+".tooltip"));
-		DROPEGG_PROPERTY = behaviorcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.DROPEGG_NAME, ConfigValues.DROPEGG_DEFAULT, I18n.translateToLocal(ConfigValues.DROPEGG_NAME+".tooltip"));
-		EXTRAMOBCOUNT_PROPERTY = behaviorcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.EXTRAMOBCOUNT_NAME, ConfigValues.EXTRAMOBCOUNT_DEFAULT, I18n.translateToLocal(ConfigValues.EXTRAMOBCOUNT_NAME+".tooltip"));
-		MULTIMOBMODE_PROPERTY = behaviorcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.MULTIMOBMODE_NAME, ConfigValues.MULTIMOBMODE_DEFAULT, I18n.translateToLocal(ConfigValues.MULTIMOBMODE_NAME+".tooltip"));
-		REBIRTHFROMNONPLAYER_PROPERTY = behaviorcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.REBIRTHFROMNONPLAYER_NAME, ConfigValues.REBIRTHFROMNONPLAYER_DEFAULT, I18n.translateToLocal(ConfigValues.REBIRTHFROMNONPLAYER_NAME+".tooltip"));
+		DAMAGEFROMSUNLIGHT_PROPERTY = behaviorcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.DAMAGEFROMSUNLIGHT_NAME, ConfigValues.DAMAGEFROMSUNLIGHT_DEFAULT);
+		DROPEGG_PROPERTY = behaviorcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.DROPEGG_NAME, ConfigValues.DROPEGG_DEFAULT);
+		EXTRAMOBCOUNT_PROPERTY = behaviorcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.EXTRAMOBCOUNT_NAME, ConfigValues.EXTRAMOBCOUNT_DEFAULT);
+		MULTIMOBMODE_PROPERTY = behaviorcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.MULTIMOBMODE_NAME, ConfigValues.MULTIMOBMODE_DEFAULT);
+		REBIRTHFROMNONPLAYER_PROPERTY = behaviorcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.REBIRTHFROMNONPLAYER_NAME, ConfigValues.REBIRTHFROMNONPLAYER_DEFAULT);
 		//Debug Controls
-		VANILLAONLY_PROPERTY = debugcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.VANILLAONLY_NAME, ConfigValues.VANILLAONLY_DEFAULT, I18n.translateToLocal(ConfigValues.VANILLAONLY_NAME+".tooltip"));
+		VANILLAONLY_PROPERTY = debugcontrols.get(Configuration.CATEGORY_GENERAL, ConfigValues.VANILLAONLY_NAME, ConfigValues.VANILLAONLY_DEFAULT);
+		//General
+		CUSTOMENTITIES_PROPERTY = general.get(Configuration.CATEGORY_GENERAL, ConfigValues.CUSTOMENTITIES_NAME, ConfigValues.CUSTOMENTITIES_DEFAULT);
 
-		if(event.getSide().isClient())
-			REBIRTHCHANCE_PROPERTY.setConfigEntryClass(RebirthChanceSlider.class);
 		REBIRTHCHANCE_PROPERTY.setMaxValue(1.0);
 		REBIRTHCHANCE_PROPERTY.setMinValue(0.0);
-		if(event.getSide().isClient())
-			MULTIMOBCHANCE_PROPERTY.setConfigEntryClass(RebirthChanceSlider.class);
 		MULTIMOBCHANCE_PROPERTY.setMaxValue(1.0);
 		MULTIMOBCHANCE_PROPERTY.setMinValue(0.0);
+		if(event.getSide().isClient()) {
+			REBIRTHCHANCE_PROPERTY.setConfigEntryClass(RebirthChanceSlider.class);
+			MULTIMOBCHANCE_PROPERTY.setConfigEntryClass(RebirthChanceSlider.class);
+			CUSTOMENTITIES_PROPERTY.setConfigEntryClass(CustomArrayEntry.class);
+		}
 
 		MULTIMOBMODE_PROPERTY.setValidValues(new String[]{"all","continuous","per-mob"});
 		transferOldConfig(event.getSuggestedConfigurationFile());
 		syncConfig();
+		createMobConfigs();
+		syncMobConfigs();
 	}
 	@EventHandler
 	public void Init(FMLInitializationEvent event) {
@@ -140,6 +183,52 @@ public class MobRebirth {
 				VANILLAONLY_PROPERTY.set(cat.get("vanillaonly").getBoolean());
 			if(file.delete())
 				System.out.println("Old config transferred");
+		}
+	}
+
+	public static void createMobConfigs(){
+		if(instance.customProperties)
+			for(String mobid:ConfigValues.CUSTOMENTITIES){
+				Configuration mobConfig = new Configuration(new File(customConfigDir, mobid+".cfg"));
+				mobConfig.load();
+				if(!REBIRTHCHANCEMAP.containsKey(mobid))
+					REBIRTHCHANCEMAP.put(mobid, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.REBIRTHCHANCE_NAME, ConfigValues.REBIRTHCHANCE));
+				if(!MULTIMOBCHANCEMAP.containsKey(mobid))
+					MULTIMOBCHANCEMAP.put(mobid, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.MULTIMOBCHANCE_NAME, ConfigValues.MULTIMOBCHANCE));
+				if(!DROPEGGMAP.containsKey(mobid))
+					DROPEGGMAP.put(mobid, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.DROPEGG_NAME, ConfigValues.DROPEGG));
+				if(!EXTRAMOBCOUNTMAP.containsKey(mobid))
+					EXTRAMOBCOUNTMAP.put(mobid, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.EXTRAMOBCOUNT_NAME, ConfigValues.EXTRAMOBCOUNT));
+				if(!PLAYERREBIRTHMAP.containsKey(mobid))
+					PLAYERREBIRTHMAP.put(mobid, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.REBIRTHFROMNONPLAYER_NAME, ConfigValues.REBIRTHFROMNONPLAYER));
+				if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {//TODO: Ensure that this doesn't crash dedicated servers
+					REBIRTHCHANCEMAP.get(mobid).setConfigEntryClass(RebirthChanceSlider.class);
+					MULTIMOBCHANCEMAP.get(mobid).setConfigEntryClass(RebirthChanceSlider.class);
+				}
+				REBIRTHCHANCEMAP.get(mobid).setMaxValue(1.0);
+				REBIRTHCHANCEMAP.get(mobid).setMinValue(0.0);
+				MULTIMOBCHANCEMAP.get(mobid).setMaxValue(1.0);
+				MULTIMOBCHANCEMAP.get(mobid).setMinValue(0.0);
+				mobConfigs.put(mobid, mobConfig);
+			}
+	}
+
+	public static void syncMobConfigs(){
+		if(instance.customProperties) {
+			ConfigValues.REBIRTHCHANCEMAP.clear();
+			ConfigValues.MULTIMOBCHANCEMAP.clear();
+			ConfigValues.DROPEGGMAP.clear();
+			ConfigValues.EXTRAMOBCOUNTMAP.clear();
+			ConfigValues.REBIRTHFROMNONPLAYERMAP.clear();
+			for (String mobid : ConfigValues.CUSTOMENTITIES) {
+				ConfigValues.REBIRTHCHANCEMAP.put(mobid, REBIRTHCHANCEMAP.get(mobid).getDouble());
+				ConfigValues.MULTIMOBCHANCEMAP.put(mobid, MULTIMOBCHANCEMAP.get(mobid).getDouble());
+				ConfigValues.DROPEGGMAP.put(mobid, DROPEGGMAP.get(mobid).getBoolean());
+				ConfigValues.EXTRAMOBCOUNTMAP.put(mobid, EXTRAMOBCOUNTMAP.get(mobid).getInt());
+				ConfigValues.REBIRTHFROMNONPLAYERMAP.put(mobid, PLAYERREBIRTHMAP.get(mobid).getBoolean());
+				if(mobConfigs.get(mobid).hasChanged())
+					mobConfigs.get(mobid).save();
+			}
 		}
 	}
 }

@@ -19,6 +19,7 @@ import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.apache.commons.lang3.ArrayUtils;
 import the_fireplace.mobrebirth.MobRebirth;
 
 import java.util.Random;
@@ -29,23 +30,36 @@ public class CommonEvents {
 
 	@SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-		if(eventArgs.getModID().equals(MobRebirth.MODID))
+		if(eventArgs.getModID().equals(MobRebirth.MODID)) {
 			MobRebirth.syncConfig();
+			MobRebirth.syncMobConfigs();
+		}
 	}
 
 	@SubscribeEvent
 	public void onEntityLivingDeath(LivingDropsEvent event) {
-		if(ConfigValues.REBIRTHFROMNONPLAYER) {
-			if (event.getEntityLiving() instanceof IMob)
-				makeMobRebornTransition(event);
-			else if (event.getEntityLiving() instanceof IAnimals && ConfigValues.ANIMALREBIRTH)
-				makeMobRebornTransition(event);
-		}else if(event.getSource().getEntity() instanceof EntityPlayer)
-				if (event.getEntityLiving() instanceof IMob)
-					makeMobRebornTransition(event);
-				else if (event.getEntityLiving() instanceof IAnimals && ConfigValues.ANIMALREBIRTH)
-					makeMobRebornTransition(event);
+		if(MobRebirth.instance.getHasCustomMobSettings()) {
+			if(ArrayUtils.contains(ConfigValues.CUSTOMENTITIES, EntityList.getEntityString(event.getEntityLiving()))){
+				if (ConfigValues.REBIRTHFROMNONPLAYERMAP.get(EntityList.getEntityString(event.getEntityLiving())))
+					transition(event);
+				else if (event.getSource().getEntity() instanceof EntityPlayer)
+					transition(event);
+				return;
+			}
+		}
+		if (ConfigValues.REBIRTHFROMNONPLAYER)
+			transition(event);
+		else if (event.getSource().getEntity() instanceof EntityPlayer)
+			transition(event);
 	}
+
+	private void transition(LivingDropsEvent event){
+		if (event.getEntityLiving() instanceof IMob)
+			makeMobRebornTransition(event);
+		else if (event.getEntityLiving() instanceof IAnimals && ConfigValues.ANIMALREBIRTH)
+			makeMobRebornTransition(event);
+	}
+
 	private void makeMobRebornTransition(LivingDropsEvent event){
 		if(ConfigValues.ALLOWBOSSES){
 			if(event.getEntityLiving() instanceof EntityWither || event.getEntityLiving() instanceof EntityDragon){
@@ -69,9 +83,52 @@ public class CommonEvents {
 			makeMobReborn(event);
 		}
 	}
+
 	private void makeMobReborn(LivingDropsEvent event){
 		double rand = Math.random();
 		String name = EntityList.getEntityString(event.getEntityLiving());
+		if(MobRebirth.instance.getHasCustomMobSettings()){
+			if(ArrayUtils.contains(ConfigValues.CUSTOMENTITIES, name)){
+				if (rand <= ConfigValues.REBIRTHCHANCEMAP.get(name)) {
+					if (ConfigValues.DROPEGGMAP.get(name) && EntityList.ENTITY_EGGS.containsKey(name)){
+						ItemStack dropEgg = new ItemStack(Items.SPAWN_EGG);
+						NBTTagCompound eggData = new NBTTagCompound();
+						NBTTagCompound mobData = new NBTTagCompound();
+						mobData.setString("id", name);
+						eggData.setTag("EntityTag", mobData);
+						dropEgg.setTagCompound(eggData);
+						event.getEntityLiving().entityDropItem(dropEgg, 0.0F);
+					} else {
+						createEntity(event);
+						if(ConfigValues.EXTRAMOBCOUNTMAP.get(name) > 0){
+							double rand2 = Math.random();
+							if(ConfigValues.MULTIMOBMODE.toLowerCase().equals("all")){
+								if(rand2 <= ConfigValues.MULTIMOBCHANCEMAP.get(name)){
+									for(int i=0;i<ConfigValues.EXTRAMOBCOUNTMAP.get(name);i++){
+										createEntity(event);
+									}
+								}
+							}else if(ConfigValues.MULTIMOBMODE.toLowerCase().equals("per-mob")){
+								for(int i=0;i<ConfigValues.EXTRAMOBCOUNTMAP.get(name);i++,rand2=new Random().nextDouble()){
+									if(rand2 <= ConfigValues.MULTIMOBCHANCEMAP.get(name)){
+										createEntity(event);
+									}
+								}
+							}else{
+								for(int i=0;i<ConfigValues.EXTRAMOBCOUNTMAP.get(name);i++,rand2=new Random().nextDouble()){
+									if(rand2 <= ConfigValues.MULTIMOBCHANCEMAP.get(name)){
+										createEntity(event);
+									}else{
+										break;
+									}
+								}
+							}
+						}
+					}
+				}
+				return;
+			}
+		}
 		if (rand <= ConfigValues.REBIRTHCHANCE) {
 			if (ConfigValues.DROPEGG && EntityList.ENTITY_EGGS.containsKey(name)){
 				ItemStack dropEgg = new ItemStack(Items.SPAWN_EGG);
