@@ -12,7 +12,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.FMLInjectionData;
 import net.minecraftforge.fml.relauncher.Side;
-import the_fireplace.mobrebirth.client.gui.CustomArrayEntry;
 import the_fireplace.mobrebirth.client.gui.RebirthChanceSlider;
 import the_fireplace.mobrebirth.common.CommonEvents;
 import the_fireplace.mobrebirth.common.ConfigValues;
@@ -142,7 +141,6 @@ public class MobRebirth {
 		if(event.getSide().isClient()) {
 			REBIRTHCHANCE_PROPERTY.setConfigEntryClass(RebirthChanceSlider.class);
 			MULTIMOBCHANCE_PROPERTY.setConfigEntryClass(RebirthChanceSlider.class);
-			CUSTOMENTITIES_PROPERTY.setConfigEntryClass(CustomArrayEntry.class);
 		}
 
 		MULTIMOBMODE_PROPERTY.setValidValues(new String[]{"all","continuous","per-mob"});
@@ -191,6 +189,7 @@ public class MobRebirth {
 			for(String mobid:ConfigValues.CUSTOMENTITIES){
 				Configuration mobConfig = new Configuration(new File(customConfigDir, mobid+".cfg"));
 				mobConfig.load();
+				System.out.println("Creating mob config for "+mobid);
 				if(!REBIRTHCHANCEMAP.containsKey(mobid))
 					REBIRTHCHANCEMAP.put(mobid, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.REBIRTHCHANCE_NAME, ConfigValues.REBIRTHCHANCE));
 				if(!MULTIMOBCHANCEMAP.containsKey(mobid))
@@ -201,7 +200,7 @@ public class MobRebirth {
 					EXTRAMOBCOUNTMAP.put(mobid, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.EXTRAMOBCOUNT_NAME, ConfigValues.EXTRAMOBCOUNT));
 				if(!PLAYERREBIRTHMAP.containsKey(mobid))
 					PLAYERREBIRTHMAP.put(mobid, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.REBIRTHFROMNONPLAYER_NAME, ConfigValues.REBIRTHFROMNONPLAYER));
-				if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {//TODO: Ensure that this doesn't crash dedicated servers
+				if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
 					REBIRTHCHANCEMAP.get(mobid).setConfigEntryClass(RebirthChanceSlider.class);
 					MULTIMOBCHANCEMAP.get(mobid).setConfigEntryClass(RebirthChanceSlider.class);
 				}
@@ -221,6 +220,7 @@ public class MobRebirth {
 			ConfigValues.EXTRAMOBCOUNTMAP.clear();
 			ConfigValues.REBIRTHFROMNONPLAYERMAP.clear();
 			for (String mobid : ConfigValues.CUSTOMENTITIES) {
+				System.out.println("Syncing config for "+mobid);
 				ConfigValues.REBIRTHCHANCEMAP.put(mobid, REBIRTHCHANCEMAP.get(mobid).getDouble());
 				ConfigValues.MULTIMOBCHANCEMAP.put(mobid, MULTIMOBCHANCEMAP.get(mobid).getDouble());
 				ConfigValues.DROPEGGMAP.put(mobid, DROPEGGMAP.get(mobid).getBoolean());

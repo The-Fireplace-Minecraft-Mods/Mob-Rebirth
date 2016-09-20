@@ -46,7 +46,7 @@ public class MobRebirthConfigGui extends GuiConfig {
 		protected GuiScreen buildChildScreen(){
 			return new GuiConfig(owningScreen,
 					getConfigElements(), MobRebirth.MODID, false,
-					false, I18n.format("customentities"));
+					false, I18n.format("customMobs.tooltip"));
 		}
 		public static List<IConfigElement> getConfigElements(){
 			List<IConfigElement> list = new ArrayList<>();

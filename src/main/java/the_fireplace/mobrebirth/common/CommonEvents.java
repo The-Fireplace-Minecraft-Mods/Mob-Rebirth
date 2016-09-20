@@ -32,6 +32,7 @@ public class CommonEvents {
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
 		if(eventArgs.getModID().equals(MobRebirth.MODID)) {
 			MobRebirth.syncConfig();
+			MobRebirth.createMobConfigs();
 			MobRebirth.syncMobConfigs();
 		}
 	}
