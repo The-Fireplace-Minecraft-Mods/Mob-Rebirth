@@ -1,0 +1,27 @@
+variables:
+  CACHE_DIR: "$CI_PROJECT_DIR/build"
+  CACHE_DIR2: "$CI_PROJECT_DIR/.gradle"
+  
+  ORIG_ARTIFACTS: "$CI_PROJECT_DIR/build/libs/MobRebirth-Forge-*.jar"
+  ARTIFACTS: "$CI_PROJECT_DIR/MobRebirth-Forge-*.jar"
+
+cache:
+ paths:
+ - $CACHE_DIR
+ - $CACHE_DIR2
+ key: "$CI_BUILD_REF_NAME"
+ untracked: false
+
+stages:
+- deploy
+    
+deploy:
+  stage: deploy
+  script:
+  - ./gradlew clean build uploadArchives curseforge uploadToModsIO -PcurseForgeApiKey=$curseForgeApiKey -PmodsioApiKey=$modsioApiKey
+  - cp $ORIG_ARTIFACTS .
+  when: manual
+  artifacts:
+    name: "MobRebirth-Forge-$(cat $CACHE_DIR/.version)"
+    paths:
+    - $ARTIFACTS

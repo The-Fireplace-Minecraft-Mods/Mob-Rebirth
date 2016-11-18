@@ -12,6 +12,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -87,7 +88,7 @@ public class CommonEvents {
 
 	private void makeMobReborn(LivingDropsEvent event){
 		double rand = Math.random();
-		String name = EntityList.getEntityString(event.getEntityLiving());
+		ResourceLocation name = EntityList.func_191301_a(event.getEntityLiving());
 		if(MobRebirth.instance.getHasCustomMobSettings()){
 			if(ArrayUtils.contains(ConfigValues.CUSTOMENTITIES, name)){
 				if (rand <= ConfigValues.REBIRTHCHANCEMAP.get(name)) {
@@ -95,7 +96,7 @@ public class CommonEvents {
 						ItemStack dropEgg = new ItemStack(Items.SPAWN_EGG);
 						NBTTagCompound eggData = new NBTTagCompound();
 						NBTTagCompound mobData = new NBTTagCompound();
-						mobData.setString("id", name);
+						mobData.setString("id", name.toString());
 						eggData.setTag("EntityTag", mobData);
 						dropEgg.setTagCompound(eggData);
 						event.getEntityLiving().entityDropItem(dropEgg, 0.0F);
@@ -135,7 +136,7 @@ public class CommonEvents {
 				ItemStack dropEgg = new ItemStack(Items.SPAWN_EGG);
 				NBTTagCompound eggData = new NBTTagCompound();
 				NBTTagCompound mobData = new NBTTagCompound();
-				mobData.setString("id", name);
+				mobData.setString("id", name.toString());
 				eggData.setTag("EntityTag", mobData);
 				dropEgg.setTagCompound(eggData);
 				event.getEntityLiving().entityDropItem(dropEgg, 0.0F);
@@ -173,14 +174,14 @@ public class CommonEvents {
 		//Store
 		EntityLivingBase entity;
 		World worldIn = event.getEntityLiving().worldObj;
-		String sid = EntityList.getEntityString(event.getEntityLiving());
+		ResourceLocation sid = EntityList.func_191301_a(event.getEntityLiving());
 		NBTTagCompound storedData = event.getEntityLiving().getEntityData();
 		event.getEntityLiving().writeEntityToNBT(storedData);
 		ItemStack weapon = event.getEntityLiving().getHeldItem(EnumHand.MAIN_HAND);
 		ItemStack offhand = event.getEntityLiving().getHeldItem(EnumHand.OFF_HAND);
 		float health = event.getEntityLiving().getMaxHealth();
 		//Read
-		entity = (EntityLivingBase) EntityList.createEntityByName(sid, worldIn);
+		entity = (EntityLivingBase) EntityList.createEntityByIDFromName(sid, worldIn);
 		if(entity == null)
 			return;
 		entity.rotationYawHead = entity.rotationYaw;
@@ -188,9 +189,9 @@ public class CommonEvents {
 		storedData.setInteger("Health", (int)health);
 		entity.readFromNBT(storedData);
 		entity.setHealth(health);
-		if(weapon != null)
+		if(weapon.func_190926_b())
 			entity.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, weapon);
-		if(offhand != null)
+		if(offhand.func_190926_b())
 			entity.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, offhand);
 		entity.setPosition(event.getEntityLiving().posX, event.getEntityLiving().posY, event.getEntityLiving().posZ);
 		worldIn.spawnEntityInWorld(entity);
@@ -204,6 +205,6 @@ public class CommonEvents {
 	}
 
 	public static boolean isVanilla(EntityLivingBase entity){
-		return entity.getClass() == EntityDragon.class || entity.getClass() == EntityWither.class || entity.getClass() == EntityBlaze.class || entity.getClass() == EntityCaveSpider.class || entity.getClass() == EntityCreeper.class || entity.getClass() == EntityEnderman.class || entity.getClass() == EntityEndermite.class || entity.getClass() == EntityGhast.class || entity.getClass() == EntityGiantZombie.class || entity.getClass() == EntityGuardian.class || entity.getClass() == EntityIronGolem.class || entity.getClass() == EntityMagmaCube.class || entity.getClass() == EntityPigZombie.class || entity.getClass() == EntityShulker.class || entity.getClass() == EntitySilverfish.class || entity.getClass() == EntitySkeleton.class || entity.getClass() == EntitySlime.class || entity.getClass() == EntitySnowman.class || entity.getClass() == EntitySpider.class || entity.getClass() == EntityWitch.class || entity.getClass() == EntityZombie.class || entity.getClass() == EntityBat.class || entity.getClass() == EntityChicken.class || entity.getClass() == EntityCow.class || entity.getClass() == EntityHorse.class || entity.getClass() == EntityMooshroom.class || entity.getClass() == EntityOcelot.class || entity.getClass() == EntityPig.class || entity.getClass() == EntityRabbit.class || entity.getClass() == EntitySheep.class || entity.getClass() == EntitySquid.class || entity.getClass() == EntityVillager.class || entity.getClass() == EntityWolf.class || entity.getClass() == EntityPolarBear.class;
+		return entity.getClass() == EntityDragon.class || entity.getClass() == EntityWither.class || entity.getClass() == EntityBlaze.class || entity.getClass() == EntityCaveSpider.class || entity.getClass() == EntityCreeper.class || entity.getClass() == EntityEnderman.class || entity.getClass() == EntityEndermite.class || entity.getClass() == EntityGhast.class || entity.getClass() == EntityGiantZombie.class || entity.getClass() == EntityGuardian.class || entity.getClass() == EntityIronGolem.class || entity.getClass() == EntityMagmaCube.class || entity.getClass() == EntityPigZombie.class || entity.getClass() == EntityShulker.class || entity.getClass() == EntitySilverfish.class || entity.getClass() == EntitySkeleton.class || entity.getClass() == EntitySlime.class || entity.getClass() == EntitySnowman.class || entity.getClass() == EntitySpider.class || entity.getClass() == EntityWitch.class || entity.getClass() == EntityZombie.class || entity.getClass() == EntityBat.class || entity.getClass() == EntityChicken.class || entity.getClass() == EntityCow.class || entity.getClass() == EntityHorse.class || entity.getClass() == EntityMooshroom.class || entity.getClass() == EntityOcelot.class || entity.getClass() == EntityPig.class || entity.getClass() == EntityRabbit.class || entity.getClass() == EntitySheep.class || entity.getClass() == EntitySquid.class || entity.getClass() == EntityVillager.class || entity.getClass() == EntityWolf.class || entity.getClass() == EntityPolarBear.class || entity.getClass() == EntityElderGuardian.class || entity.getClass() == EntityEvoker.class || entity.getClass() == EntityHusk.class || entity.getClass() == EntityVex.class || entity.getClass() == EntityVindicator.class || entity.getClass() == EntityZombieVillager.class || entity.getClass() == EntityStray.class || entity.getClass() == EntityLlama.class || entity.getClass() == EntityMule.class || entity.getClass() == EntityDonkey.class;
 	}
 }

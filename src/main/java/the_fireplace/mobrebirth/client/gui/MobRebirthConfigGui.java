@@ -2,6 +2,7 @@ package the_fireplace.mobrebirth.client.gui;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.config.DummyConfigElement.DummyCategoryElement;
@@ -50,8 +51,9 @@ public class MobRebirthConfigGui extends GuiConfig {
 		}
 		public static List<IConfigElement> getConfigElements(){
 			List<IConfigElement> list = new ArrayList<>();
-			for(String mob:ConfigValues.CUSTOMENTITIES){
-				list.add(new DummyCategoryElement(mob, mob, new ConfigElement(MobRebirth.mobConfigs.get(mob).getCategory(Configuration.CATEGORY_GENERAL)).getChildElements()));
+			for(String mobstring:ConfigValues.CUSTOMENTITIES){
+				ResourceLocation mob = new ResourceLocation(mobstring);
+				list.add(new DummyCategoryElement(mobstring, mobstring, new ConfigElement(MobRebirth.mobConfigs.get(mob).getCategory(Configuration.CATEGORY_GENERAL)).getChildElements()));
 			}
 			return list;
 		}

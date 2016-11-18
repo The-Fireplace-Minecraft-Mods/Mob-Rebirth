@@ -1,6 +1,7 @@
 package the_fireplace.mobrebirth;
 
 import com.google.common.collect.Maps;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
@@ -29,7 +30,7 @@ public class MobRebirth {
 	private static final File configDir = new File((File) FMLInjectionData.data()[6], "config/MobRebirth/");
 	private static final File customConfigDir = new File(configDir, "mobs");
 	private boolean customProperties = false;
-	public static Map<String, Configuration> mobConfigs = Maps.newHashMap();
+	public static Map<ResourceLocation, Configuration> mobConfigs = Maps.newHashMap();
 
 	@Mod.Instance(MODID)
 	public static MobRebirth instance;
@@ -49,18 +50,18 @@ public class MobRebirth {
 	public static Property ANIMALREBIRTH_PROPERTY;
 
 	public static Property REBIRTHCHANCE_PROPERTY;
-	public static Map<String, Property> REBIRTHCHANCEMAP;
+	public static Map<ResourceLocation, Property> REBIRTHCHANCEMAP;
 	public static Property MULTIMOBCHANCE_PROPERTY;
-	public static Map<String, Property> MULTIMOBCHANCEMAP;
+	public static Map<ResourceLocation, Property> MULTIMOBCHANCEMAP;
 
 	public static Property DAMAGEFROMSUNLIGHT_PROPERTY;
 	public static Property DROPEGG_PROPERTY;
-	public static Map<String, Property> DROPEGGMAP;
+	public static Map<ResourceLocation, Property> DROPEGGMAP;
 	public static Property EXTRAMOBCOUNT_PROPERTY;
-	public static Map<String, Property> EXTRAMOBCOUNTMAP;
+	public static Map<ResourceLocation, Property> EXTRAMOBCOUNTMAP;
 	public static Property MULTIMOBMODE_PROPERTY;
 	public static Property REBIRTHFROMNONPLAYER_PROPERTY;
-	public static Map<String, Property> PLAYERREBIRTHMAP;
+	public static Map<ResourceLocation, Property> PLAYERREBIRTHMAP;
 
 	public static Property VANILLAONLY_PROPERTY;
 
@@ -186,7 +187,8 @@ public class MobRebirth {
 
 	public static void createMobConfigs(){
 		if(instance.customProperties)
-			for(String mobid:ConfigValues.CUSTOMENTITIES){
+			for(String mobidstring:ConfigValues.CUSTOMENTITIES){
+				ResourceLocation mobid = new ResourceLocation(mobidstring);
 				Configuration mobConfig = new Configuration(new File(customConfigDir, mobid+".cfg"));
 				mobConfig.load();
 				System.out.println("Creating mob config for "+mobid);
@@ -219,8 +221,8 @@ public class MobRebirth {
 			ConfigValues.DROPEGGMAP.clear();
 			ConfigValues.EXTRAMOBCOUNTMAP.clear();
 			ConfigValues.REBIRTHFROMNONPLAYERMAP.clear();
-			for (String mobid : ConfigValues.CUSTOMENTITIES) {
-				System.out.println("Syncing config for "+mobid);
+			for (String mobidstring : ConfigValues.CUSTOMENTITIES) {
+				ResourceLocation mobid = new ResourceLocation(mobidstring);
 				ConfigValues.REBIRTHCHANCEMAP.put(mobid, REBIRTHCHANCEMAP.get(mobid).getDouble());
 				ConfigValues.MULTIMOBCHANCEMAP.put(mobid, MULTIMOBCHANCEMAP.get(mobid).getDouble());
 				ConfigValues.DROPEGGMAP.put(mobid, DROPEGGMAP.get(mobid).getBoolean());
