@@ -29,15 +29,15 @@ allprojects {
     targetCompatibility = 1.8
 }
 
-version = "7.0.0"
+version = "7.0.1"
 group= "the_fireplace.mobrebirth"
 archivesBaseName = "MobRebirth-Forge"
 
 minecraft {
-    version = "1.11-13.19.0.2148"
+    version = "1.11-13.19.0.2153"
     runDir = "run"
     replace '${version}', project.version
-    mappings = "snapshot_20161111"
+    mappings = "snapshot_20161119"
 }
 
 dependencies {

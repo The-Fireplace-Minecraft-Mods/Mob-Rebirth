@@ -41,8 +41,9 @@ public class CommonEvents {
 	@SubscribeEvent
 	public void onEntityLivingDeath(LivingDropsEvent event) {
 		if(MobRebirth.instance.getHasCustomMobSettings()) {
-			if(ArrayUtils.contains(ConfigValues.CUSTOMENTITIES, EntityList.getEntityString(event.getEntityLiving()))){
-				if (ConfigValues.REBIRTHFROMNONPLAYERMAP.get(EntityList.getEntityString(event.getEntityLiving())))
+			if(EntityList.getKey(event.getEntityLiving()) != null)
+			if(ArrayUtils.contains(ConfigValues.CUSTOMENTITIES, EntityList.getKey(event.getEntityLiving()).toString())){
+				if (ConfigValues.REBIRTHFROMNONPLAYERMAP.get(EntityList.getKey(event.getEntityLiving())))
 					transition(event);
 				else if (event.getSource().getEntity() instanceof EntityPlayer)
 					transition(event);
@@ -88,7 +89,7 @@ public class CommonEvents {
 
 	private void makeMobReborn(LivingDropsEvent event){
 		double rand = Math.random();
-		ResourceLocation name = EntityList.func_191301_a(event.getEntityLiving());
+		ResourceLocation name = EntityList.getKey(event.getEntityLiving());
 		if(MobRebirth.instance.getHasCustomMobSettings()){
 			if(ArrayUtils.contains(ConfigValues.CUSTOMENTITIES, name)){
 				if (rand <= ConfigValues.REBIRTHCHANCEMAP.get(name)) {
@@ -173,8 +174,8 @@ public class CommonEvents {
 	private void createEntity(LivingDropsEvent event){
 		//Store
 		EntityLivingBase entity;
-		World worldIn = event.getEntityLiving().worldObj;
-		ResourceLocation sid = EntityList.func_191301_a(event.getEntityLiving());
+		World worldIn = event.getEntityLiving().world;
+		ResourceLocation sid = EntityList.getKey(event.getEntityLiving());
 		NBTTagCompound storedData = event.getEntityLiving().getEntityData();
 		event.getEntityLiving().writeEntityToNBT(storedData);
 		ItemStack weapon = event.getEntityLiving().getHeldItem(EnumHand.MAIN_HAND);
@@ -189,17 +190,17 @@ public class CommonEvents {
 		storedData.setInteger("Health", (int)health);
 		entity.readFromNBT(storedData);
 		entity.setHealth(health);
-		if(weapon.func_190926_b())
+		if(!weapon.isEmpty())
 			entity.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, weapon);
-		if(offhand.func_190926_b())
+		if(!offhand.isEmpty())
 			entity.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, offhand);
 		entity.setPosition(event.getEntityLiving().posX, event.getEntityLiving().posY, event.getEntityLiving().posZ);
-		worldIn.spawnEntityInWorld(entity);
+		worldIn.spawnEntity(entity);
 	}
 
 	@SubscribeEvent
 	public void entityDamaged(LivingHurtEvent event){
-		if(event.getSource().isFireDamage() && !ConfigValues.DAMAGEFROMSUNLIGHT && event.getEntityLiving().isEntityUndead() && !event.getEntityLiving().isInLava() && event.getEntityLiving().worldObj.canBlockSeeSky(new BlockPos(MathHelper.floor_double(event.getEntityLiving().posX), MathHelper.floor_double(event.getEntityLiving().posY), MathHelper.floor_double(event.getEntityLiving().posZ)))){
+		if(event.getSource().isFireDamage() && !ConfigValues.DAMAGEFROMSUNLIGHT && event.getEntityLiving().isEntityUndead() && !event.getEntityLiving().isInLava() && event.getEntityLiving().world.canBlockSeeSky(new BlockPos(MathHelper.floor(event.getEntityLiving().posX), MathHelper.floor(event.getEntityLiving().posY), MathHelper.floor(event.getEntityLiving().posZ)))){
 			event.setCanceled(true);
 		}
 	}
