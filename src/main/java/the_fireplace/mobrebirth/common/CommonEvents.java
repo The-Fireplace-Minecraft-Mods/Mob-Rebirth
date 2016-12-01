@@ -41,9 +41,9 @@ public class CommonEvents {
 	@SubscribeEvent
 	public void onEntityLivingDeath(LivingDropsEvent event) {
 		if(MobRebirth.instance.getHasCustomMobSettings()) {
-			if(!EntityList.getEntityString(event.getEntityLiving()).isEmpty())
-			if(ArrayUtils.contains(ConfigValues.CUSTOMENTITIES, EntityList.getEntityString(event.getEntityLiving()))){
-				if (ConfigValues.REBIRTHFROMNONPLAYERMAP.get(EntityList.getEntityString(event.getEntityLiving())))
+			if(ArrayUtils.contains(ConfigValues.CUSTOMENTITIES, EntityList.getEntityString(event.getEntityLiving()).toLowerCase())){
+				System.out.println("Entity killed has custom settings");
+				if (ConfigValues.REBIRTHFROMNONPLAYERMAP.get(EntityList.getEntityString(event.getEntityLiving()).toLowerCase()))
 					transition(event);
 				else if (event.getSource().getEntity() instanceof EntityPlayer)
 					transition(event);
@@ -89,7 +89,8 @@ public class CommonEvents {
 
 	private void makeMobReborn(LivingDropsEvent event){
 		double rand = Math.random();
-		String name = EntityList.getEntityString(event.getEntityLiving());
+		String casename = EntityList.getEntityString(event.getEntityLiving());
+		String name = casename.toLowerCase();
 		if(MobRebirth.instance.getHasCustomMobSettings()){
 			if(ArrayUtils.contains(ConfigValues.CUSTOMENTITIES, name)){
 				if (rand <= ConfigValues.REBIRTHCHANCEMAP.get(name)) {
@@ -97,7 +98,7 @@ public class CommonEvents {
 						ItemStack dropEgg = new ItemStack(Items.SPAWN_EGG);
 						NBTTagCompound eggData = new NBTTagCompound();
 						NBTTagCompound mobData = new NBTTagCompound();
-						mobData.setString("id", name);
+						mobData.setString("id", casename);
 						eggData.setTag("EntityTag", mobData);
 						dropEgg.setTagCompound(eggData);
 						event.getEntityLiving().entityDropItem(dropEgg, 0.0F);
@@ -137,7 +138,7 @@ public class CommonEvents {
 				ItemStack dropEgg = new ItemStack(Items.SPAWN_EGG);
 				NBTTagCompound eggData = new NBTTagCompound();
 				NBTTagCompound mobData = new NBTTagCompound();
-				mobData.setString("id", name);
+				mobData.setString("id", casename);
 				eggData.setTag("EntityTag", mobData);
 				dropEgg.setTagCompound(eggData);
 				event.getEntityLiving().entityDropItem(dropEgg, 0.0F);
