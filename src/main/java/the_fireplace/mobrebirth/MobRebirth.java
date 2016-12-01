@@ -51,18 +51,18 @@ public class MobRebirth {
 	public static Property ANIMALREBIRTH_PROPERTY;
 
 	public static Property REBIRTHCHANCE_PROPERTY;
-	public static Map<ResourceLocation, Property> REBIRTHCHANCEMAP;
+	public static Map<String, Property> REBIRTHCHANCEMAP;
 	public static Property MULTIMOBCHANCE_PROPERTY;
-	public static Map<ResourceLocation, Property> MULTIMOBCHANCEMAP;
+	public static Map<String, Property> MULTIMOBCHANCEMAP;
 
 	public static Property DAMAGEFROMSUNLIGHT_PROPERTY;
 	public static Property DROPEGG_PROPERTY;
-	public static Map<ResourceLocation, Property> DROPEGGMAP;
+	public static Map<String, Property> DROPEGGMAP;
 	public static Property EXTRAMOBCOUNT_PROPERTY;
-	public static Map<ResourceLocation, Property> EXTRAMOBCOUNTMAP;
+	public static Map<String, Property> EXTRAMOBCOUNTMAP;
 	public static Property MULTIMOBMODE_PROPERTY;
 	public static Property REBIRTHFROMNONPLAYER_PROPERTY;
-	public static Map<ResourceLocation, Property> PLAYERREBIRTHMAP;
+	public static Map<String, Property> PLAYERREBIRTHMAP;
 
 	public static Property VANILLAONLY_PROPERTY;
 
@@ -196,24 +196,24 @@ public class MobRebirth {
 				Configuration mobConfig = new Configuration(new File(customConfigDir, mobid.getResourcePath().toLowerCase()+".cfg"));
 				mobConfig.load();
 				System.out.println("Creating mob config for "+mobidstring);
-				if(!REBIRTHCHANCEMAP.containsKey(mobid))
-					REBIRTHCHANCEMAP.put(mobid, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.REBIRTHCHANCE_NAME, ConfigValues.REBIRTHCHANCE));
-				if(!MULTIMOBCHANCEMAP.containsKey(mobid))
-					MULTIMOBCHANCEMAP.put(mobid, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.MULTIMOBCHANCE_NAME, ConfigValues.MULTIMOBCHANCE));
-				if(!DROPEGGMAP.containsKey(mobid))
-					DROPEGGMAP.put(mobid, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.DROPEGG_NAME, ConfigValues.DROPEGG));
-				if(!EXTRAMOBCOUNTMAP.containsKey(mobid))
-					EXTRAMOBCOUNTMAP.put(mobid, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.EXTRAMOBCOUNT_NAME, ConfigValues.EXTRAMOBCOUNT));
-				if(!PLAYERREBIRTHMAP.containsKey(mobid))
-					PLAYERREBIRTHMAP.put(mobid, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.REBIRTHFROMNONPLAYER_NAME, ConfigValues.REBIRTHFROMNONPLAYER));
+				if(!REBIRTHCHANCEMAP.containsKey(mobidstring))
+					REBIRTHCHANCEMAP.put(mobidstring, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.REBIRTHCHANCE_NAME, ConfigValues.REBIRTHCHANCE));
+				if(!MULTIMOBCHANCEMAP.containsKey(mobidstring))
+					MULTIMOBCHANCEMAP.put(mobidstring, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.MULTIMOBCHANCE_NAME, ConfigValues.MULTIMOBCHANCE));
+				if(!DROPEGGMAP.containsKey(mobidstring))
+					DROPEGGMAP.put(mobidstring, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.DROPEGG_NAME, ConfigValues.DROPEGG));
+				if(!EXTRAMOBCOUNTMAP.containsKey(mobidstring))
+					EXTRAMOBCOUNTMAP.put(mobidstring, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.EXTRAMOBCOUNT_NAME, ConfigValues.EXTRAMOBCOUNT));
+				if(!PLAYERREBIRTHMAP.containsKey(mobidstring))
+					PLAYERREBIRTHMAP.put(mobidstring, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.REBIRTHFROMNONPLAYER_NAME, ConfigValues.REBIRTHFROMNONPLAYER));
 				if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
-					REBIRTHCHANCEMAP.get(mobid).setConfigEntryClass(RebirthChanceSlider.class);
-					MULTIMOBCHANCEMAP.get(mobid).setConfigEntryClass(RebirthChanceSlider.class);
+					REBIRTHCHANCEMAP.get(mobidstring).setConfigEntryClass(RebirthChanceSlider.class);
+					MULTIMOBCHANCEMAP.get(mobidstring).setConfigEntryClass(RebirthChanceSlider.class);
 				}
-				REBIRTHCHANCEMAP.get(mobid).setMaxValue(1.0);
-				REBIRTHCHANCEMAP.get(mobid).setMinValue(0.0);
-				MULTIMOBCHANCEMAP.get(mobid).setMaxValue(1.0);
-				MULTIMOBCHANCEMAP.get(mobid).setMinValue(0.0);
+				REBIRTHCHANCEMAP.get(mobidstring).setMaxValue(1.0);
+				REBIRTHCHANCEMAP.get(mobidstring).setMinValue(0.0);
+				MULTIMOBCHANCEMAP.get(mobidstring).setMaxValue(1.0);
+				MULTIMOBCHANCEMAP.get(mobidstring).setMinValue(0.0);
 				mobConfigs.put(mobidstring, mobConfig);
 			}
 	}
@@ -226,14 +226,13 @@ public class MobRebirth {
 			ConfigValues.EXTRAMOBCOUNTMAP.clear();
 			ConfigValues.REBIRTHFROMNONPLAYERMAP.clear();
 			for (String mobidstring : ConfigValues.CUSTOMENTITIES) {
-				ResourceLocation mobid = new ResourceLocation(mobidstring.toLowerCase());
-				if(REBIRTHCHANCEMAP.get(mobid) == null)
+				if(REBIRTHCHANCEMAP.get(mobidstring) == null)
 					continue;
-				ConfigValues.REBIRTHCHANCEMAP.put(mobid, REBIRTHCHANCEMAP.get(mobid).getDouble());
-				ConfigValues.MULTIMOBCHANCEMAP.put(mobid, MULTIMOBCHANCEMAP.get(mobid).getDouble());
-				ConfigValues.DROPEGGMAP.put(mobid, DROPEGGMAP.get(mobid).getBoolean());
-				ConfigValues.EXTRAMOBCOUNTMAP.put(mobid, EXTRAMOBCOUNTMAP.get(mobid).getInt());
-				ConfigValues.REBIRTHFROMNONPLAYERMAP.put(mobid, PLAYERREBIRTHMAP.get(mobid).getBoolean());
+				ConfigValues.REBIRTHCHANCEMAP.put(mobidstring, REBIRTHCHANCEMAP.get(mobidstring).getDouble());
+				ConfigValues.MULTIMOBCHANCEMAP.put(mobidstring, MULTIMOBCHANCEMAP.get(mobidstring).getDouble());
+				ConfigValues.DROPEGGMAP.put(mobidstring, DROPEGGMAP.get(mobidstring).getBoolean());
+				ConfigValues.EXTRAMOBCOUNTMAP.put(mobidstring, EXTRAMOBCOUNTMAP.get(mobidstring).getInt());
+				ConfigValues.REBIRTHFROMNONPLAYERMAP.put(mobidstring, PLAYERREBIRTHMAP.get(mobidstring).getBoolean());
 				if(mobConfigs.get(mobidstring).hasChanged())
 					mobConfigs.get(mobidstring).save();
 			}
