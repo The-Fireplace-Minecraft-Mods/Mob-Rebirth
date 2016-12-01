@@ -36,7 +36,6 @@ public class MobRebirth {
 	public static MobRebirth instance;
 
 	public boolean getHasCustomMobSettings(){
-		System.out.println("Custom Mob Settings detected");
 		return customProperties;
 	}
 
@@ -195,7 +194,6 @@ public class MobRebirth {
 				ResourceLocation mobid = new ResourceLocation(mobidstring.toLowerCase());
 				Configuration mobConfig = new Configuration(new File(customConfigDir, mobid.getResourcePath().toLowerCase()+".cfg"));
 				mobConfig.load();
-				System.out.println("Creating mob config for "+mobidstring);
 				if(!REBIRTHCHANCEMAP.containsKey(mobidstring))
 					REBIRTHCHANCEMAP.put(mobidstring, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.REBIRTHCHANCE_NAME, ConfigValues.REBIRTHCHANCE));
 				if(!MULTIMOBCHANCEMAP.containsKey(mobidstring))
