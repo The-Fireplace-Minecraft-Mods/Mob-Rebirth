@@ -29,7 +29,7 @@ allprojects {
     targetCompatibility = 1.8
 }
 
-version = "7.0.1"
+version = "7.0.2"
 group= "the_fireplace.mobrebirth"
 archivesBaseName = "MobRebirth-Forge"
 
@@ -89,11 +89,11 @@ artifacts {
 }
 
 curseforge {
-  apiKey = project.curseForgeApiKey
+  apiKey = project.hasProperty("curseForgeApiKey")? project.curseForgeApiKey : "empty"
   project {
     id = '226212'
     changelog = file('changelog.txt')
-    releaseType = 'beta'
+    releaseType = 'release'
     addGameVersion '1.11'
 	addGameVersion 'Java 8'
     mainArtifact(jar) {
@@ -111,13 +111,13 @@ curseforge {
 }
 
 modsIO {
-    key = project.modsioApiKey
+    key = project.hasProperty("modsioApiKey")? project.modsioApiKey : "empty"
     project{
 		artifact = new File(jar.destinationDir, archivesBaseName+"-"+version+".jar")
 		modid = "1222"
 		minecraft = "1.11"
 		try{changelog = file('changelog.txt').text}catch(Exception e){changelog=""}
-		tag = "beta"
+		tag = ""
 		current = true
     }
 }

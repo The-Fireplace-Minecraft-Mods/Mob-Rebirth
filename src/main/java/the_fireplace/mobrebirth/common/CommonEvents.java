@@ -33,6 +33,7 @@ public class CommonEvents {
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
 		if(eventArgs.getModID().equals(MobRebirth.MODID)) {
 			MobRebirth.syncConfig();
+			MobRebirth.syncMobConfigs();
 			MobRebirth.createMobConfigs();
 			MobRebirth.syncMobConfigs();
 		}
@@ -42,7 +43,7 @@ public class CommonEvents {
 	public void onEntityLivingDeath(LivingDropsEvent event) {
 		if(MobRebirth.instance.getHasCustomMobSettings()) {
 			if(EntityList.getKey(event.getEntityLiving()) != null)
-			if(ArrayUtils.contains(ConfigValues.CUSTOMENTITIES, EntityList.getKey(event.getEntityLiving()).toString())){
+			if(ArrayUtils.contains(ConfigValues.CUSTOMENTITIES, EntityList.getKey(event.getEntityLiving()).getResourcePath())){
 				if (ConfigValues.REBIRTHFROMNONPLAYERMAP.get(EntityList.getKey(event.getEntityLiving())))
 					transition(event);
 				else if (event.getSource().getEntity() instanceof EntityPlayer)
@@ -91,7 +92,7 @@ public class CommonEvents {
 		double rand = Math.random();
 		ResourceLocation name = EntityList.getKey(event.getEntityLiving());
 		if(MobRebirth.instance.getHasCustomMobSettings()){
-			if(ArrayUtils.contains(ConfigValues.CUSTOMENTITIES, name)){
+			if(ArrayUtils.contains(ConfigValues.CUSTOMENTITIES, name.getResourcePath())){
 				if (rand <= ConfigValues.REBIRTHCHANCEMAP.get(name)) {
 					if (ConfigValues.DROPEGGMAP.get(name) && EntityList.ENTITY_EGGS.containsKey(name)){
 						ItemStack dropEgg = new ItemStack(Items.SPAWN_EGG);

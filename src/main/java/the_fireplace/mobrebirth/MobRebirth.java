@@ -30,12 +30,13 @@ public class MobRebirth {
 	private static final File configDir = new File((File) FMLInjectionData.data()[6], "config/MobRebirth/");
 	private static final File customConfigDir = new File(configDir, "mobs");
 	private boolean customProperties = false;
-	public static Map<ResourceLocation, Configuration> mobConfigs = Maps.newHashMap();
+	public static Map<String, Configuration> mobConfigs = Maps.newHashMap();
 
 	@Mod.Instance(MODID)
 	public static MobRebirth instance;
 
 	public boolean getHasCustomMobSettings(){
+		System.out.println("Custom Mob Settings detected");
 		return customProperties;
 	}
 
@@ -103,6 +104,9 @@ public class MobRebirth {
 		if(general.hasChanged())
 			general.save();
 		instance.customProperties = ConfigValues.CUSTOMENTITIES != null && ConfigValues.CUSTOMENTITIES.length > 0;
+		for(int i=0;i<ConfigValues.CUSTOMENTITIES.length;i++){
+			ConfigValues.CUSTOMENTITIES[i]=new ResourceLocation(ConfigValues.CUSTOMENTITIES[i].toLowerCase()).getResourcePath();
+		}
 	}
 
 	@EventHandler
@@ -188,10 +192,10 @@ public class MobRebirth {
 	public static void createMobConfigs(){
 		if(instance.customProperties)
 			for(String mobidstring:ConfigValues.CUSTOMENTITIES){
-				ResourceLocation mobid = new ResourceLocation(mobidstring);
-				Configuration mobConfig = new Configuration(new File(customConfigDir, mobid+".cfg"));
+				ResourceLocation mobid = new ResourceLocation(mobidstring.toLowerCase());
+				Configuration mobConfig = new Configuration(new File(customConfigDir, mobid.getResourcePath().toLowerCase()+".cfg"));
 				mobConfig.load();
-				System.out.println("Creating mob config for "+mobid);
+				System.out.println("Creating mob config for "+mobidstring);
 				if(!REBIRTHCHANCEMAP.containsKey(mobid))
 					REBIRTHCHANCEMAP.put(mobid, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.REBIRTHCHANCE_NAME, ConfigValues.REBIRTHCHANCE));
 				if(!MULTIMOBCHANCEMAP.containsKey(mobid))
@@ -210,7 +214,7 @@ public class MobRebirth {
 				REBIRTHCHANCEMAP.get(mobid).setMinValue(0.0);
 				MULTIMOBCHANCEMAP.get(mobid).setMaxValue(1.0);
 				MULTIMOBCHANCEMAP.get(mobid).setMinValue(0.0);
-				mobConfigs.put(mobid, mobConfig);
+				mobConfigs.put(mobidstring, mobConfig);
 			}
 	}
 
@@ -222,14 +226,16 @@ public class MobRebirth {
 			ConfigValues.EXTRAMOBCOUNTMAP.clear();
 			ConfigValues.REBIRTHFROMNONPLAYERMAP.clear();
 			for (String mobidstring : ConfigValues.CUSTOMENTITIES) {
-				ResourceLocation mobid = new ResourceLocation(mobidstring);
+				ResourceLocation mobid = new ResourceLocation(mobidstring.toLowerCase());
+				if(REBIRTHCHANCEMAP.get(mobid) == null)
+					continue;
 				ConfigValues.REBIRTHCHANCEMAP.put(mobid, REBIRTHCHANCEMAP.get(mobid).getDouble());
 				ConfigValues.MULTIMOBCHANCEMAP.put(mobid, MULTIMOBCHANCEMAP.get(mobid).getDouble());
 				ConfigValues.DROPEGGMAP.put(mobid, DROPEGGMAP.get(mobid).getBoolean());
 				ConfigValues.EXTRAMOBCOUNTMAP.put(mobid, EXTRAMOBCOUNTMAP.get(mobid).getInt());
 				ConfigValues.REBIRTHFROMNONPLAYERMAP.put(mobid, PLAYERREBIRTHMAP.get(mobid).getBoolean());
-				if(mobConfigs.get(mobid).hasChanged())
-					mobConfigs.get(mobid).save();
+				if(mobConfigs.get(mobidstring).hasChanged())
+					mobConfigs.get(mobidstring).save();
 			}
 		}
 	}
