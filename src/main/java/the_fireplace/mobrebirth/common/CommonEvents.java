@@ -175,7 +175,7 @@ public class CommonEvents {
 	private void createEntity(LivingDropsEvent event){
 		//Store
 		EntityLivingBase entity;
-		World worldIn = event.getEntityLiving().world;
+		World worldIn = event.getEntityLiving().worldObj;
 		String sid = EntityList.getEntityString(event.getEntityLiving());
 		NBTTagCompound storedData = event.getEntityLiving().getEntityData();
 		event.getEntityLiving().writeEntityToNBT(storedData);
@@ -196,17 +196,17 @@ public class CommonEvents {
 		if(offhand != null)
 			entity.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, offhand);
 		entity.setPosition(event.getEntityLiving().posX, event.getEntityLiving().posY, event.getEntityLiving().posZ);
-		worldIn.spawnEntity(entity);
+		worldIn.spawnEntityInWorld(entity);
 	}
 
 	@SubscribeEvent
 	public void entityDamaged(LivingHurtEvent event){
-		if(event.getSource().isFireDamage() && !ConfigValues.DAMAGEFROMSUNLIGHT && event.getEntityLiving().isEntityUndead() && !event.getEntityLiving().isInLava() && event.getEntityLiving().world.canBlockSeeSky(new BlockPos(MathHelper.floor(event.getEntityLiving().posX), MathHelper.floor(event.getEntityLiving().posY), MathHelper.floor(event.getEntityLiving().posZ)))){
+		if(event.getSource().isFireDamage() && !ConfigValues.DAMAGEFROMSUNLIGHT && event.getEntityLiving().isEntityUndead() && !event.getEntityLiving().isInLava() && event.getEntityLiving().worldObj.canBlockSeeSky(new BlockPos(MathHelper.floor_double(event.getEntityLiving().posX), MathHelper.floor_double(event.getEntityLiving().posY), MathHelper.floor_double(event.getEntityLiving().posZ)))){
 			event.setCanceled(true);
 		}
 	}
 
 	public static boolean isVanilla(EntityLivingBase entity){
-		return entity.getClass() == EntityDragon.class || entity.getClass() == EntityWither.class || entity.getClass() == EntityBlaze.class || entity.getClass() == EntityCaveSpider.class || entity.getClass() == EntityCreeper.class || entity.getClass() == EntityEnderman.class || entity.getClass() == EntityEndermite.class || entity.getClass() == EntityGhast.class || entity.getClass() == EntityGiantZombie.class || entity.getClass() == EntityGuardian.class || entity.getClass() == EntityIronGolem.class || entity.getClass() == EntityMagmaCube.class || entity.getClass() == EntityPigZombie.class || entity.getClass() == EntityShulker.class || entity.getClass() == EntitySilverfish.class || entity.getClass() == EntitySkeleton.class || entity.getClass() == EntitySlime.class || entity.getClass() == EntitySnowman.class || entity.getClass() == EntitySpider.class || entity.getClass() == EntityWitch.class || entity.getClass() == EntityZombie.class || entity.getClass() == EntityBat.class || entity.getClass() == EntityChicken.class || entity.getClass() == EntityCow.class || entity.getClass() == EntityHorse.class || entity.getClass() == EntityMooshroom.class || entity.getClass() == EntityOcelot.class || entity.getClass() == EntityPig.class || entity.getClass() == EntityRabbit.class || entity.getClass() == EntitySheep.class || entity.getClass() == EntitySquid.class || entity.getClass() == EntityVillager.class || entity.getClass() == EntityWolf.class || entity.getClass() == EntityPolarBear.class;
+		return entity.getClass() == EntityDragon.class || entity.getClass() == EntityWither.class || entity.getClass() == EntityBlaze.class || entity.getClass() == EntityCaveSpider.class || entity.getClass() == EntityCreeper.class || entity.getClass() == EntityEnderman.class || entity.getClass() == EntityEndermite.class || entity.getClass() == EntityGhast.class || entity.getClass() == EntityGiantZombie.class || entity.getClass() == EntityGuardian.class || entity.getClass() == EntityIronGolem.class || entity.getClass() == EntityMagmaCube.class || entity.getClass() == EntityPigZombie.class || entity.getClass() == EntityShulker.class || entity.getClass() == EntitySilverfish.class || entity.getClass() == EntitySkeleton.class || entity.getClass() == EntitySlime.class || entity.getClass() == EntitySnowman.class || entity.getClass() == EntitySpider.class || entity.getClass() == EntityWitch.class || entity.getClass() == EntityZombie.class || entity.getClass() == EntityBat.class || entity.getClass() == EntityChicken.class || entity.getClass() == EntityCow.class || entity.getClass() == EntityHorse.class || entity.getClass() == EntityMooshroom.class || entity.getClass() == EntityOcelot.class || entity.getClass() == EntityPig.class || entity.getClass() == EntityRabbit.class || entity.getClass() == EntitySheep.class || entity.getClass() == EntitySquid.class || entity.getClass() == EntityVillager.class || entity.getClass() == EntityWolf.class;
 	}
 }
