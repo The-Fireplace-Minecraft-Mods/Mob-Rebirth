@@ -31,7 +31,7 @@ allprojects {
 
 version = "7.0.2"
 group= "the_fireplace.mobrebirth"
-archivesBaseName = "MobRebirth-Forge"
+archivesBaseName = "MobRebirth-Forge-1.11"
 
 minecraft {
     version = "1.11-13.19.0.2153"
