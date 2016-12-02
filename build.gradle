@@ -29,7 +29,7 @@ allprojects {
     targetCompatibility = 1.8
 }
 
-version = "7.0.2"
+version = "7.0.3"
 group= "the_fireplace.mobrebirth"
 archivesBaseName = "MobRebirth-Forge-1.11"
 
