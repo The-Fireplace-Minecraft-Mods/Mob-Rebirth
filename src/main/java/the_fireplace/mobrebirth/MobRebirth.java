@@ -1,18 +1,17 @@
 package the_fireplace.mobrebirth;
 
 import com.google.common.collect.Maps;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.relauncher.FMLInjectionData;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.relauncher.FMLInjectionData;
-import net.minecraftforge.fml.relauncher.Side;
 import the_fireplace.mobrebirth.client.gui.RebirthChanceSlider;
 import the_fireplace.mobrebirth.common.CommonEvents;
 import the_fireplace.mobrebirth.common.ConfigValues;
@@ -23,7 +22,7 @@ import java.util.Map;
 /**
  * @author The_Fireplace
  */
-@Mod(modid = MobRebirth.MODID, name = MobRebirth.MODNAME, canBeDeactivated = true, guiFactory = "the_fireplace.mobrebirth.client.gui.MobRebirthGuiFactory", updateJSON = "http://thefireplace.bitnamiapp.com/jsons/mobrebirth.json")
+@Mod(modid = MobRebirth.MODID, name = MobRebirth.MODNAME, canBeDeactivated = true, guiFactory = "the_fireplace.mobrebirth.client.gui.MobRebirthGuiFactory")
 public class MobRebirth {
 	public static final String MODID = "mobrebirth";
 	public static final String MODNAME = "Mob Rebirth";
@@ -108,7 +107,7 @@ public class MobRebirth {
 		}
 	}
 
-	@EventHandler
+	@Mod.EventHandler
 	public void PreInit(FMLPreInitializationEvent event) {
 		mobcontrols = new Configuration(new File(configDir, "mobcontrols.cfg"));
 		chancecontrols = new Configuration(new File(configDir, "chancecontrols.cfg"));
@@ -153,9 +152,11 @@ public class MobRebirth {
 		createMobConfigs();
 		syncMobConfigs();
 	}
-	@EventHandler
+	@Mod.EventHandler
 	public void Init(FMLInitializationEvent event) {
-		MinecraftForge.EVENT_BUS.register(new CommonEvents());
+		CommonEvents events = new CommonEvents();
+		MinecraftForge.EVENT_BUS.register(events);
+		FMLCommonHandler.instance().bus().register(events);
 	}
 	private void transferOldConfig(File file){
 		if(file.exists()){

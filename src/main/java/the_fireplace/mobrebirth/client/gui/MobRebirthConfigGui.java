@@ -1,23 +1,20 @@
 package the_fireplace.mobrebirth.client.gui;
 
+import cpw.mods.fml.client.config.DummyConfigElement;
+import cpw.mods.fml.client.config.GuiConfig;
+import cpw.mods.fml.client.config.GuiConfigEntries;
+import cpw.mods.fml.client.config.IConfigElement;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.client.config.DummyConfigElement.DummyCategoryElement;
-import net.minecraftforge.fml.client.config.GuiConfig;
-import net.minecraftforge.fml.client.config.GuiConfigEntries;
-import net.minecraftforge.fml.client.config.GuiConfigEntries.CategoryEntry;
-import net.minecraftforge.fml.client.config.IConfigElement;
 import the_fireplace.mobrebirth.MobRebirth;
 import the_fireplace.mobrebirth.common.ConfigValues;
 
 import java.util.ArrayList;
 import java.util.List;
 /**
- *
  * @author The_Fireplace
- *
  */
 public class MobRebirthConfigGui extends GuiConfig {
 
@@ -28,16 +25,16 @@ public class MobRebirthConfigGui extends GuiConfig {
 	}
 	public static List<IConfigElement> getConfigElements(){
 		List<IConfigElement> list = new ArrayList<>();
-		list.add(new DummyCategoryElement("mobCfg", "mobCfg", MobEntry.class));
-		list.add(new DummyCategoryElement("chanceCfg", "chanceCfg", ChanceEntry.class));
-		list.add(new DummyCategoryElement("behaviorCfg", "behaviorCfg", BehaviorEntry.class));
-		list.add(new DummyCategoryElement("debugCfg", "debugCfg", DebugEntry.class));
+		list.add(new DummyConfigElement.DummyCategoryElement("mobCfg", "mobCfg", MobEntry.class));
+		list.add(new DummyConfigElement.DummyCategoryElement("chanceCfg", "chanceCfg", ChanceEntry.class));
+		list.add(new DummyConfigElement.DummyCategoryElement("behaviorCfg", "behaviorCfg", BehaviorEntry.class));
+		list.add(new DummyConfigElement.DummyCategoryElement("debugCfg", "debugCfg", DebugEntry.class));
 		list.addAll(new ConfigElement(MobRebirth.general.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements());
 		if(MobRebirth.instance.getHasCustomMobSettings())
-			list.add(new DummyCategoryElement("customMobs", "customMobs", CustomMobEntry.class));
+			list.add(new DummyConfigElement.DummyCategoryElement("customMobs", "customMobs", CustomMobEntry.class));
 		return list;
 	}
-	public static class CustomMobEntry extends CategoryEntry{
+	public static class CustomMobEntry extends GuiConfigEntries.CategoryEntry {
 
 		public CustomMobEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement) {
 			super(owningScreen, owningEntryList, configElement);
@@ -51,12 +48,12 @@ public class MobRebirthConfigGui extends GuiConfig {
 		public static List<IConfigElement> getConfigElements(){
 			List<IConfigElement> list = new ArrayList<>();
 			for(String mobstring:ConfigValues.CUSTOMENTITIES){
-				list.add(new DummyCategoryElement(mobstring, mobstring, new ConfigElement(MobRebirth.mobConfigs.get(mobstring).getCategory(Configuration.CATEGORY_GENERAL)).getChildElements()));
+				list.add(new DummyConfigElement.DummyCategoryElement(mobstring, mobstring, new ConfigElement(MobRebirth.mobConfigs.get(mobstring).getCategory(Configuration.CATEGORY_GENERAL)).getChildElements()));
 			}
 			return list;
 		}
 	}
-	public static class MobEntry extends CategoryEntry{
+	public static class MobEntry extends GuiConfigEntries.CategoryEntry {
 
 		public MobEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement) {
 			super(owningScreen, owningEntryList, configElement);
@@ -68,7 +65,7 @@ public class MobRebirthConfigGui extends GuiConfig {
 					false, GuiConfig.getAbridgedConfigPath(MobRebirth.mobcontrols.toString()));
 		}
 	}
-	public static class ChanceEntry extends CategoryEntry{
+	public static class ChanceEntry extends GuiConfigEntries.CategoryEntry {
 
 		public ChanceEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement) {
 			super(owningScreen, owningEntryList, configElement);
@@ -80,7 +77,7 @@ public class MobRebirthConfigGui extends GuiConfig {
 					false, GuiConfig.getAbridgedConfigPath(MobRebirth.chancecontrols.toString()));
 		}
 	}
-	public static class BehaviorEntry extends CategoryEntry{
+	public static class BehaviorEntry extends GuiConfigEntries.CategoryEntry {
 
 		public BehaviorEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement) {
 			super(owningScreen, owningEntryList, configElement);
@@ -92,7 +89,7 @@ public class MobRebirthConfigGui extends GuiConfig {
 					false, GuiConfig.getAbridgedConfigPath(MobRebirth.behaviorcontrols.toString()));
 		}
 	}
-	public static class DebugEntry extends CategoryEntry{
+	public static class DebugEntry extends GuiConfigEntries.CategoryEntry {
 
 		public DebugEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement) {
 			super(owningScreen, owningEntryList, configElement);
