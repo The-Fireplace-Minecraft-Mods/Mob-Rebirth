@@ -7,12 +7,14 @@ import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.FMLInjectionData;
 import net.minecraftforge.fml.relauncher.Side;
+import org.apache.logging.log4j.Level;
 import the_fireplace.mobrebirth.client.gui.RebirthChanceSlider;
 import the_fireplace.mobrebirth.common.CommonEvents;
 import the_fireplace.mobrebirth.common.ConfigValues;
@@ -23,7 +25,7 @@ import java.util.Map;
 /**
  * @author The_Fireplace
  */
-@Mod(modid = MobRebirth.MODID, name = MobRebirth.MODNAME, canBeDeactivated = true, guiFactory = "the_fireplace.mobrebirth.client.gui.MobRebirthGuiFactory", updateJSON = "http://thefireplace.bitnamiapp.com/jsons/mobrebirth.json")
+@Mod(modid = MobRebirth.MODID, name = MobRebirth.MODNAME, canBeDeactivated = true, guiFactory = "the_fireplace.mobrebirth.client.gui.MobRebirthGuiFactory", updateJSON = "https://bitbucket.org/The_Fireplace/minecraft-mod-updates/raw/master/mobrebirth.json", version = "${version}")
 public class MobRebirth {
 	public static final String MODID = "mobrebirth";
 	public static final String MODNAME = "Mob Rebirth";
@@ -35,7 +37,7 @@ public class MobRebirth {
 	@Mod.Instance(MODID)
 	public static MobRebirth instance;
 
-	public boolean getHasCustomMobSettings(){
+	public boolean getHasCustomMobSettings() {
 		return customProperties;
 	}
 
@@ -67,7 +69,7 @@ public class MobRebirth {
 
 	public static Property CUSTOMENTITIES_PROPERTY;
 
-	public MobRebirth(){
+	public MobRebirth() {
 		REBIRTHCHANCEMAP = Maps.newHashMap();
 		MULTIMOBCHANCEMAP = Maps.newHashMap();
 		DROPEGGMAP = Maps.newHashMap();
@@ -75,7 +77,7 @@ public class MobRebirth {
 		PLAYERREBIRTHMAP = Maps.newHashMap();
 	}
 
-	public static void syncConfig(){
+	public static void syncConfig() {
 		ConfigValues.ALLOWBOSSES = ALLOWBOSSES_PROPERTY.getBoolean();
 		ConfigValues.ALLOWSLIMES = ALLOWSLIMES_PROPERTY.getBoolean();
 		ConfigValues.ANIMALREBIRTH = ANIMALREBIRTH_PROPERTY.getBoolean();
@@ -92,19 +94,19 @@ public class MobRebirth {
 		ConfigValues.VANILLAONLY = VANILLAONLY_PROPERTY.getBoolean();
 
 		ConfigValues.CUSTOMENTITIES = CUSTOMENTITIES_PROPERTY.getStringList();
-		if(mobcontrols.hasChanged())
+		if (mobcontrols.hasChanged())
 			mobcontrols.save();
-		if(chancecontrols.hasChanged())
+		if (chancecontrols.hasChanged())
 			chancecontrols.save();
-		if(behaviorcontrols.hasChanged())
+		if (behaviorcontrols.hasChanged())
 			behaviorcontrols.save();
-		if(debugcontrols.hasChanged())
+		if (debugcontrols.hasChanged())
 			debugcontrols.save();
-		if(general.hasChanged())
+		if (general.hasChanged())
 			general.save();
 		instance.customProperties = ConfigValues.CUSTOMENTITIES != null && ConfigValues.CUSTOMENTITIES.length > 0;
-		for(int i=0;i<ConfigValues.CUSTOMENTITIES.length;i++){
-			ConfigValues.CUSTOMENTITIES[i]=new ResourceLocation(ConfigValues.CUSTOMENTITIES[i].toLowerCase()).getResourcePath();
+		for (int i = 0; i < ConfigValues.CUSTOMENTITIES.length; i++) {
+			ConfigValues.CUSTOMENTITIES[i] = new ResourceLocation(ConfigValues.CUSTOMENTITIES[i].toLowerCase()).getResourcePath();
 		}
 	}
 
@@ -142,69 +144,71 @@ public class MobRebirth {
 		REBIRTHCHANCE_PROPERTY.setMinValue(0.0);
 		MULTIMOBCHANCE_PROPERTY.setMaxValue(1.0);
 		MULTIMOBCHANCE_PROPERTY.setMinValue(0.0);
-		if(event.getSide().isClient()) {
+		if (event.getSide().isClient()) {
 			REBIRTHCHANCE_PROPERTY.setConfigEntryClass(RebirthChanceSlider.class);
 			MULTIMOBCHANCE_PROPERTY.setConfigEntryClass(RebirthChanceSlider.class);
 		}
 
-		MULTIMOBMODE_PROPERTY.setValidValues(new String[]{"all","continuous","per-mob"});
+		MULTIMOBMODE_PROPERTY.setValidValues(new String[]{"all", "continuous", "per-mob"});
 		transferOldConfig(event.getSuggestedConfigurationFile());
 		syncConfig();
 		createMobConfigs();
 		syncMobConfigs();
 	}
+
 	@EventHandler
 	public void Init(FMLInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(new CommonEvents());
 	}
-	private void transferOldConfig(File file){
-		if(file.exists()){
+
+	private void transferOldConfig(File file) {
+		if (file.exists()) {
 			Configuration temp = new Configuration(file);
 			ConfigCategory cat = temp.getCategory(Configuration.CATEGORY_GENERAL);
-			if(cat.containsKey("mrb1"))
+			if (cat.containsKey("mrb1"))
 				DROPEGG_PROPERTY.set(!cat.get("mrb1").getBoolean());
-			if(cat.containsKey("mrb2"))
+			if (cat.containsKey("mrb2"))
 				REBIRTHCHANCE_PROPERTY.set(cat.get("mrb2").getDouble());
-			if(cat.containsKey("mrb3"))
+			if (cat.containsKey("mrb3"))
 				ANIMALREBIRTH_PROPERTY.set(cat.get("mrb3").getBoolean());
-			if(cat.containsKey("mrb4"))
+			if (cat.containsKey("mrb4"))
 				EXTRAMOBCOUNT_PROPERTY.set(cat.get("mrb4").getInt());
-			if(cat.containsKey("mrb5"))
+			if (cat.containsKey("mrb5"))
 				REBIRTHFROMNONPLAYER_PROPERTY.set(cat.get("mrb5").getBoolean());
-			if(cat.containsKey("mrb6"))
+			if (cat.containsKey("mrb6"))
 				MULTIMOBCHANCE_PROPERTY.set(cat.get("mrb6").getDouble());
-			if(cat.containsKey("mrb7"))
+			if (cat.containsKey("mrb7"))
 				MULTIMOBMODE_PROPERTY.set(cat.get("mrb7").getString());
-			if(cat.containsKey("solar_apocalypse_fix"))
+			if (cat.containsKey("solar_apocalypse_fix"))
 				DAMAGEFROMSUNLIGHT_PROPERTY.set(!cat.get("solar_apocalypse_fix").getBoolean());
-			if(cat.containsKey("allowbosses"))
+			if (cat.containsKey("allowbosses"))
 				ALLOWBOSSES_PROPERTY.set(cat.get("allowbosses").getBoolean());
-			if(cat.containsKey("allowslimes"))
+			if (cat.containsKey("allowslimes"))
 				ALLOWSLIMES_PROPERTY.set(cat.get("allowslimes").getBoolean());
-			if(cat.containsKey("vanillaonly"))
+			if (cat.containsKey("vanillaonly"))
 				VANILLAONLY_PROPERTY.set(cat.get("vanillaonly").getBoolean());
-			if(file.delete())
-				System.out.println("Old config transferred");
+			if (file.delete())
+				logInfo("Old Config transferred.");
 		}
 	}
 
-	public static void createMobConfigs(){
-		if(instance.customProperties)
-			for(String mobidstring:ConfigValues.CUSTOMENTITIES){
+	public static void createMobConfigs() {
+		if (instance.customProperties)
+			for (String mobidstring : ConfigValues.CUSTOMENTITIES) {
 				ResourceLocation mobid = new ResourceLocation(mobidstring.toLowerCase());
-				Configuration mobConfig = new Configuration(new File(customConfigDir, mobid.getResourcePath().toLowerCase()+".cfg"));
+				Configuration mobConfig = new Configuration(new File(customConfigDir, mobid.getResourcePath().toLowerCase() + ".cfg"));
 				mobConfig.load();
-				if(!REBIRTHCHANCEMAP.containsKey(mobid))
+				if (!REBIRTHCHANCEMAP.containsKey(mobid))
 					REBIRTHCHANCEMAP.put(mobid, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.REBIRTHCHANCE_NAME, ConfigValues.REBIRTHCHANCE));
-				if(!MULTIMOBCHANCEMAP.containsKey(mobid))
+				if (!MULTIMOBCHANCEMAP.containsKey(mobid))
 					MULTIMOBCHANCEMAP.put(mobid, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.MULTIMOBCHANCE_NAME, ConfigValues.MULTIMOBCHANCE));
-				if(!DROPEGGMAP.containsKey(mobid))
+				if (!DROPEGGMAP.containsKey(mobid))
 					DROPEGGMAP.put(mobid, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.DROPEGG_NAME, ConfigValues.DROPEGG));
-				if(!EXTRAMOBCOUNTMAP.containsKey(mobid))
+				if (!EXTRAMOBCOUNTMAP.containsKey(mobid))
 					EXTRAMOBCOUNTMAP.put(mobid, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.EXTRAMOBCOUNT_NAME, ConfigValues.EXTRAMOBCOUNT));
-				if(!PLAYERREBIRTHMAP.containsKey(mobid))
+				if (!PLAYERREBIRTHMAP.containsKey(mobid))
 					PLAYERREBIRTHMAP.put(mobid, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.REBIRTHFROMNONPLAYER_NAME, ConfigValues.REBIRTHFROMNONPLAYER));
-				if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+				if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
 					REBIRTHCHANCEMAP.get(mobid).setConfigEntryClass(RebirthChanceSlider.class);
 					MULTIMOBCHANCEMAP.get(mobid).setConfigEntryClass(RebirthChanceSlider.class);
 				}
@@ -216,8 +220,8 @@ public class MobRebirth {
 			}
 	}
 
-	public static void syncMobConfigs(){
-		if(instance.customProperties) {
+	public static void syncMobConfigs() {
+		if (instance.customProperties) {
 			ConfigValues.REBIRTHCHANCEMAP.clear();
 			ConfigValues.MULTIMOBCHANCEMAP.clear();
 			ConfigValues.DROPEGGMAP.clear();
@@ -225,16 +229,36 @@ public class MobRebirth {
 			ConfigValues.REBIRTHFROMNONPLAYERMAP.clear();
 			for (String mobidstring : ConfigValues.CUSTOMENTITIES) {
 				ResourceLocation mobid = new ResourceLocation(mobidstring.toLowerCase());
-				if(REBIRTHCHANCEMAP.get(mobid) == null)
+				if (REBIRTHCHANCEMAP.get(mobid) == null)
 					continue;
 				ConfigValues.REBIRTHCHANCEMAP.put(mobid, REBIRTHCHANCEMAP.get(mobid).getDouble());
 				ConfigValues.MULTIMOBCHANCEMAP.put(mobid, MULTIMOBCHANCEMAP.get(mobid).getDouble());
 				ConfigValues.DROPEGGMAP.put(mobid, DROPEGGMAP.get(mobid).getBoolean());
 				ConfigValues.EXTRAMOBCOUNTMAP.put(mobid, EXTRAMOBCOUNTMAP.get(mobid).getInt());
 				ConfigValues.REBIRTHFROMNONPLAYERMAP.put(mobid, PLAYERREBIRTHMAP.get(mobid).getBoolean());
-				if(mobConfigs.get(mobidstring).hasChanged())
+				if (mobConfigs.get(mobidstring).hasChanged())
 					mobConfigs.get(mobidstring).save();
 			}
 		}
+	}
+
+	public static void logInfo(String log, Object... params) {
+		FMLLog.log(MODNAME, Level.INFO, log, params);
+	}
+
+	public static void logDebug(String log, Object... params) {
+		FMLLog.log(MODNAME, Level.DEBUG, log, params);
+	}
+
+	public static void logError(String log, Object... params) {
+		FMLLog.log(MODNAME, Level.ERROR, log, params);
+	}
+
+	public static void logTrace(String log, Object... params) {
+		FMLLog.log(MODNAME, Level.TRACE, log, params);
+	}
+
+	public static void logWarn(String log, Object... params) {
+		FMLLog.log(MODNAME, Level.WARN, log, params);
 	}
 }

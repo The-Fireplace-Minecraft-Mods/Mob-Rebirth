@@ -31,13 +31,13 @@ allprojects {
 
 version = "7.0.3"
 group= "the_fireplace.mobrebirth"
-archivesBaseName = "MobRebirth-Forge-1.11"
+archivesBaseName = "MobRebirth-1.11.2"
 
 minecraft {
-    version = "1.11-13.19.0.2153"
+    version = "1.11.2-13.20.0.2315"
     runDir = "run"
     replace '${version}', project.version
-    mappings = "snapshot_20161119"
+    mappings = "stable_31"
 }
 
 dependencies {
@@ -94,6 +94,7 @@ curseforge {
     id = '226212'
     changelog = file('changelog.txt')
     releaseType = 'release'
+    addGameVersion '1.11.2'
     addGameVersion '1.11'
 	addGameVersion 'Java 8'
     mainArtifact(jar) {
@@ -115,7 +116,7 @@ modsIO {
     project{
 		artifact = new File(jar.destinationDir, archivesBaseName+"-"+version+".jar")
 		modid = "1222"
-		minecraft = "1.11"
+		minecraft = "1.11.2"
 		try{changelog = file('changelog.txt').text}catch(Exception e){changelog=""}
 		tag = ""
 		current = true

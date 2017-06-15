@@ -2,8 +2,8 @@ variables:
   CACHE_DIR: "$CI_PROJECT_DIR/build"
   CACHE_DIR2: "$CI_PROJECT_DIR/.gradle"
   
-  ORIG_ARTIFACTS: "$CI_PROJECT_DIR/build/libs/MobRebirth-Forge-1.11-*.jar"
-  ARTIFACTS: "$CI_PROJECT_DIR/MobRebirth-Forge-1.11-*.jar"
+  ORIG_ARTIFACTS: "$CI_PROJECT_DIR/build/libs/MobRebirth-1.11.2-*.jar"
+  ARTIFACTS: "$CI_PROJECT_DIR/MobRebirth-1.11.2-*.jar"
 
 cache:
  paths:
@@ -18,10 +18,21 @@ stages:
 deploy:
   stage: deploy
   script:
+  - ./gradlew clean build curseforge uploadToModsIO -PcurseForgeApiKey=$curseForgeApiKey -PmodsioApiKey=$modsioApiKey
+  - cp $ORIG_ARTIFACTS .
+  when: manual
+  artifacts:
+    name: "MobRebirth-1.11.2-$(cat $CACHE_DIR/.version)"
+    paths:
+    - $ARTIFACTS
+    
+deployMaven:
+  stage: deploy
+  script:
   - ./gradlew clean build uploadArchives curseforge uploadToModsIO -PcurseForgeApiKey=$curseForgeApiKey -PmodsioApiKey=$modsioApiKey
   - cp $ORIG_ARTIFACTS .
   when: manual
   artifacts:
-    name: "MobRebirth-Forge-1.11-$(cat $CACHE_DIR/.version)"
+    name: "MobRebirth-1.11.2-$(cat $CACHE_DIR/.version)"
     paths:
     - $ARTIFACTS

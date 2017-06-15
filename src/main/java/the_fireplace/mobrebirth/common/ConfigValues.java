@@ -6,9 +6,7 @@ import net.minecraft.util.ResourceLocation;
 import java.util.Map;
 
 /**
- *
  * @author The_Fireplace
- *
  */
 public class ConfigValues {
 	//Mob controls
