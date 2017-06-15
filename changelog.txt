@@ -1,1 +1,1 @@
-Removed console messages that were intended for debugging only
+Internal improvements
