@@ -11,13 +11,13 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
         classpath 'ModsIOUpload:ModsIOUpload:+'
     }
 }
 
 plugins {
-    id "com.matthewprenger.cursegradle" version "1.0.8"
+    id "com.matthewprenger.cursegradle" version "1.0.9"
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'net.cazzar.gradle.modsio'
@@ -31,15 +31,15 @@ allprojects {
 
 version = "7.0.4"
 group= "the_fireplace.mobrebirth"
-archivesBaseName = "MobRebirth-1.12"
+archivesBaseName = "MobRebirth-1.12.1"
 
 minecraft {
-    version = "1.12-14.21.0.2327"
+    version = "1.12.1-14.22.0.2456"
     runDir = "run"
     replace '${version}', project.version
-    mappings = "snapshot_20170615"
+    mappings = "snapshot_20170815"
 	
-	clientRunArgs += "-uuid=0b1ec5ad-cb2a-43b7-995d-889320eb2e5b -username=The_Fireplace"
+	clientRunArgs += "--uuid=0b1ec5ad-cb2a-43b7-995d-889320eb2e5b --username=The_Fireplace"
 }
 
 dependencies {
@@ -96,9 +96,9 @@ curseforge {
     id = '226212'
     changelog = file('changelog.txt')
     releaseType = 'release'
+    addGameVersion '1.12.1'
     addGameVersion '1.12'
     addGameVersion '1.11.2'
-    addGameVersion '1.11'
 	addGameVersion 'Java 8'
     mainArtifact(jar) {
         displayName = jar.archiveName.replace(".jar", "")
@@ -119,7 +119,7 @@ modsIO {
     project{
 		artifact = new File(jar.destinationDir, archivesBaseName+"-"+version+".jar")
 		modid = "1222"
-		minecraft = "1.12"
+		minecraft = "1.12.1"
 		try{changelog = file('changelog.txt').text}catch(Exception e){changelog=""}
 		tag = ""
 		current = true

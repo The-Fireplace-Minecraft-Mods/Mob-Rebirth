@@ -22,7 +22,7 @@ deploy:
   - cp $ORIG_ARTIFACTS .
   when: manual
   artifacts:
-    name: "MobRebirth-1.12-$(cat $CACHE_DIR/.version)"
+    name: "MobRebirth-1.12.1-$(cat $CACHE_DIR/.version)"
     paths:
     - $ARTIFACTS
     
@@ -33,6 +33,6 @@ deployMaven:
   - cp $ORIG_ARTIFACTS .
   when: manual
   artifacts:
-    name: "MobRebirth-1.12-$(cat $CACHE_DIR/.version)"
+    name: "MobRebirth-1.12.1-$(cat $CACHE_DIR/.version)"
     paths:
     - $ARTIFACTS
