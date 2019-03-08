@@ -45,7 +45,7 @@ public class CommonEvents {
 	public void onEntityLivingDeath(LivingDropsEvent event) {
 		if (MobRebirth.instance.getHasCustomMobSettings()) {
 			if (EntityList.getKey(event.getEntityLiving()) != null)
-				if (ArrayUtils.contains(ConfigValues.CUSTOMENTITIES, EntityList.getKey(event.getEntityLiving()).getResourcePath())) {
+				if (ArrayUtils.contains(ConfigValues.CUSTOMENTITIES, EntityList.getKey(event.getEntityLiving()).getPath())) {
 					if (ConfigValues.REBIRTHFROMNONPLAYERMAP.get(EntityList.getKey(event.getEntityLiving())))
 						transition(event);
 					else if (event.getSource().getTrueSource() instanceof EntityPlayer)
@@ -94,16 +94,10 @@ public class CommonEvents {
 		double rand = Math.random();
 		ResourceLocation name = EntityList.getKey(event.getEntityLiving());
 		if (MobRebirth.instance.getHasCustomMobSettings()) {
-			if (ArrayUtils.contains(ConfigValues.CUSTOMENTITIES, name.getResourcePath())) {
+			if (ArrayUtils.contains(ConfigValues.CUSTOMENTITIES, name.getPath())) {
 				if (rand <= ConfigValues.REBIRTHCHANCEMAP.get(name)) {
 					if (ConfigValues.DROPEGGMAP.get(name) && EntityList.ENTITY_EGGS.containsKey(name)) {
-						ItemStack dropEgg = new ItemStack(Items.SPAWN_EGG);
-						NBTTagCompound eggData = new NBTTagCompound();
-						NBTTagCompound mobData = new NBTTagCompound();
-						mobData.setString("id", name.toString());
-						eggData.setTag("EntityTag", mobData);
-						dropEgg.setTagCompound(eggData);
-						event.getEntityLiving().entityDropItem(dropEgg, 0.0F);
+						dropMobEgg(event, name);
 					} else {
 						createEntity(event);
 						if (ConfigValues.EXTRAMOBCOUNTMAP.get(name) > 0) {
@@ -137,13 +131,7 @@ public class CommonEvents {
 		}
 		if (rand <= ConfigValues.REBIRTHCHANCE) {
 			if (ConfigValues.DROPEGG && EntityList.ENTITY_EGGS.containsKey(name)) {
-				ItemStack dropEgg = new ItemStack(Items.SPAWN_EGG);
-				NBTTagCompound eggData = new NBTTagCompound();
-				NBTTagCompound mobData = new NBTTagCompound();
-				mobData.setString("id", name.toString());
-				eggData.setTag("EntityTag", mobData);
-				dropEgg.setTagCompound(eggData);
-				event.getEntityLiving().entityDropItem(dropEgg, 0.0F);
+				dropMobEgg(event, name);
 			} else {
 				createEntity(event);
 				if (ConfigValues.EXTRAMOBCOUNT > 0) {
@@ -172,6 +160,16 @@ public class CommonEvents {
 				}
 			}
 		}
+	}
+
+	private static void dropMobEgg(LivingDropsEvent event, ResourceLocation name) {
+		ItemStack dropEgg = new ItemStack(Items.SPAWN_EGG);
+		NBTTagCompound eggData = new NBTTagCompound();
+		NBTTagCompound mobData = new NBTTagCompound();
+		mobData.setString("id", name.toString());
+		eggData.setTag("EntityTag", mobData);
+		dropEgg.setTagCompound(eggData);
+		event.getEntityLiving().entityDropItem(dropEgg, 0.0F);
 	}
 
 	private void createEntity(LivingDropsEvent event) {
@@ -209,6 +207,6 @@ public class CommonEvents {
 	}
 
 	public static boolean isVanilla(EntityLivingBase entity) {
-		return EntityList.getKey(entity) != null && EntityList.getKey(entity).getResourceDomain().matches("minecraft");
+		return EntityList.getKey(entity) != null && EntityList.getKey(entity).getNamespace().matches("minecraft");
 	}
 }

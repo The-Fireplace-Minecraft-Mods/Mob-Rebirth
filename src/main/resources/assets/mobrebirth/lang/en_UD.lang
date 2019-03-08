@@ -1,0 +1,40 @@
+allowbosses=ɥʇɹᴉqǝᴚ ssoᗺ ʍoꞁꞁⱯ
+allowbosses.tooltip=˙uɹoqǝɹ ǝq oʇ uoᵷɐɹᗡ ɹǝpuƎ puɐ ɹǝɥʇᴉM ǝɥʇ ǝʞᴉꞁ sǝssoq ʍoꞁꞁɐ oʇ ǝnɹʇ oʇ ʇǝS
+allowslimes=ɥʇɹᴉqǝᴚ ǝɯᴉꞁS ʍoꞁꞁⱯ
+allowslimes.tooltip=˙poɯ sᴉɥʇ ɟo ǝsnɐɔǝq uɹoqǝɹ ǝq uɐɔ sǝɯᴉꞁS ʇou ɹo ɹǝɥʇǝɥʍ sʇǝS
+animalrebirth=¿ꞁꞁǝʍ sɐ uɹoqǝɹ ǝq sꞁɐɯᴉuɐ pꞁnoɥS
+animalrebirth.tooltip=˙ǝɹɐ sqoɯ ʎɐʍ ǝɯɐs ǝɥʇ uᴉ uɹoqǝɹ ǝq ꞁꞁᴉʍ sꞁɐɯᴉuɐ 'ǝnɹʇ ɟI
+
+rebirthchance=ǝɔuɐɥƆ ɥʇɹᴉqǝᴚ
+rebirthchance.tooltip=uɹoqǝɹ ǝq oʇ qoɯ ɐ ɹoɟ ǝɔuɐɥƆ
+multimobchance=ǝɔuɐɥƆ ɥʇɹᴉqǝᴚ qoW ᴉʇꞁnW
+multimobchance.tooltip=˙uɹoqǝɹ ǝq oʇ sqoɯ ɐɹʇxǝ ɹoɟ ǝɔuɐɥƆ
+
+damagefromsunlight=¿sqoɯ pɐǝpun oʇ ǝᵷɐɯɐp ʇɥᵷᴉꞁuns ǝꞁqɐuƎ
+damagefromsunlight.tooltip=suoᴉʇɐɹnᵷᴉɟuoɔ uᴉɐʇɹǝɔ ʎq pǝʇɐǝɹɔ ʇɥᵷᴉꞁuns ǝɥʇ uᴉ ǝsdʎꞁɐɔodɐ ǝɥʇ sǝxᴉɟ ᵷuᴉꞁqɐsᴉᗡ
+dropegg=¿ɥʇɹᴉqǝɹ ɟo pɐǝʇsuᴉ doɹp sᵷᵷǝ pꞁnoɥS
+dropegg.tooltip=˙uɹoqǝɹ ǝɹɐ ʎǝɥʇ uǝɥʍ ᵷuᴉuʍɐdsǝɹ ɟo pɐǝʇsuᴉ sᵷᵷǝ doɹp ꞁꞁᴉʍ sqoɯ 'ǝnɹʇ ɟI
+extramobcount=ʇunoƆ qoW ɐɹʇxƎ
+extramobcount.tooltip=˙uɹoqǝɹ ᵷuᴉǝq sqoɯ ɐɹʇxǝ ǝꞁqɐsᴉp oʇ 0 ʇɐ ǝʌɐǝꞀ ˙uɹoqǝɹ ǝq oʇ sqoɯ ɐɹʇxǝ ɟo ɹǝqɯnu ǝɥ⟘
+multimobmode=ǝpoW qoW ᴉʇꞁnW
+multimobmode.tooltip=˙ǝɔuo ǝɔuɐɥɔ ǝɥʇ sǝᴉꞁddɐ ,ꞁꞁⱯ,\nqoɯ ɐɹʇxǝ ɥɔɐǝ oʇ ǝɔuɐɥɔ ǝɥʇ sǝᴉꞁddɐ ,qoW-ɹǝԀ,\nuʍɐds ʇ,usǝop ǝuo uǝɥʍ sdoʇs puɐ 'qoɯ ɐɹʇxǝ ɥɔɐǝ oʇ ǝɔuɐɥɔ ǝɥʇ sǝᴉꞁddɐ ,snonuᴉʇuoƆ,\n˙,ꞁꞁɐ, ɹo ',qoɯ-ɹǝd, ',snonuᴉʇuoɔ, ǝɹɐ suoᴉʇdO
+rebirthfromnonplayer=sꞁꞁᴉʞ ɹǝʎɐꞁd-uou ɯoɹɟ ɥʇɹᴉqǝᴚ
+rebirthfromnonplayer.tooltip=˙ɹǝʎɐꞁd ɐ ʎq pǝꞁꞁᴉʞ ᵷuᴉǝq ʇsnɾ ʇou 'ɥʇɐǝp ɟo puᴉʞ ʎuɐ ɯoɹɟ uɹoqǝɹ ǝq uɐɔ sqoɯ 'ǝnɹʇ ɟI
+
+vanillaonly=ʎꞁuo ɥʇɹᴉqǝᴚ qoW ɐꞁꞁᴉuɐᴧ
+vanillaonly.tooltip=˙pǝʇɹodǝɹ ǝq pꞁnoɥs sᴉɥʇ ǝsn oʇ pǝǝu noʎ sǝʞɐɯ ʇɐɥʇ ᵷuᴉɥʇʎuⱯ\nǝsᴉɹɐ ʎǝɥʇ pꞁnoɥs 'sqoɯ pǝppoɯ ɥʇᴉʍ sǝnssᴉ xᴉɟ ʎꞁᴉɹɐɹodɯǝʇ oʇ ʇuɐǝW\nuɹoqǝɹ ᵷuᴉǝq ɯoɹɟ ʇɟɐɹɔǝuᴉW ɐꞁꞁᴉuɐʌ uᴉ ʇou sꞁɐɯᴉuɐ ɹo sqoɯ ʎuɐ ʇuǝʌǝɹd oʇ ǝnɹʇ oʇ ʇǝS
+
+customentities=sᵷuᴉʇʇǝS ʎʇᴉʇuƎ ɯoʇsnƆ
+customentities.tooltip=˙sᴉɥʇ ᵷuᴉʇᴉpǝ ɹǝʇɟɐ uǝǝɹɔs spoɯ ǝɥʇ ɯoɹɟ I∩⅁ ᵷᴉɟuoƆ ǝɥʇ uǝdo-ǝᴚ\n˙sᵷuᴉʇʇǝs ꞁɐnpᴉʌᴉpuᴉ ɹᴉǝɥʇ ɟo ᵷuᴉɹnᵷᴉɟuoɔ ʍoꞁꞁɐ oʇ ǝɹǝɥ sǝɯɐu qoɯ ppⱯ
+customMobs.tooltip=˙I∩⅁ ᵷᴉɟuoƆ ǝɥʇ uǝdo-ǝɹ puɐ ʇsᴉꞁ poɯ ǝɥʇ oʇ ʞɔɐq o⅁ ¿pǝppɐ ʇsnɾ ǝʌ,noʎ qoɯ ɐ ǝǝs ʇ,uoᗡ
+customMobs=sᵷuᴉʇʇǝS ʎʇᴉʇuƎ ɯoʇsnƆ
+
+mobCfg=uoᴉʇɐɹnᵷᴉɟuoƆ qoW
+mobCfg.tooltip=ǝɹǝɥ uɹoqǝɹ ǝq uɐɔ sqoɯ ɥɔᴉɥʍ ǝɹnᵷᴉɟuoƆ
+chanceCfg=uoᴉʇɐɹnᵷᴉɟuoƆ ǝɔuɐɥƆ
+chanceCfg.tooltip=ǝɹǝɥ sǝɔuɐɥɔ ǝɥʇ ǝɹnᵷᴉɟuoƆ
+behaviorCfg=uoᴉʇɐɹnᵷᴉɟuoƆ ɹoᴉʌɐɥǝᗺ
+behaviorCfg.tooltip=ǝɹǝɥ ɹoᴉʌɐɥǝq ɥʇɹᴉqǝɹ ǝɹnᵷᴉɟuoƆ
+debugCfg=uoᴉʇɐɹnᵷᴉɟuoƆ ᵷnqǝᗡ
+debugCfg.tooltip=sǝxᴉɟᵷnq ʇǝʞuɐꞁq ʎɹɐɹodɯǝʇ puɐ ᵷuᴉᵷᵷnqǝp ɹoɟ pǝpuǝʇuᴉ ǝɹɐ sᵷuᴉʇʇǝs ǝsǝɥ⟘
+invalidmob=˙ʎꞁʇɔǝɹɹoɔ pǝꞁꞁǝds ǝɹɐ sᗡI qoɯ ꞁꞁɐ ʇɐɥʇ ǝɹnsuǝ ǝsɐǝꞁԀ ¡pǝʇɔǝʇǝp ǝdʎʇ qoW pᴉꞁɐʌuI

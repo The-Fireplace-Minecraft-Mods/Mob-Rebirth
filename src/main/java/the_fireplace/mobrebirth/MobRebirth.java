@@ -106,7 +106,7 @@ public class MobRebirth {
 			general.save();
 		instance.customProperties = ConfigValues.CUSTOMENTITIES != null && ConfigValues.CUSTOMENTITIES.length > 0;
 		for (int i = 0; i < ConfigValues.CUSTOMENTITIES.length; i++) {
-			ConfigValues.CUSTOMENTITIES[i] = new ResourceLocation(ConfigValues.CUSTOMENTITIES[i].toLowerCase()).getResourcePath();
+			ConfigValues.CUSTOMENTITIES[i] = new ResourceLocation(ConfigValues.CUSTOMENTITIES[i].toLowerCase()).getPath();
 		}
 	}
 
@@ -196,7 +196,7 @@ public class MobRebirth {
 		if (instance.customProperties)
 			for (String mobidstring : ConfigValues.CUSTOMENTITIES) {
 				ResourceLocation mobid = new ResourceLocation(mobidstring.toLowerCase());
-				Configuration mobConfig = new Configuration(new File(customConfigDir, mobid.getResourcePath().toLowerCase() + ".cfg"));
+				Configuration mobConfig = new Configuration(new File(customConfigDir, mobid.getPath().toLowerCase() + ".cfg"));
 				mobConfig.load();
 				if (!REBIRTHCHANCEMAP.containsKey(mobid))
 					REBIRTHCHANCEMAP.put(mobid, mobConfig.get(Configuration.CATEGORY_GENERAL, ConfigValues.REBIRTHCHANCE_NAME, ConfigValues.REBIRTHCHANCE));
