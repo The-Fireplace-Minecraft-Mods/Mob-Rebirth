@@ -1,1 +1,1 @@
-Added en_UD.lang
+Updated to 1.13.2. Currently the custom per-mob configuration cannot be done.
