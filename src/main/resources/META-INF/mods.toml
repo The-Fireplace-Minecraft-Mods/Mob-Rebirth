@@ -1,0 +1,27 @@
+modLoader="javafml"
+loaderVersion="[24,)"
+issueTrackerURL="https://github.com/The-Fireplace-Minecraft-Mods/Mob-Rebirth/issues"
+displayURL="https://minecraft.curseforge.com/projects/mob-rebirth"
+credits=""
+authors="The_Fireplace"
+
+[[mods]]
+modId="mobrebirth"
+version="${file.jarVersion}"
+displayName="Mob Rebirth"
+description='''
+A mod allowing mobs to be reborn in various ways.
+'''
+
+[[dependencies.mobrebirth]]
+    modId="forge"
+    mandatory=true
+    versionRange="[25,)"
+    ordering="NONE"
+    side="SERVER"
+[[dependencies.mobrebirth]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.13.2,1.14)"
+    ordering="NONE"
+    side="SERVER"
