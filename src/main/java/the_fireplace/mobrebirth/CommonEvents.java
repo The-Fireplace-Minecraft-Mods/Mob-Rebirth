@@ -58,6 +58,8 @@ public class CommonEvents {
 	}
 
 	private void makeMobRebornTransition(LivingDeathEvent event) {
+		if(!MobRebirth.clansCompat.doRebirth(event.getEntityLiving().getEntityWorld().getChunk(event.getEntityLiving().getPosition())))
+			return;
 		if (MobRebirth.cfg.allowBosses) {
 			if (event.getEntityLiving() instanceof EntityWither || event.getEntityLiving() instanceof EntityDragon || event.getEntityLiving() instanceof EntityElderGuardian) {
 				makeMobReborn(event);

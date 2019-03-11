@@ -5,12 +5,16 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemSpawnEgg;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.commons.lang3.tuple.Pair;
+import the_fireplace.mobrebirth.compat.clans.ClansCompat;
+import the_fireplace.mobrebirth.compat.clans.ClansCompatDummy;
+import the_fireplace.mobrebirth.compat.clans.IClansCompat;
 
 import java.util.Map;
 
@@ -22,6 +26,7 @@ import java.util.Map;
 public class MobRebirth {
 	public static final String MODID = "mobrebirth";
 	public static Map<EntityType<?>, ItemSpawnEgg> spawnEggs = Maps.newHashMap();
+	public static IClansCompat clansCompat = new ClansCompatDummy();
 
 	public MobRebirth() {
 		ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, cfg.SERVER_SPEC);
@@ -38,6 +43,8 @@ public class MobRebirth {
 	public void loadComplete(FMLLoadCompleteEvent event) {
 		for(ItemSpawnEgg egg: ItemSpawnEgg.getEggs())
 			spawnEggs.put(egg.getType(null), egg);
+		if(ModList.get().isLoaded("clans"))
+			clansCompat = new ClansCompat();
 	}
 
 	public static class cfg {
@@ -62,6 +69,7 @@ public class MobRebirth {
 		public static boolean rebirthFromNonPlayer;
 		public static boolean damageFromSunlight;
 		public static boolean vanillaMobsOnly;
+		public static boolean rebirthInClaimedLand;
 
 		public static void load() {
 			allowBosses = SERVER.allowBosses.get();
@@ -75,6 +83,7 @@ public class MobRebirth {
 			rebirthFromNonPlayer = SERVER.rebirthFromNonPlayer.get();
 			damageFromSunlight = SERVER.damageFromSunlight.get();
 			vanillaMobsOnly = SERVER.vanillaMobsOnly.get();
+			rebirthInClaimedLand = SERVER.rebirthInClaimedLand.get();
 		}
 
 		public static class ServerConfig {
@@ -90,6 +99,7 @@ public class MobRebirth {
 			public ForgeConfigSpec.BooleanValue rebirthFromNonPlayer;
 			public ForgeConfigSpec.BooleanValue damageFromSunlight;
 			public ForgeConfigSpec.BooleanValue vanillaMobsOnly;
+			public ForgeConfigSpec.BooleanValue rebirthInClaimedLand;
 
 			ServerConfig(ForgeConfigSpec.Builder builder) {
 				builder.push("general");
@@ -137,6 +147,10 @@ public class MobRebirth {
 						.comment("Set to true to prevent any mobs or animals not in vanilla Minecraft from being reborn\\nMeant to temporarily fix issues with modded mobs, should they arise\\nAnything that makes you need to use this should be reported.")
 						.translation("Rebirth on Vanilla Mobs Only")
 						.define("vanillaMobsOnly", false);
+				rebirthInClaimedLand = builder
+						.comment("Allow mobs to be reborn in claimed land. This option only takes effect with Clans installed.")
+						.translation("Rebirth in Claimed Land")
+						.define("rebirthInClaimedLand", false);
 				builder.pop();
 			}
 		}

@@ -1,1 +1,1 @@
-Updated to 1.13.2. Currently the custom per-mob configuration cannot be done.
+Added Clans compat: Mobs are no longer able to be reborn in claimed chunks by default.
