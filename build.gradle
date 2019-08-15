@@ -18,7 +18,7 @@ buildscript {
 }
 
 plugins {
-    id "com.matthewprenger.cursegradle" version "1.2.0"
+    id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'net.cazzar.gradle.modsio'
@@ -30,10 +30,10 @@ allprojects {
 
 version = "8.0.1"
 group= "the_fireplace.mobrebirth"
-archivesBaseName = "MobRebirth-1.13.2"
+archivesBaseName = "MobRebirth-1.14.4"
 
 minecraft {
-    mappings channel: 'stable', version: '43-1.13'
+    mappings channel: 'stable', version: '53-1.14.2'
     
     runs {
         client = {
@@ -62,15 +62,15 @@ repositories {
 }
 
 dependencies {
-	minecraft 'net.minecraftforge:forge:1.13.2-25.0.74'
-    compile name:'Clans-1.13.2-1.1.3-deobf'
+	minecraft 'net.minecraftforge:forge:1.14.4-28.0.46'
+    compile name:'Clans-1.13.2-1.2.12-deobf'
 }
 
 jar {
     manifest {
         attributes(["Specification-Title": "mobrebirth",
                     "Specification-Vendor": "The_Fireplace",
-                    "Specification-Version": "24.0", // We are version 1 of the modlauncher specification
+                    "Specification-Version": "1", // We are version 1 of the modlauncher specification
                     "Implementation-Title": "Mob Rebirth",
                     "Implementation-Version": "${version}",
                     "Implementation-Vendor" : "The_Fireplace",
@@ -94,7 +94,7 @@ curseforge {
     id = '226212'
     changelog = file('changelog.txt')
     releaseType = 'beta'
-    addGameVersion '1.13.2'
+    addGameVersion '1.14.4'
 	addGameVersion 'Java 8'
     mainArtifact(jar) {
         displayName = jar.archiveName.replace(".jar", "")
@@ -114,7 +114,7 @@ modsIO {
     project{
 		artifact = new File(jar.destinationDir, archivesBaseName+"-"+version+".jar")
 		modid = "1222"
-		minecraft = "1.13.2"
+		minecraft = "1.14.4"
 		try{changelog = file('changelog.txt').text}catch(Exception e){changelog=""}
 		tag = "beta"
 		current = true

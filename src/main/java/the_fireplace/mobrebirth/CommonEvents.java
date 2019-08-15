@@ -1,18 +1,18 @@
 package the_fireplace.mobrebirth;
 
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.boss.EntityDragon;
-import net.minecraft.entity.boss.EntityWither;
-import net.minecraft.entity.monster.EntityElderGuardian;
-import net.minecraft.entity.monster.EntitySlime;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.boss.WitherEntity;
+import net.minecraft.entity.boss.dragon.EnderDragonEntity;
+import net.minecraft.entity.monster.ElderGuardianEntity;
 import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.passive.IAnimal;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.monster.SlimeEntity;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumHand;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -38,7 +38,7 @@ public class CommonEvents {
 				if (ArrayUtils.contains(ConfigValues.CUSTOMENTITIES, ForgeRegistries.ENTITIES.getKey(event.getEntityLiving().getType()).getPath())) {
 					if (ConfigValues.REBIRTHFROMNONPLAYERMAP.get(ForgeRegistries.ENTITIES.getKey(event.getEntityLiving().getType())))
 						transition(event);
-					else if (event.getSource().getTrueSource() instanceof EntityPlayer)
+					else if (event.getSource().getTrueSource() instanceof PlayerEntity)
 						transition(event);
 					return;
 				}
@@ -46,14 +46,14 @@ public class CommonEvents {
 		if(!event.getEntity().getEntityWorld().isRemote())
             if(MobRebirth.cfg.rebirthFromNonPlayer)
                 transition(event);
-            else if(event.getSource().getTrueSource() instanceof EntityPlayer)
+            else if(event.getSource().getTrueSource() instanceof PlayerEntity)
                 transition(event);
 	}
 
 	private void transition(LivingDeathEvent event) {
 		if (event.getEntityLiving() instanceof IMob)
 			makeMobRebornTransition(event);
-		else if (MobRebirth.cfg.allowAnimals && event.getEntityLiving() instanceof IAnimal)
+		else if (MobRebirth.cfg.allowAnimals && event.getEntityLiving() instanceof AnimalEntity)
 			makeMobRebornTransition(event);
 	}
 
@@ -61,18 +61,18 @@ public class CommonEvents {
 		if(!MobRebirth.clansCompat.doRebirth(event.getEntityLiving().getEntityWorld().getChunk(event.getEntityLiving().getPosition())))
 			return;
 		if (MobRebirth.cfg.allowBosses) {
-			if (event.getEntityLiving() instanceof EntityWither || event.getEntityLiving() instanceof EntityDragon || event.getEntityLiving() instanceof EntityElderGuardian) {
+			if (event.getEntityLiving() instanceof WitherEntity || event.getEntityLiving() instanceof EnderDragonEntity || event.getEntityLiving() instanceof ElderGuardianEntity) {
 				makeMobReborn(event);
 				return;
 			}
-		} else if (event.getEntityLiving() instanceof EntityWither || event.getEntityLiving() instanceof EntityDragon || event.getEntityLiving() instanceof EntityElderGuardian)
+		} else if (event.getEntityLiving() instanceof WitherEntity || event.getEntityLiving() instanceof EnderDragonEntity || event.getEntityLiving() instanceof ElderGuardianEntity)
 			return;
 		if (MobRebirth.cfg.allowSlimes) {
-			if (event.getEntityLiving() instanceof EntitySlime) {
+			if (event.getEntityLiving() instanceof SlimeEntity) {
 				makeMobReborn(event);
 				return;
 			}
-		} else if (event.getEntityLiving() instanceof EntitySlime)
+		} else if (event.getEntityLiving() instanceof SlimeEntity)
 			return;
 		if (MobRebirth.cfg.vanillaMobsOnly) {
 			if (isVanilla(event.getEntityLiving()))
@@ -157,16 +157,16 @@ public class CommonEvents {
 
 	private void createEntity(LivingDeathEvent event) {
 		//Store
-		EntityLivingBase entity;
+		LivingEntity entity;
 		World worldIn = event.getEntityLiving().world;
 		ResourceLocation sid = ForgeRegistries.ENTITIES.getKey(event.getEntityLiving().getType());
-		NBTTagCompound storedData = event.getEntityLiving().getEntityData();
+		CompoundNBT storedData = event.getEntityLiving().getEntityData();
 		event.getEntityLiving().writeUnlessPassenger(storedData);
-		ItemStack weapon = event.getEntityLiving().getHeldItem(EnumHand.MAIN_HAND);
-		ItemStack offhand = event.getEntityLiving().getHeldItem(EnumHand.OFF_HAND);
+		ItemStack weapon = event.getEntityLiving().getHeldItem(Hand.MAIN_HAND);
+		ItemStack offhand = event.getEntityLiving().getHeldItem(Hand.OFF_HAND);
 		float health = event.getEntityLiving().getMaxHealth();
 		//Read
-		entity = (EntityLivingBase) Objects.requireNonNull(ForgeRegistries.ENTITIES.getValue(sid)).create(worldIn);
+		entity = (LivingEntity) Objects.requireNonNull(ForgeRegistries.ENTITIES.getValue(sid)).create(worldIn);
 		if (entity == null)
 			return;
 		entity.rotationYawHead = entity.rotationYaw;
@@ -175,12 +175,12 @@ public class CommonEvents {
 		entity.read(storedData);
 		entity.setHealth(health);
 		if (!weapon.isEmpty())
-			entity.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, weapon);
+			entity.setItemStackToSlot(EquipmentSlotType.MAINHAND, weapon);
 		if (!offhand.isEmpty())
-			entity.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, offhand);
+			entity.setItemStackToSlot(EquipmentSlotType.OFFHAND, offhand);
 		entity.setPosition(event.getEntityLiving().posX, event.getEntityLiving().posY, event.getEntityLiving().posZ);
 		entity.setUniqueId(UUID.randomUUID());
-		worldIn.spawnEntity(entity);
+		worldIn.addEntity(entity);
 	}
 
 	@SubscribeEvent
@@ -189,7 +189,7 @@ public class CommonEvents {
 			event.setCanceled(true);
 	}
 
-	public static boolean isVanilla(EntityLivingBase entity) {
+	public static boolean isVanilla(LivingEntity entity) {
 		return ForgeRegistries.ENTITIES.getKey(entity.getType()) != null && Objects.requireNonNull(entity.getType().getRegistryName()).getNamespace().toLowerCase().matches("minecraft");
 	}
 }

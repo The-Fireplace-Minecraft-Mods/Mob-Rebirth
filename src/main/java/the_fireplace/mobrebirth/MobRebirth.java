@@ -2,7 +2,7 @@ package the_fireplace.mobrebirth;
 
 import com.google.common.collect.Maps;
 import net.minecraft.entity.EntityType;
-import net.minecraft.item.ItemSpawnEgg;
+import net.minecraft.item.SpawnEggItem;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModList;
@@ -25,7 +25,7 @@ import java.util.Map;
 @Mod(MobRebirth.MODID)
 public class MobRebirth {
 	public static final String MODID = "mobrebirth";
-	public static Map<EntityType<?>, ItemSpawnEgg> spawnEggs = Maps.newHashMap();
+	public static Map<EntityType<?>, SpawnEggItem> spawnEggs = Maps.newHashMap();
 	public static IClansCompat clansCompat = new ClansCompatDummy();
 
 	public MobRebirth() {
@@ -41,7 +41,7 @@ public class MobRebirth {
 	}
 
 	public void loadComplete(FMLLoadCompleteEvent event) {
-		for(ItemSpawnEgg egg: ItemSpawnEgg.getEggs())
+		for(SpawnEggItem egg: SpawnEggItem.getEggs())
 			spawnEggs.put(egg.getType(null), egg);
 		if(ModList.get().isLoaded("clans"))
 			clansCompat = new ClansCompat();
