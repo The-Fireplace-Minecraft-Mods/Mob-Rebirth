@@ -17,7 +17,7 @@ buildscript {
 }
 
 plugins {
-    id "com.matthewprenger.cursegradle" version "1.2.0"
+    id "com.matthewprenger.cursegradle" version "1.4.0"
     id "thefireplace.en2ud" version "1.0"
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -30,7 +30,7 @@ allprojects {
     targetCompatibility = 1.8
 }
 
-version = "7.0.5"
+version = "7.0.6"
 group= "the_fireplace.mobrebirth"
 archivesBaseName = "MobRebirth-1.12.2"
 
