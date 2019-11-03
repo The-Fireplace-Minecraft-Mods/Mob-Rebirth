@@ -16,7 +16,7 @@ A mod allowing mobs to be reborn in various ways.
 [[dependencies.mobrebirth]]
     modId="forge"
     mandatory=true
-    versionRange="[28,)"
+    versionRange="[28.1,)"
     ordering="NONE"
     side="SERVER"
 [[dependencies.mobrebirth]]
