@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "mobrebirth",
+  "version": "${version}",
+
+  "name": "Mob Rebirth",
+  "description": "A mod allowing mobs to be reborn in various ways.",
+  "authors": [
+    "The_Fireplace"
+  ],
+  "contact": {
+    "homepage": "https://minecraft.curseforge.com/projects/mob-rebirth",
+    "sources": "https://github.com/The-Fireplace-Minecraft-Mods/Mob-Rebirth"
+  },
+
+  "license": "GPLv3",
+  "icon": "",
+
+  "environment": "SERVER",
+  "entrypoints": {
+    "main": [
+      "the_fireplace.mobrebirth.fabric.MobRebirth"
+    ]
+  },
+  "mixins": [],
+
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric": "*",
+    "minecraft": "1.14.x"
+  },
+  "suggests": {}
+}

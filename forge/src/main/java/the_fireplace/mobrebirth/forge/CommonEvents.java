@@ -1,4 +1,4 @@
-package the_fireplace.mobrebirth;
+package the_fireplace.mobrebirth.forge;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
