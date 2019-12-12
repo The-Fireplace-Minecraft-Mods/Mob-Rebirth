@@ -57,7 +57,7 @@ public class MobRebirth {
 			SERVER = specPair.getLeft();
 		}
 
-		//General clan config
+		//General config
 		public static boolean allowBosses;
 		public static boolean allowSlimes;
 		public static boolean allowAnimals;
