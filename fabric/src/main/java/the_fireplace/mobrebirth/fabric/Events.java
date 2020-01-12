@@ -8,7 +8,7 @@ import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.ElderGuardianEntity;
-import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.mob.Monster;
 import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,90 +29,70 @@ public class Events {
 
     }
 
-    private class LivingDeathEvent {
-        LivingEntity dyingEntity;
-        DamageSource source;
-        public LivingDeathEvent(LivingEntity dyingEntity, DamageSource source) {
-            this.dyingEntity = dyingEntity;
-            this.source = source;
-        }
-        public Entity getEntity() {
-            return dyingEntity;
-        }
-
-        public LivingEntity getEntityLiving() {
-            return dyingEntity;
-        }
-
-        public DamageSource getSource() {
-            return source;
-        }
-    }
-
-    public void onEntityLivingDeath(LivingDeathEvent event) {
-        if(!event.getEntity().getEntityWorld().isClient())
+    public static void onEntityLivingDeath(LivingEntity entityLiving, DamageSource damageSource) {
+        if(!entityLiving.getEntityWorld().isClient())
             if(Config.rebirthFromNonPlayer)
-                transition(event);
-            else if(event.getSource().getAttacker() instanceof PlayerEntity)
-                transition(event);
+                transition(entityLiving);
+            else if(damageSource.getAttacker() instanceof PlayerEntity)
+                transition(entityLiving);
     }
 
-    private void transition(LivingDeathEvent event) {
-        if (event.getEntityLiving() instanceof MobEntity)
-            makeMobRebornTransition(event);
-        else if (Config.allowAnimals && event.getEntityLiving() instanceof AnimalEntity)
-            makeMobRebornTransition(event);
+    private static void transition(LivingEntity entityLiving) {
+        if (entityLiving instanceof Monster)
+            makeMobRebornTransition(entityLiving);
+        else if (Config.allowAnimals && entityLiving instanceof AnimalEntity)
+            makeMobRebornTransition(entityLiving);
     }
 
-    private void makeMobRebornTransition(LivingDeathEvent event) {
+    private static void makeMobRebornTransition(LivingEntity entityLiving) {
         /*if(!MobRebirth.clansCompat.doRebirth(event.getEntityLiving().getEntityWorld().getChunk(event.getEntityLiving().getPosition())))
             return;*/
         if (Config.allowBosses) {
-            if (event.getEntityLiving() instanceof WitherEntity || event.getEntityLiving() instanceof EnderDragonEntity || event.getEntityLiving() instanceof ElderGuardianEntity) {
-                makeMobReborn(event);
+            if (entityLiving instanceof WitherEntity || entityLiving instanceof EnderDragonEntity || entityLiving instanceof ElderGuardianEntity) {
+                makeMobReborn(entityLiving);
                 return;
             }
-        } else if (event.getEntityLiving() instanceof WitherEntity || event.getEntityLiving() instanceof EnderDragonEntity || event.getEntityLiving() instanceof ElderGuardianEntity)
+        } else if (entityLiving instanceof WitherEntity || entityLiving instanceof EnderDragonEntity || entityLiving instanceof ElderGuardianEntity)
             return;
         if (Config.allowSlimes) {
-            if (event.getEntityLiving() instanceof SlimeEntity) {
-                makeMobReborn(event);
+            if (entityLiving instanceof SlimeEntity) {
+                makeMobReborn(entityLiving);
                 return;
             }
-        } else if (event.getEntityLiving() instanceof SlimeEntity)
+        } else if (entityLiving instanceof SlimeEntity)
             return;
         if (Config.vanillaMobsOnly) {
-            if (isVanilla(event.getEntityLiving()))
-                makeMobReborn(event);
+            if (isVanilla(entityLiving))
+                makeMobReborn(entityLiving);
         } else
-            makeMobReborn(event);
+            makeMobReborn(entityLiving);
     }
 
-    private void makeMobReborn(LivingDeathEvent event) {
+    private static void makeMobReborn(LivingEntity entityLiving) {
         double rand = Math.random();
         if (rand <= Config.rebirthChance) {
-            if (Config.rebornAsEggs && MobRebirth.spawnEggs.containsKey(event.getEntityLiving().getType())) {
-                dropMobEgg(event, event.getEntityLiving().getType());
+            if (Config.rebornAsEggs && MobRebirth.spawnEggs.containsKey(entityLiving.getType())) {
+                dropMobEgg(entityLiving.getType(), entityLiving);
             } else {
-                createEntity(event);
+                createEntity(entityLiving);
                 if (Config.multiMobCount > 0) {
                     double rand2 = Math.random();
                     switch(Config.multiMobMode.toLowerCase()) {
                         case "all":
                             if (rand2 <= Config.multiMobChance)
                                 for (int i = 0; i < Config.multiMobCount; i++)
-                                    createEntity(event);
+                                    createEntity(entityLiving);
                             break;
                         case "per-mob":
                             for (int i = 0; i < Config.multiMobCount; i++, rand2 = new Random().nextDouble())
                                 if (rand2 <= Config.multiMobChance)
-                                    createEntity(event);
+                                    createEntity(entityLiving);
                             break;
                         case "continuous":
                         default:
                             for (int i = 0; i < Config.multiMobCount; i++, rand2 = new Random().nextDouble())
                                 if (rand2 <= Config.multiMobChance)
-                                    createEntity(event);
+                                    createEntity(entityLiving);
                                 else
                                     break;
                     }
@@ -121,22 +101,22 @@ public class Events {
         }
     }
 
-    private static void dropMobEgg(LivingDeathEvent event, EntityType<?> entityType) {
-        event.getEntityLiving().dropItem(() -> MobRebirth.spawnEggs.get(entityType), 0);
+    private static static void dropMobEgg(EntityType<?> entityType, LivingEntity entityLiving) {
+        entityLiving.dropItem(() -> MobRebirth.spawnEggs.get(entityType), 0);
     }
 
-    private void createEntity(LivingDeathEvent event) {
+    private static void createEntity(LivingEntity entityLiving) {
         //Store
         LivingEntity entity;
-        World worldIn = event.getEntityLiving().world;
-        Identifier sid = ForgeRegistries.ENTITIES.getKey(event.getEntityLiving().getType());
+        World worldIn = entityLiving.world;
+        Identifier sid = EntityType.getId(entityLiving.getType());
         CompoundTag storedData = new CompoundTag();
-        event.getEntityLiving().writeCustomDataToTag(storedData);
-        ItemStack weapon = event.getEntityLiving().getStackInHand(Hand.MAIN_HAND);
-        ItemStack offhand = event.getEntityLiving().getStackInHand(Hand.OFF_HAND);
-        float health = event.getEntityLiving().getHealthMaximum();
+        entityLiving.writeCustomDataToTag(storedData);
+        ItemStack weapon = entityLiving.getStackInHand(Hand.MAIN_HAND);
+        ItemStack offhand = entityLiving.getStackInHand(Hand.OFF_HAND);
+        float health = entityLiving.getHealthMaximum();
         //Read
-        entity = (LivingEntity) Objects.requireNonNull(ForgeRegistries.ENTITIES.getValue(sid)).create(worldIn);
+        entity = (LivingEntity) entityLiving.getType().create(worldIn);
         if (entity == null)
             return;
         entity.headYaw = entity.yaw;
@@ -148,14 +128,15 @@ public class Events {
             entity.setEquippedStack(EquipmentSlot.MAINHAND, weapon);
         if (!offhand.isEmpty())
             entity.setEquippedStack(EquipmentSlot.OFFHAND, offhand);
-        entity.setPosition(event.getEntityLiving().x, event.getEntityLiving().y, event.getEntityLiving().z);
+        entity.setPosition(entityLiving.x, entityLiving.y, entityLiving.z);
         entity.setUuid(UUID.randomUUID());
         worldIn.spawnEntity(entity);
     }
 
-    public void entityDamaged(LivingHurtEvent event) {
-        if (event.getSource().isFireDamage() && !Config.damageFromSunlight && event.getEntityLiving().isEntityUndead() && !event.getEntityLiving().isInLava() && event.getEntityLiving().world.canBlockSeeSky(new BlockPos(MathHelper.floor(event.getEntityLiving().posX), MathHelper.floor(event.getEntityLiving().posY), MathHelper.floor(event.getEntityLiving().posZ))))
-            event.setCanceled(true);
+    public static boolean shouldCancelEntityDamage(DamageSource source, LivingEntity livingEntity) {
+        if (source.isFire() && !Config.damageFromSunlight && livingEntity.isUndead() && !livingEntity.isInLava() && livingEntity.world.isSkyVisible(new BlockPos(MathHelper.floor(livingEntity.x), MathHelper.floor(livingEntity.y), MathHelper.floor(livingEntity.z))))
+            return true;
+        return false;
     }
 
     public static boolean isVanilla(LivingEntity entity) {

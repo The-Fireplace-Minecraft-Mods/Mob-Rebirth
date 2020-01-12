@@ -45,43 +45,43 @@ public class CommonEvents {
 		}*/
 		if(!event.getEntity().getEntityWorld().isRemote())
             if(MobRebirth.cfg.rebirthFromNonPlayer)
-                transition(event);
+                transition(event.getEntityLiving());
             else if(event.getSource().getTrueSource() instanceof PlayerEntity)
-                transition(event);
+                transition(event.getEntityLiving());
 	}
 
-	private void transition(LivingDeathEvent event) {
-		if (event.getEntityLiving() instanceof IMob)
-			makeMobRebornTransition(event);
-		else if (MobRebirth.cfg.allowAnimals && event.getEntityLiving() instanceof AnimalEntity)
-			makeMobRebornTransition(event);
+	private void transition(LivingEntity entityLiving) {
+		if (entityLiving instanceof IMob)
+			makeMobRebornTransition(entityLiving);
+		else if (MobRebirth.cfg.allowAnimals && entityLiving instanceof AnimalEntity)
+			makeMobRebornTransition(entityLiving);
 	}
 
-	private void makeMobRebornTransition(LivingDeathEvent event) {
-		if(!MobRebirth.clansCompat.doRebirth(event.getEntityLiving().getEntityWorld().getChunk(event.getEntityLiving().getPosition())))
+	private void makeMobRebornTransition(LivingEntity entityLiving) {
+		if(!MobRebirth.clansCompat.doRebirth(entityLiving.getEntityWorld().getChunk(entityLiving.getPosition())))
 			return;
 		if (MobRebirth.cfg.allowBosses) {
-			if (event.getEntityLiving() instanceof WitherEntity || event.getEntityLiving() instanceof EnderDragonEntity || event.getEntityLiving() instanceof ElderGuardianEntity) {
-				makeMobReborn(event);
+			if (entityLiving instanceof WitherEntity || entityLiving instanceof EnderDragonEntity || entityLiving instanceof ElderGuardianEntity) {
+				makeMobReborn(entityLiving);
 				return;
 			}
-		} else if (event.getEntityLiving() instanceof WitherEntity || event.getEntityLiving() instanceof EnderDragonEntity || event.getEntityLiving() instanceof ElderGuardianEntity)
+		} else if (entityLiving instanceof WitherEntity || entityLiving instanceof EnderDragonEntity || entityLiving instanceof ElderGuardianEntity)
 			return;
 		if (MobRebirth.cfg.allowSlimes) {
-			if (event.getEntityLiving() instanceof SlimeEntity) {
-				makeMobReborn(event);
+			if (entityLiving instanceof SlimeEntity) {
+				makeMobReborn(entityLiving);
 				return;
 			}
-		} else if (event.getEntityLiving() instanceof SlimeEntity)
+		} else if (entityLiving instanceof SlimeEntity)
 			return;
 		if (MobRebirth.cfg.vanillaMobsOnly) {
-			if (isVanilla(event.getEntityLiving()))
-				makeMobReborn(event);
+			if (isVanilla(entityLiving))
+				makeMobReborn(entityLiving);
 		} else
-			makeMobReborn(event);
+			makeMobReborn(entityLiving);
 	}
 
-	private void makeMobReborn(LivingDeathEvent event) {
+	private void makeMobReborn(LivingEntity entityLiving) {
 		double rand = Math.random();
 		/*ResourceLocation name = ForgeRegistries.ENTITIES.getKey(event.getEntityLiving().getType());
 		if (MobRebirth.getHasCustomMobSettings()) {
@@ -121,28 +121,28 @@ public class CommonEvents {
 			}
 		}*/
 		if (rand <= MobRebirth.cfg.rebirthChance) {
-			if (MobRebirth.cfg.rebornAsEggs && MobRebirth.spawnEggs.containsKey(event.getEntityLiving().getType())) {
-				dropMobEgg(event, event.getEntityLiving().getType());
+			if (MobRebirth.cfg.rebornAsEggs && MobRebirth.spawnEggs.containsKey(entityLiving.getType())) {
+				dropMobEgg(entityLiving.getType(), entityLiving);
 			} else {
-				createEntity(event);
+				createEntity(entityLiving);
 				if (MobRebirth.cfg.multiMobCount > 0) {
 					double rand2 = Math.random();
 					switch(MobRebirth.cfg.multiMobMode.toLowerCase()) {
 						case "all":
 							if (rand2 <= MobRebirth.cfg.multiMobChance)
 								for (int i = 0; i < MobRebirth.cfg.multiMobCount; i++)
-									createEntity(event);
+									createEntity(entityLiving);
 							break;
 						case "per-mob":
 							for (int i = 0; i < MobRebirth.cfg.multiMobCount; i++, rand2 = new Random().nextDouble())
 								if (rand2 <= MobRebirth.cfg.multiMobChance)
-									createEntity(event);
+									createEntity(entityLiving);
 							break;
 						case "continuous":
 						default:
 							for (int i = 0; i < MobRebirth.cfg.multiMobCount; i++, rand2 = new Random().nextDouble())
 								if (rand2 <= MobRebirth.cfg.multiMobChance)
-									createEntity(event);
+									createEntity(entityLiving);
 								else
 									break;
 					}
@@ -151,36 +151,35 @@ public class CommonEvents {
 		}
 	}
 
-	private static void dropMobEgg(LivingDeathEvent event, EntityType<?> entityType) {
-		event.getEntityLiving().entityDropItem(new ItemStack(MobRebirth.spawnEggs.get(entityType)), 0.0F);
+	private static void dropMobEgg(EntityType<?> entityType, LivingEntity entityLiving) {
+		entityLiving.entityDropItem(new ItemStack(MobRebirth.spawnEggs.get(entityType)), 0.0F);
 	}
 
-	private void createEntity(LivingDeathEvent event) {
+	private void createEntity(LivingEntity entityLiving) {
 		//Store
-		LivingEntity entity;
-		World worldIn = event.getEntityLiving().world;
-		ResourceLocation sid = ForgeRegistries.ENTITIES.getKey(event.getEntityLiving().getType());
-		CompoundNBT storedData = event.getEntityLiving().getPersistentData();
-		event.getEntityLiving().writeUnlessPassenger(storedData);
-		ItemStack weapon = event.getEntityLiving().getHeldItem(Hand.MAIN_HAND);
-		ItemStack offhand = event.getEntityLiving().getHeldItem(Hand.OFF_HAND);
-		float health = event.getEntityLiving().getMaxHealth();
+		World worldIn = entityLiving.world;
+		ResourceLocation sid = ForgeRegistries.ENTITIES.getKey(entityLiving.getType());
+		CompoundNBT storedData = entityLiving.getPersistentData();
+		entityLiving.writeUnlessPassenger(storedData);
+		ItemStack weapon = entityLiving.getHeldItem(Hand.MAIN_HAND);
+		ItemStack offhand = entityLiving.getHeldItem(Hand.OFF_HAND);
+		float health = entityLiving.getMaxHealth();
 		//Read
-		entity = (LivingEntity) Objects.requireNonNull(ForgeRegistries.ENTITIES.getValue(sid)).create(worldIn);
-		if (entity == null)
+		LivingEntity newEntity = (LivingEntity) Objects.requireNonNull(ForgeRegistries.ENTITIES.getValue(sid)).create(worldIn);
+		if (newEntity == null)
 			return;
-		entity.rotationYawHead = entity.rotationYaw;
-		entity.renderYawOffset = entity.rotationYaw;
+		newEntity.rotationYawHead = newEntity.rotationYaw;
+		newEntity.renderYawOffset = newEntity.rotationYaw;
 		storedData.putInt("Health", (int) health);
-		entity.read(storedData);
-		entity.setHealth(health);
+		newEntity.read(storedData);
+		newEntity.setHealth(health);
 		if (!weapon.isEmpty())
-			entity.setItemStackToSlot(EquipmentSlotType.MAINHAND, weapon);
+			newEntity.setItemStackToSlot(EquipmentSlotType.MAINHAND, weapon);
 		if (!offhand.isEmpty())
-			entity.setItemStackToSlot(EquipmentSlotType.OFFHAND, offhand);
-		entity.setPosition(event.getEntityLiving().posX, event.getEntityLiving().posY, event.getEntityLiving().posZ);
-		entity.setUniqueId(UUID.randomUUID());
-		worldIn.addEntity(entity);
+			newEntity.setItemStackToSlot(EquipmentSlotType.OFFHAND, offhand);
+		newEntity.setPosition(entityLiving.posX, entityLiving.posY, entityLiving.posZ);
+		newEntity.setUniqueId(UUID.randomUUID());
+		worldIn.addEntity(newEntity);
 	}
 
 	@SubscribeEvent
