@@ -101,7 +101,7 @@ public class Events {
         }
     }
 
-    private static static void dropMobEgg(EntityType<?> entityType, LivingEntity entityLiving) {
+    private static void dropMobEgg(EntityType<?> entityType, LivingEntity entityLiving) {
         entityLiving.dropItem(() -> MobRebirth.spawnEggs.get(entityType), 0);
     }
 

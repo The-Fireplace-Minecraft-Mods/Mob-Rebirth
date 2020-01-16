@@ -1,6 +1,7 @@
 package the_fireplace.mobrebirth.fabric;
 
 import com.google.gson.*;
+import net.minecraft.server.MinecraftServer;
 
 import java.io.*;
 
@@ -21,6 +22,8 @@ public class Config {
     public static boolean rebirthInClaimedLand = false;
 
     public static void load() {
+        if(!configFile.exists())
+            create();
         JsonParser jsonParser = new JsonParser();
         try {
             Object obj = jsonParser.parse(new FileReader(configFile));
@@ -42,8 +45,6 @@ public class Config {
                 vanillaMobsOnly = getJsonPrimitive(jsonObject, "vanillaMobsOnly").getAsBoolean();
                 rebirthInClaimedLand = getJsonPrimitive(jsonObject, "rebirthInClaimedLand").getAsBoolean();
             }
-        } catch (FileNotFoundException e) {
-            create();
         } catch (Exception e) {
             e.printStackTrace();
         }

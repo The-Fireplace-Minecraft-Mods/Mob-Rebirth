@@ -10,7 +10,8 @@
   ],
   "contact": {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/mob-rebirth",
-    "sources": "https://github.com/The-Fireplace-Minecraft-Mods/Mob-Rebirth"
+    "sources": "https://github.com/The-Fireplace-Minecraft-Mods/Mob-Rebirth",
+    "issues": "https://github.com/The-Fireplace-Minecraft-Mods/Mob-Rebirth/issues"
   },
 
   "license": "GPLv3",
@@ -22,12 +23,13 @@
       "the_fireplace.mobrebirth.fabric.MobRebirth"
     ]
   },
-  "mixins": [],
+  "mixins": [
+    "mobrebirth.mixins.json"
+  ],
 
   "depends": {
     "fabricloader": ">=0.4.0",
-    "fabric": "*",
-    "minecraft": "1.14.x"
+    "fabric": "*"
   },
   "suggests": {}
 }
