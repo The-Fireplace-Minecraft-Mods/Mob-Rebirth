@@ -24,7 +24,7 @@ apply plugin: 'net.cazzar.gradle.modsio'
 
 version = "8.1.0"
 group = "the_fireplace.mobrebirth"
-archivesBaseName = "MobRebirth-1.14.4"
+archivesBaseName = "MobRebirth-1.15.1"
 
 curseforge {
     apiKey = project.hasProperty("curseForgeApiKey") ? project.curseForgeApiKey : "empty"
@@ -33,7 +33,7 @@ curseforge {
         changelog = file('changelog.txt')
         //release, beta, or alpha
         releaseType = 'release'
-        addGameVersion '1.14.4'
+        addGameVersion '1.15.1'
         addGameVersion 'Java 8'
         addGameVersion 'Forge'
         addGameVersion 'Fabric'
@@ -72,7 +72,7 @@ modsIO {
     project{
         artifact = new File(buildDir, "$archivesBaseName-${version}.jar")
         modid = "1222"
-        minecraft = "1.14.4"
+        minecraft = "1.15.1"
         try{changelog = file('changelog.txt').text}catch(Exception ignored){changelog=""}
         tag = "beta"
         current = true

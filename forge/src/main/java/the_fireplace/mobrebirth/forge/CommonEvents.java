@@ -177,14 +177,14 @@ public class CommonEvents {
 			newEntity.setItemStackToSlot(EquipmentSlotType.MAINHAND, weapon);
 		if (!offhand.isEmpty())
 			newEntity.setItemStackToSlot(EquipmentSlotType.OFFHAND, offhand);
-		newEntity.setPosition(entityLiving.posX, entityLiving.posY, entityLiving.posZ);
+		newEntity.setPosition(entityLiving.getPosition().getX(), entityLiving.getPosition().getX(), entityLiving.getPosition().getZ());
 		newEntity.setUniqueId(UUID.randomUUID());
 		worldIn.addEntity(newEntity);
 	}
 
 	@SubscribeEvent
 	public void entityDamaged(LivingHurtEvent event) {
-		if (event.getSource().isFireDamage() && !MobRebirth.cfg.damageFromSunlight && event.getEntityLiving().isEntityUndead() && !event.getEntityLiving().isInLava() && event.getEntityLiving().world.canBlockSeeSky(new BlockPos(MathHelper.floor(event.getEntityLiving().posX), MathHelper.floor(event.getEntityLiving().posY), MathHelper.floor(event.getEntityLiving().posZ))))
+		if (event.getSource().isFireDamage() && !MobRebirth.cfg.damageFromSunlight && event.getEntityLiving().isEntityUndead() && !event.getEntityLiving().isInLava() && event.getEntityLiving().world.canBlockSeeSky(new BlockPos(MathHelper.floor(event.getEntityLiving().getPosition().getX()), MathHelper.floor(event.getEntityLiving().getPosition().getY()), MathHelper.floor(event.getEntityLiving().getPosition().getZ()))))
 			event.setCanceled(true);
 	}
 

@@ -1,6 +1,5 @@
 package the_fireplace.mobrebirth.fabric;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -114,7 +113,7 @@ public class Events {
         entityLiving.writeCustomDataToTag(storedData);
         ItemStack weapon = entityLiving.getStackInHand(Hand.MAIN_HAND);
         ItemStack offhand = entityLiving.getStackInHand(Hand.OFF_HAND);
-        float health = entityLiving.getHealthMaximum();
+        float health = entityLiving.getMaximumHealth();
         //Read
         entity = (LivingEntity) entityLiving.getType().create(worldIn);
         if (entity == null)
@@ -125,16 +124,16 @@ public class Events {
         entity.readCustomDataFromTag(storedData);
         entity.setHealth(health);
         if (!weapon.isEmpty())
-            entity.setEquippedStack(EquipmentSlot.MAINHAND, weapon);
+            entity.equipStack(EquipmentSlot.MAINHAND, weapon);
         if (!offhand.isEmpty())
-            entity.setEquippedStack(EquipmentSlot.OFFHAND, offhand);
-        entity.setPosition(entityLiving.x, entityLiving.y, entityLiving.z);
+            entity.equipStack(EquipmentSlot.OFFHAND, offhand);
+        entity.setPosition(entityLiving.getBlockPos().getX(), entityLiving.getBlockPos().getY(), entityLiving.getBlockPos().getZ());
         entity.setUuid(UUID.randomUUID());
         worldIn.spawnEntity(entity);
     }
 
     public static boolean shouldCancelEntityDamage(DamageSource source, LivingEntity livingEntity) {
-        if (source.isFire() && !Config.damageFromSunlight && livingEntity.isUndead() && !livingEntity.isInLava() && livingEntity.world.isSkyVisible(new BlockPos(MathHelper.floor(livingEntity.x), MathHelper.floor(livingEntity.y), MathHelper.floor(livingEntity.z))))
+        if (source.isFire() && !Config.damageFromSunlight && livingEntity.isUndead() && !livingEntity.isInLava() && livingEntity.world.isSkyVisible(new BlockPos(MathHelper.floor(livingEntity.getBlockPos().getX()), MathHelper.floor(livingEntity.getBlockPos().getY()), MathHelper.floor(livingEntity.getBlockPos().getZ()))))
             return true;
         return false;
     }
