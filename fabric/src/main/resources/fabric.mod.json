@@ -17,7 +17,7 @@
   "license": "GPLv3",
   "icon": "",
 
-  "environment": "SERVER",
+  "environment": "*",
   "entrypoints": {
     "main": [
       "the_fireplace.mobrebirth.fabric.MobRebirth"

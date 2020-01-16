@@ -8,7 +8,6 @@ import net.minecraft.item.SpawnEggItem;
 import java.util.Map;
 
 public class MobRebirth implements ModInitializer {
-	public static final String MODID = "mobrebirth";
 	public static Map<EntityType<?>, SpawnEggItem> spawnEggs = Maps.newHashMap();
 	@Override
 	public void onInitialize() {
