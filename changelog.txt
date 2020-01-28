@@ -1,1 +1,1 @@
-Fixed crash with Forge 28.1.0 and newer. Closes #10
+Added support for Fabric

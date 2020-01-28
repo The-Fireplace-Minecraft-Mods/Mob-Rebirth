@@ -3,3 +3,13 @@
 
 # Ignore Gradle build output directory
 build
+
+# idea
+
+.idea/
+*.iml
+*.ipr
+*.iws
+
+!.idea/scopes/
+!.idea/runConfigurations/
