@@ -21,7 +21,7 @@ allprojects {
 archivesBaseName = project.hasProperty("outputJarBaseName") ? project.outputJarBaseName : "forge"
 
 minecraft {
-    mappings channel: 'stable', version: '53-1.14.2'
+    mappings channel: 'stable', version: '60-1.15'
     
     runs {
         client = {
@@ -46,7 +46,7 @@ repositories {
 }
 
 dependencies {
-	minecraft 'net.minecraftforge:forge:1.15.1-30.0.41'
+	minecraft 'net.minecraftforge:forge:1.15.2-31.0.1'
     compile name:'Clans-1.13.2-1.2.12-deobf'
 }
 
