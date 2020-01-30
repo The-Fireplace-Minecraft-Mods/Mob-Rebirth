@@ -108,7 +108,6 @@ public class Events {
         //Store
         LivingEntity entity;
         World worldIn = entityLiving.world;
-        Identifier sid = EntityType.getId(entityLiving.getType());
         CompoundTag storedData = new CompoundTag();
         entityLiving.writeCustomDataToTag(storedData);
         ItemStack weapon = entityLiving.getStackInHand(Hand.MAIN_HAND);
@@ -127,7 +126,7 @@ public class Events {
             entity.equipStack(EquipmentSlot.MAINHAND, weapon);
         if (!offhand.isEmpty())
             entity.equipStack(EquipmentSlot.OFFHAND, offhand);
-        entity.setPosition(entityLiving.getBlockPos().getX(), entityLiving.getBlockPos().getY(), entityLiving.getBlockPos().getZ());
+        entity.setPos(entityLiving.getBlockPos().getX(), entityLiving.getBlockPos().getY(), entityLiving.getBlockPos().getZ());
         entity.setUuid(UUID.randomUUID());
         worldIn.spawnEntity(entity);
     }

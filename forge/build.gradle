@@ -46,7 +46,7 @@ repositories {
 }
 
 dependencies {
-	minecraft 'net.minecraftforge:forge:1.15.2-31.0.1'
+	minecraft 'net.minecraftforge:forge:1.15.2-31.0.14'
     compile name:'Clans-1.13.2-1.2.12-deobf'
 }
 
