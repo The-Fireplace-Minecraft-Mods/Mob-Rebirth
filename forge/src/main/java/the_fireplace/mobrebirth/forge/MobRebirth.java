@@ -13,7 +13,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.commons.lang3.tuple.Pair;
 import the_fireplace.mobrebirth.forge.compat.clans.ClansCompatDummy;
-import the_fireplace.mobrebirth.forge.compat.clans.ClansCompat;
 import the_fireplace.mobrebirth.forge.compat.clans.IClansCompat;
 
 import java.util.Map;
@@ -43,8 +42,8 @@ public class MobRebirth {
 	public void loadComplete(FMLLoadCompleteEvent event) {
 		for(SpawnEggItem egg: SpawnEggItem.getEggs())
 			spawnEggs.put(egg.getType(null), egg);
-		if(ModList.get().isLoaded("clans"))
-			clansCompat = new ClansCompat();
+		/*if(ModList.get().isLoaded("clans"))
+			clansCompat = new ClansCompat();*/
 	}
 
 	public static class cfg {

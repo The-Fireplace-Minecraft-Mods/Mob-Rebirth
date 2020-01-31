@@ -1,6 +1,6 @@
 package the_fireplace.mobrebirth.forge.compat.clans;
 
-import net.minecraft.world.chunk.IChunk;
+/*import net.minecraft.world.chunk.IChunk;
 import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.mobrebirth.forge.MobRebirth;
 
@@ -11,4 +11,4 @@ public class ClansCompat implements IClansCompat {
             return true;
         return ChunkUtils.getChunkOwner(chunk) == null;
     }
-}
+}*/
