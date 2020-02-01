@@ -159,7 +159,8 @@ public class CommonEvents {
 		//Store
 		World worldIn = entityLiving.world;
 		ResourceLocation sid = ForgeRegistries.ENTITIES.getKey(entityLiving.getType());
-		CompoundNBT storedData = entityLiving.getPersistentData();
+		// entityLiving.getPersistentData is throwing StackOverflowException. It should only be Forge data though, so this can probably stay like this unless any issues arise.
+		CompoundNBT storedData = new CompoundNBT();//entityLiving.getPersistentData();
 		entityLiving.writeUnlessPassenger(storedData);
 		ItemStack weapon = entityLiving.getHeldItem(Hand.MAIN_HAND);
 		ItemStack offhand = entityLiving.getHeldItem(Hand.OFF_HAND);

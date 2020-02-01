@@ -1,2 +1,3 @@
 Fixed rebirth happening at the wrong Y value (Forge)
+Fixed reborn entities throwing exceptions in the console, causing the game to hang on save, and not getting saved (Forge)
 Fixed the reborn entity's body not being rotated (Fabric)
