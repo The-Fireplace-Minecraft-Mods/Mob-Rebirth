@@ -14,7 +14,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -118,7 +117,7 @@ public class Events {
         if (entity == null)
             return;
         entity.headYaw = entity.yaw;
-        //entity.renderYawOffset = entity.yaw;
+        entity.bodyYaw = entity.yaw;
         storedData.putInt("Health", (int) health);
         entity.readCustomDataFromTag(storedData);
         entity.setHealth(health);

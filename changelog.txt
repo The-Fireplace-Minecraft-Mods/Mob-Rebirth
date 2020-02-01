@@ -1,1 +1,2 @@
 Fixed rebirth happening at the wrong Y value (Forge)
+Fixed the reborn entity's body not being rotated (Fabric)
