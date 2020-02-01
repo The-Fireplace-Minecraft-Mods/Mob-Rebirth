@@ -120,7 +120,7 @@ public class Events {
         if (entity == null)
             return;
         entity.headYaw = entity.yaw;
-        //entity.renderYawOffset = entity.yaw;
+        entity.bodyYaw = entity.yaw;
         storedData.putInt("Health", (int) health);
         entity.readCustomDataFromTag(storedData);
         entity.setHealth(health);

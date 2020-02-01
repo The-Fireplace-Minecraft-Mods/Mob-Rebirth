@@ -159,7 +159,7 @@ public class CommonEvents {
 		//Store
 		World worldIn = entityLiving.world;
 		ResourceLocation sid = ForgeRegistries.ENTITIES.getKey(entityLiving.getType());
-		CompoundNBT storedData = entityLiving.getPersistentData();
+		CompoundNBT storedData = new CompoundNBT();//entityLiving.getPersistentData();
 		entityLiving.writeUnlessPassenger(storedData);
 		ItemStack weapon = entityLiving.getHeldItem(Hand.MAIN_HAND);
 		ItemStack offhand = entityLiving.getHeldItem(Hand.OFF_HAND);

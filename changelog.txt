@@ -1,1 +1,2 @@
-Added support for Fabric
+Fixed reborn entities throwing exceptions in the console, causing the game to hang on save, and not getting saved (Forge)
+Fixed the reborn entity's body not being rotated (Fabric)
