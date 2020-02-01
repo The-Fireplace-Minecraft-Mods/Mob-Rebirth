@@ -177,8 +177,8 @@ public class CommonEvents {
 			newEntity.setItemStackToSlot(EquipmentSlotType.MAINHAND, weapon);
 		if (!offhand.isEmpty())
 			newEntity.setItemStackToSlot(EquipmentSlotType.OFFHAND, offhand);
-		newEntity.setPosition(entityLiving.getPosition().getX(), entityLiving.getPosition().getX(), entityLiving.getPosition().getZ());
 		newEntity.setUniqueId(UUID.randomUUID());
+		newEntity.setPosition(entityLiving.getPosition().getX(), entityLiving.getPosition().getY(), entityLiving.getPosition().getZ());
 		worldIn.addEntity(newEntity);
 	}
 
