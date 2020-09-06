@@ -1,0 +1,11 @@
+{
+  "text.autoconfig.mobrebirth.title": "Mob Rebirth Config",
+  "text.autoconfig.mobrebirth.option.allowBosses": "Allow Bosses",
+  "text.autoconfig.mobrebirth.option.allowBosses.@Tooltip": "Should bosses be reborn?",
+  "text.autoconfig.mobrebirth.option.allowSlimes": "Allow Slimes",
+  "text.autoconfig.mobrebirth.option.allowSlimes.@Tooltip": "Should slimes be reborn?",
+  "text.autoconfig.mobrebirth.option.allowAnimals": "Allow Animals",
+  "text.autoconfig.mobrebirth.option.allowAnimals.@Tooltip": "Should animals be reborn?",
+  "text.autoconfig.mobrebirth.option.vanillaMobsOnly": "Vanilla Mobs Only",
+  "text.autoconfig.mobrebirth.option.vanillaMobsOnly.@Tooltip": "Only allow vanilla mobs be reborn?"
+}
