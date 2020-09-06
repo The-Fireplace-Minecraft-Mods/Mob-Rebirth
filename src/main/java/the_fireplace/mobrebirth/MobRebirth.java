@@ -6,6 +6,7 @@ import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.SpawnEggItem;
+import the_fireplace.mobrebirth.config.ModConfig;
 
 import java.util.Map;
 
