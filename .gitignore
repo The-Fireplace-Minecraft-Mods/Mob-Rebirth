@@ -10,6 +10,3 @@ build
 *.iml
 *.ipr
 *.iws
-
-!.idea/scopes/
-!.idea/runConfigurations/

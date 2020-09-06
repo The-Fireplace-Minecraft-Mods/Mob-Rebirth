@@ -16,64 +16,71 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import the_fireplace.mobrebirth.config.MobSettingsManager;
 
-import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
 public class EventLogic {
 
-    public static void onDeath(LivingEntity entityLiving, DamageSource damageSource) {
-        if(!entityLiving.getEntityWorld().isClient()) {
-            if(checkDamageSource(entityLiving, damageSource)
-            && checkGeneralEntityType(entityLiving)
-            && checkSpecificEntityType(entityLiving))
-                makeMobReborn(entityLiving);
+    public static void onDeath(LivingEntity livingEntity, DamageSource damageSource) {
+        if(!livingEntity.getEntityWorld().isClient()) {
+            Boolean enabled = MobSettingsManager.getSettings(livingEntity).enabled;
+            if(enabled == Boolean.FALSE)
+                return;
+            if(checkDamageSource(livingEntity, damageSource)
+            && (enabled == Boolean.TRUE || (checkGeneralEntityType(livingEntity)
+            && checkSpecificEntityType(livingEntity))))
+                makeMobReborn(livingEntity);
         }
     }
 
-    private static boolean checkDamageSource(LivingEntity entityLiving, DamageSource damageSource) {
-        return MobRebirth.config.rebirthFromNonPlayer || damageSource.getAttacker() instanceof PlayerEntity;
+    private static boolean checkDamageSource(LivingEntity livingEntity, DamageSource damageSource) {
+        if(damageSource.getAttacker() instanceof PlayerEntity)
+            return MobSettingsManager.getSettings(livingEntity).rebirthFromPlayer;
+        else
+            return MobSettingsManager.getSettings(livingEntity).rebirthFromNonPlayer;
     }
 
-    private static boolean checkGeneralEntityType(LivingEntity entityLiving) {
-        return entityLiving instanceof Monster || (MobRebirth.config.allowAnimals && entityLiving instanceof AnimalEntity);
+    private static boolean checkGeneralEntityType(LivingEntity livingEntity) {
+        return livingEntity instanceof Monster || (MobRebirth.config.allowAnimals && livingEntity instanceof AnimalEntity);
     }
 
-    private static boolean checkSpecificEntityType(LivingEntity entityLiving) {
-        if (entityLiving instanceof WitherEntity || entityLiving instanceof EnderDragonEntity || entityLiving instanceof ElderGuardianEntity)
+    private static boolean checkSpecificEntityType(LivingEntity livingEntity) {
+        if (livingEntity instanceof WitherEntity || livingEntity instanceof EnderDragonEntity || livingEntity instanceof ElderGuardianEntity)
             return MobRebirth.config.allowBosses;
-        if(entityLiving instanceof SlimeEntity)
+        if(livingEntity instanceof SlimeEntity)
             return MobRebirth.config.allowSlimes;
-        return !MobRebirth.config.vanillaMobsOnly || isVanilla(entityLiving);
+        return !MobRebirth.config.vanillaMobsOnly || isVanilla(livingEntity);
     }
 
-    private static void makeMobReborn(LivingEntity entityLiving) {
+    private static void makeMobReborn(LivingEntity livingEntity) {
         double rand = Math.random();
-        if (rand <= MobRebirth.config.rebirthChance) {
-            if (MobRebirth.config.rebornAsEggs && MobRebirth.spawnEggs.containsKey(entityLiving.getType())) {
-                dropMobEgg(entityLiving.getType(), entityLiving);
+        if (rand <= MobSettingsManager.getSettings(livingEntity).rebirthChance) {
+            if (MobSettingsManager.getSettings(livingEntity).rebornAsEggs && MobRebirth.spawnEggs.containsKey(livingEntity.getType())) {
+                dropMobEgg(livingEntity.getType(), livingEntity);
             } else {
-                createEntity(entityLiving);
-                if (MobRebirth.config.multiMobCount > 0) {
+                createEntity(livingEntity);
+                if (MobSettingsManager.getSettings(livingEntity).multiMobCount > 0) {
                     double rand2 = Math.random();
-                    switch(MobRebirth.config.multiMobMode.toLowerCase()) {
+                    switch(MobSettingsManager.getSettings(livingEntity).multiMobMode.toLowerCase()) {
                         case "all":
-                            if (rand2 <= MobRebirth.config.multiMobChance)
-                                for (int i = 0; i < MobRebirth.config.multiMobCount; i++)
-                                    createEntity(entityLiving);
+                            if (rand2 <= MobSettingsManager.getSettings(livingEntity).multiMobChance)
+                                for (int i = 0; i < MobSettingsManager.getSettings(livingEntity).multiMobCount; i++)
+                                    createEntity(livingEntity);
                             break;
                         case "per-mob":
-                            for (int i = 0; i < MobRebirth.config.multiMobCount; i++, rand2 = new Random().nextDouble())
-                                if (rand2 <= MobRebirth.config.multiMobChance)
-                                    createEntity(entityLiving);
+                            for (int i = 0; i < MobSettingsManager.getSettings(livingEntity).multiMobCount; i++, rand2 = new Random().nextDouble())
+                                if (rand2 <= MobSettingsManager.getSettings(livingEntity).multiMobChance)
+                                    createEntity(livingEntity);
                             break;
                         case "continuous":
                         default:
-                            for (int i = 0; i < MobRebirth.config.multiMobCount; i++, rand2 = new Random().nextDouble())
-                                if (rand2 <= MobRebirth.config.multiMobChance)
-                                    createEntity(entityLiving);
+                            for (int i = 0; i < MobSettingsManager.getSettings(livingEntity).multiMobCount; i++, rand2 = new Random().nextDouble())
+                                if (rand2 <= MobSettingsManager.getSettings(livingEntity).multiMobChance)
+                                    createEntity(livingEntity);
                                 else
                                     break;
                     }
@@ -82,47 +89,47 @@ public class EventLogic {
         }
     }
 
-    private static void dropMobEgg(EntityType<?> entityType, LivingEntity entityLiving) {
-        entityLiving.dropItem(() -> MobRebirth.spawnEggs.get(entityType), 0);
+    private static void dropMobEgg(EntityType<?> entityType, LivingEntity livingEntity) {
+        livingEntity.dropItem(() -> MobRebirth.spawnEggs.get(entityType), 0);
     }
 
-    private static void createEntity(LivingEntity entityLiving) {
+    private static void createEntity(LivingEntity livingEntity) {
         //Store
-        LivingEntity entity;
-        World worldIn = entityLiving.world;
+        LivingEntity newEntity;
+        World worldIn = livingEntity.world;
         CompoundTag storedData = new CompoundTag();
-        entityLiving.writeCustomDataToTag(storedData);
-        ItemStack weapon = entityLiving.getStackInHand(Hand.MAIN_HAND);
-        ItemStack offhand = entityLiving.getStackInHand(Hand.OFF_HAND);
-        float health = entityLiving.getMaxHealth();
+        livingEntity.writeCustomDataToTag(storedData);
+        ItemStack weapon = livingEntity.getStackInHand(Hand.MAIN_HAND);
+        ItemStack offhand = livingEntity.getStackInHand(Hand.OFF_HAND);
+        float health = livingEntity.getMaxHealth();
         //Read
-        entity = (LivingEntity) entityLiving.getType().create(worldIn);
-        if (entity == null)
+        newEntity = (LivingEntity) livingEntity.getType().create(worldIn);
+        if (newEntity == null)
             return;
-        entity.headYaw = entity.yaw;
-        entity.bodyYaw = entity.yaw;
+        newEntity.headYaw = newEntity.yaw;
+        newEntity.bodyYaw = newEntity.yaw;
         storedData.putInt("Health", (int) health);
-        entity.readCustomDataFromTag(storedData);
-        entity.setHealth(health);
+        newEntity.readCustomDataFromTag(storedData);
+        newEntity.setHealth(health);
         if (!weapon.isEmpty())
-            entity.equipStack(EquipmentSlot.MAINHAND, weapon);
+            newEntity.equipStack(EquipmentSlot.MAINHAND, weapon);
         if (!offhand.isEmpty())
-            entity.equipStack(EquipmentSlot.OFFHAND, offhand);
-        entity.setPos(entityLiving.getBlockPos().getX(), entityLiving.getBlockPos().getY(), entityLiving.getBlockPos().getZ());
-        entity.setUuid(UUID.randomUUID());
-        worldIn.spawnEntity(entity);
+            newEntity.equipStack(EquipmentSlot.OFFHAND, offhand);
+        newEntity.setPos(livingEntity.getBlockPos().getX(), livingEntity.getBlockPos().getY(), livingEntity.getBlockPos().getZ());
+        newEntity.setUuid(UUID.randomUUID());
+        worldIn.spawnEntity(newEntity);
     }
 
     public static boolean shouldCancelEntityDamage(DamageSource source, LivingEntity livingEntity) {
         //The only time we want to cancel damage is when preventing a sunlight apocalypse
         return source.isFire()
-            && !MobRebirth.config.damageFromSunlight
+            && !MobSettingsManager.getSettings(livingEntity).damageFromSunlight
             && livingEntity.isUndead()
             && !livingEntity.isInLava()
             && livingEntity.world.isSkyVisible(new BlockPos(MathHelper.floor(livingEntity.getBlockPos().getX()), MathHelper.floor(livingEntity.getBlockPos().getY()), MathHelper.floor(livingEntity.getBlockPos().getZ())));
     }
 
-    public static boolean isVanilla(LivingEntity entity) {
-        return Objects.requireNonNull(entity.getType().getLootTableId()).getNamespace().toLowerCase().equals("minecraft");
+    public static boolean isVanilla(LivingEntity livingEntity) {
+        return Registry.ENTITY_TYPE.getId(livingEntity.getType()).getNamespace().toLowerCase().equals("minecraft");
     }
 }
