@@ -4,7 +4,7 @@
   "version": "${version}",
 
   "name": "Mob Rebirth",
-  "description": "A mod allowing mobs to be reborn in various ways.",
+  "description": "Allows mobs to be reborn in various ways.",
   "authors": [
     "The_Fireplace"
   ],
@@ -14,7 +14,7 @@
     "issues": "https://github.com/The-Fireplace-Minecraft-Mods/Mob-Rebirth/issues"
   },
 
-  "license": "lgplv3",
+  "license": "LGPL-3.0-or-later",
   "icon": "assets/mobrebirth/icon.png",
 
   "environment": "*",
