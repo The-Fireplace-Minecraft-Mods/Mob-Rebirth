@@ -24,43 +24,29 @@ import java.util.UUID;
 
 public class EventLogic {
 
-    public static void onEntityLivingDeath(LivingEntity entityLiving, DamageSource damageSource) {
-        if(!entityLiving.getEntityWorld().isClient())
-            if(MobRebirth.config.rebirthFromNonPlayer)
-                transition(entityLiving);
-            else if(damageSource.getAttacker() instanceof PlayerEntity)
-                transition(entityLiving);
+    public static void onDeath(LivingEntity entityLiving, DamageSource damageSource) {
+        if(!entityLiving.getEntityWorld().isClient()) {
+            if(checkDamageSource(entityLiving, damageSource)
+            && checkGeneralEntityType(entityLiving)
+            && checkSpecificEntityType(entityLiving))
+                makeMobReborn(entityLiving);
+        }
     }
 
-    private static void transition(LivingEntity entityLiving) {
-        if (entityLiving instanceof Monster)
-            makeMobRebornTransition(entityLiving);
-        else if (MobRebirth.config.allowAnimals && entityLiving instanceof AnimalEntity)
-            makeMobRebornTransition(entityLiving);
+    private static boolean checkDamageSource(LivingEntity entityLiving, DamageSource damageSource) {
+        return MobRebirth.config.rebirthFromNonPlayer || damageSource.getAttacker() instanceof PlayerEntity;
     }
 
-    private static void makeMobRebornTransition(LivingEntity entityLiving) {
-        /*if(!MobRebirth.clansCompat.doRebirth(event.getEntityLiving().getEntityWorld().getChunk(event.getEntityLiving().getPosition())))
-            return;*/
-        if (MobRebirth.config.allowBosses) {
-            if (entityLiving instanceof WitherEntity || entityLiving instanceof EnderDragonEntity || entityLiving instanceof ElderGuardianEntity) {
-                makeMobReborn(entityLiving);
-                return;
-            }
-        } else if (entityLiving instanceof WitherEntity || entityLiving instanceof EnderDragonEntity || entityLiving instanceof ElderGuardianEntity)
-            return;
-        if (MobRebirth.config.allowSlimes) {
-            if (entityLiving instanceof SlimeEntity) {
-                makeMobReborn(entityLiving);
-                return;
-            }
-        } else if (entityLiving instanceof SlimeEntity)
-            return;
-        if (MobRebirth.config.vanillaMobsOnly) {
-            if (isVanilla(entityLiving))
-                makeMobReborn(entityLiving);
-        } else
-            makeMobReborn(entityLiving);
+    private static boolean checkGeneralEntityType(LivingEntity entityLiving) {
+        return entityLiving instanceof Monster || (MobRebirth.config.allowAnimals && entityLiving instanceof AnimalEntity);
+    }
+
+    private static boolean checkSpecificEntityType(LivingEntity entityLiving) {
+        if (entityLiving instanceof WitherEntity || entityLiving instanceof EnderDragonEntity || entityLiving instanceof ElderGuardianEntity)
+            return MobRebirth.config.allowBosses;
+        if(entityLiving instanceof SlimeEntity)
+            return MobRebirth.config.allowSlimes;
+        return !MobRebirth.config.vanillaMobsOnly || isVanilla(entityLiving);
     }
 
     private static void makeMobReborn(LivingEntity entityLiving) {

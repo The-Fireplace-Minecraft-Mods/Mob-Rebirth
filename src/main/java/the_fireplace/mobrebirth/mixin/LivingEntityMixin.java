@@ -13,7 +13,7 @@ import the_fireplace.mobrebirth.EventLogic;
 public class LivingEntityMixin {
 	@Inject(at = @At("HEAD"), method = "onDeath(Lnet/minecraft/entity/damage/DamageSource;)V")
 	public void onDeath(DamageSource damageSource, CallbackInfo info) {
-		EventLogic.onEntityLivingDeath((LivingEntity)(Object)this, damageSource);
+		EventLogic.onDeath((LivingEntity)(Object)this, damageSource);
 	}
 
 	@Inject(at = @At("HEAD"), method = "damage(Lnet/minecraft/entity/damage/DamageSource;F)Z", cancellable = true)
