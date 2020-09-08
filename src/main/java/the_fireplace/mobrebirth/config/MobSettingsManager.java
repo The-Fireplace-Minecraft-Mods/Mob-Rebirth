@@ -121,7 +121,8 @@ public class MobSettingsManager {
 
     private static void writeSettings(MobSettings settings, File file) {
         JsonObject obj = new JsonObject();
-        obj.putDefault("enabled", settings.enabled, null);
+        if(settings.enabled != null)
+            obj.putDefault("enabled", settings.enabled, null);
         if(settings.id != null)
             obj.putDefault("id", settings.id, null);
         if(settings.rebirthChance != null)
