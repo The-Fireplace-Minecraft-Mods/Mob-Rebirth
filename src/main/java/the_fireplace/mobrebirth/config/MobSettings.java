@@ -11,4 +11,21 @@ public class MobSettings {
     public Boolean rebirthFromPlayer = true;
     public Boolean rebirthFromNonPlayer = true;
     public Boolean damageFromSunlight = true;
+
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    @Override
+    public MobSettings clone() {
+        MobSettings clone = new MobSettings();
+        clone.enabled = enabled;
+        clone.id = id;
+        clone.rebirthChance = rebirthChance;
+        clone.multiMobChance = multiMobChance;
+        clone.multiMobMode = multiMobMode;
+        clone.multiMobCount = multiMobCount;
+        clone.rebornAsEggs = rebornAsEggs;
+        clone.rebirthFromPlayer = rebirthFromPlayer;
+        clone.rebirthFromNonPlayer = rebirthFromNonPlayer;
+        clone.damageFromSunlight = damageFromSunlight;
+        return clone;
+    }
 }

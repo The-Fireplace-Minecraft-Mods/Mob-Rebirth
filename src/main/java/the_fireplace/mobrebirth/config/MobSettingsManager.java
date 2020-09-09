@@ -89,6 +89,8 @@ public class MobSettingsManager {
             MobSettings settings = mobSettings.getOrDefault(id, defaultSettings);
             if(settings == null)
                 settings = new MobSettings();
+            else
+                settings = settings.clone();
 
             if(obj.containsKey("id"))
                 settings.id = obj.get(String.class, "id");

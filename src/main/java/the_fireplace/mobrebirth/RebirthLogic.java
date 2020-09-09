@@ -33,7 +33,7 @@ public class RebirthLogic {
             if(checkDamageSource(livingEntity, damageSource)
             && (enabled == Boolean.TRUE || (checkGeneralEntityType(livingEntity)
             && checkSpecificEntityType(livingEntity))))
-                makeMobReborn(livingEntity);
+                triggerRebirth(livingEntity, getRebirthCount(livingEntity));
         }
     }
 
@@ -56,35 +56,47 @@ public class RebirthLogic {
         return !MobRebirth.config.vanillaMobsOnly || isVanilla(livingEntity);
     }
 
-    private static void makeMobReborn(LivingEntity livingEntity) {
+    private static int getRebirthCount(LivingEntity livingEntity) {
         double rand = Math.random();
+        int count=0;
         if (rand <= MobSettingsManager.getSettings(livingEntity).rebirthChance) {
-            if (MobSettingsManager.getSettings(livingEntity).rebornAsEggs && MobRebirth.spawnEggs.containsKey(livingEntity.getType())) {
-                dropMobEgg(livingEntity.getType(), livingEntity);
+            count++;
+            if (MobSettingsManager.getSettings(livingEntity).multiMobCount > 0) {
+                double rand2 = Math.random();
+                switch(MobSettingsManager.getSettings(livingEntity).multiMobMode.toLowerCase()) {
+                    case "all":
+                        if (rand2 <= MobSettingsManager.getSettings(livingEntity).multiMobChance)
+                            for (int i = 0; i < MobSettingsManager.getSettings(livingEntity).multiMobCount; i++)
+                                count++;
+                        break;
+                    case "per-mob":
+                        for (int i = 0; i < MobSettingsManager.getSettings(livingEntity).multiMobCount; i++, rand2 = new Random().nextDouble())
+                            if (rand2 <= MobSettingsManager.getSettings(livingEntity).multiMobChance)
+                                count++;
+                        break;
+                    case "continuous":
+                    default:
+                        for (int i = 0; i < MobSettingsManager.getSettings(livingEntity).multiMobCount; i++, rand2 = new Random().nextDouble())
+                            if (rand2 <= MobSettingsManager.getSettings(livingEntity).multiMobChance)
+                                count++;
+                            else
+                                break;
+                }
+            }
+        }
+        return count;
+    }
+
+    private static void triggerRebirth(LivingEntity livingEntity, int count) {
+        for(int i=0;i<count;i++) {
+            if (MobSettingsManager.getSettings(livingEntity).rebornAsEggs) {
+                if(MobRebirth.spawnEggs.containsKey(livingEntity.getType())) {
+                    dropMobEgg(livingEntity.getType(), livingEntity);
+                } else {
+                    //TODO log error about missing egg
+                }
             } else {
                 createEntity(livingEntity);
-                if (MobSettingsManager.getSettings(livingEntity).multiMobCount > 0) {
-                    double rand2 = Math.random();
-                    switch(MobSettingsManager.getSettings(livingEntity).multiMobMode.toLowerCase()) {
-                        case "all":
-                            if (rand2 <= MobSettingsManager.getSettings(livingEntity).multiMobChance)
-                                for (int i = 0; i < MobSettingsManager.getSettings(livingEntity).multiMobCount; i++)
-                                    createEntity(livingEntity);
-                            break;
-                        case "per-mob":
-                            for (int i = 0; i < MobSettingsManager.getSettings(livingEntity).multiMobCount; i++, rand2 = new Random().nextDouble())
-                                if (rand2 <= MobSettingsManager.getSettings(livingEntity).multiMobChance)
-                                    createEntity(livingEntity);
-                            break;
-                        case "continuous":
-                        default:
-                            for (int i = 0; i < MobSettingsManager.getSettings(livingEntity).multiMobCount; i++, rand2 = new Random().nextDouble())
-                                if (rand2 <= MobSettingsManager.getSettings(livingEntity).multiMobChance)
-                                    createEntity(livingEntity);
-                                else
-                                    break;
-                    }
-                }
             }
         }
     }
