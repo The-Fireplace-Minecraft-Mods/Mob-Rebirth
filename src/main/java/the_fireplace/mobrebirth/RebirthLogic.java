@@ -23,7 +23,7 @@ import the_fireplace.mobrebirth.config.MobSettingsManager;
 import java.util.Random;
 import java.util.UUID;
 
-public class EventLogic {
+public class RebirthLogic {
 
     public static void onDeath(LivingEntity livingEntity, DamageSource damageSource) {
         if(!livingEntity.getEntityWorld().isClient()) {
@@ -115,7 +115,7 @@ public class EventLogic {
             newEntity.equipStack(EquipmentSlot.MAINHAND, weapon);
         if (!offhand.isEmpty())
             newEntity.equipStack(EquipmentSlot.OFFHAND, offhand);
-        newEntity.setPos(livingEntity.getBlockPos().getX(), livingEntity.getBlockPos().getY(), livingEntity.getBlockPos().getZ());
+        newEntity.updatePosition(livingEntity.getBlockPos().getX(), livingEntity.getBlockPos().getY(), livingEntity.getBlockPos().getZ());
         newEntity.setUuid(UUID.randomUUID());
         worldIn.spawnEntity(newEntity);
     }
