@@ -113,8 +113,8 @@ public class MobSettingsManager {
                 settings.rebirthFromPlayer = obj.get(Boolean.class, "rebirthFromPlayer");
             if(obj.containsKey("rebirthFromNonPlayer"))
                 settings.rebirthFromNonPlayer = obj.get(Boolean.class, "rebirthFromNonPlayer");
-            if(obj.containsKey("damageFromSunlight"))
-                settings.damageFromSunlight = obj.get(Boolean.class, "damageFromSunlight");
+            if(obj.containsKey("preventSunlightDamage"))
+                settings.preventSunlightDamage = obj.get(Boolean.class, "preventSunlightDamage");
             if(obj.containsKey("biomeList"))
                 settings.biomeList = obj.get(List.class, "biomeList");
             if(obj.containsKey("rebornMobWeights"))
@@ -146,8 +146,8 @@ public class MobSettingsManager {
             obj.putDefault("rebirthFromPlayer", settings.rebirthFromPlayer, null);
         if(settings.rebirthFromNonPlayer != null)
             obj.putDefault("rebirthFromNonPlayer", settings.rebirthFromNonPlayer, null);
-        if(settings.damageFromSunlight != null)
-            obj.putDefault("damageFromSunlight", settings.damageFromSunlight, null);
+        if(settings.preventSunlightDamage != null)
+            obj.putDefault("preventSunlightDamage", settings.preventSunlightDamage, null);
         if(settings.biomeList != null)
             obj.putDefault("biomeList", settings.biomeList, null);
         if(settings.rebornMobWeights != null)

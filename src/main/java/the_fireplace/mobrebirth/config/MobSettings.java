@@ -17,7 +17,7 @@ public class MobSettings {
     public Boolean rebornAsEggs = false;
     public Boolean rebirthFromPlayer = true;
     public Boolean rebirthFromNonPlayer = true;
-    public Boolean damageFromSunlight = true;
+    public Boolean preventSunlightDamage = false;
     public List<String> biomeList = Lists.newArrayList("*");
     public Map<String, Integer> rebornMobWeights = Maps.newHashMap(Collections.singletonMap("", 1));
 
@@ -34,7 +34,7 @@ public class MobSettings {
         clone.rebornAsEggs = rebornAsEggs;
         clone.rebirthFromPlayer = rebirthFromPlayer;
         clone.rebirthFromNonPlayer = rebirthFromNonPlayer;
-        clone.damageFromSunlight = damageFromSunlight;
+        clone.preventSunlightDamage = preventSunlightDamage;
         clone.biomeList = biomeList;
         clone.rebornMobWeights = rebornMobWeights;
         return clone;

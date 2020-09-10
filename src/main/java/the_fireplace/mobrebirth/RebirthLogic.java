@@ -147,13 +147,13 @@ public class RebirthLogic {
         livingEntity.writeCustomDataToTag(storedData);
         ItemStack weapon = livingEntity.getStackInHand(Hand.MAIN_HAND);
         ItemStack offhand = livingEntity.getStackInHand(Hand.OFF_HAND);
-        float health = livingEntity.getMaxHealth();
         //Read
         newEntity = (LivingEntity) entityType.create(worldIn);
         if (newEntity == null)
             return;
         newEntity.headYaw = newEntity.yaw;
         newEntity.bodyYaw = newEntity.yaw;
+        float health = newEntity.getMaxHealth();
         storedData.putInt("Health", (int) health);
         newEntity.readCustomDataFromTag(storedData);
         newEntity.setHealth(health);
@@ -169,7 +169,7 @@ public class RebirthLogic {
     public static boolean shouldCancelEntityDamage(DamageSource source, LivingEntity livingEntity) {
         //The only time we want to cancel damage is when preventing a sunlight apocalypse
         return source.isFire()
-            && !MobSettingsManager.getSettings(livingEntity).damageFromSunlight
+            && MobSettingsManager.getSettings(livingEntity).preventSunlightDamage
             && livingEntity.isUndead()
             && !livingEntity.isInLava()
             && livingEntity.world.isSkyVisible(new BlockPos(MathHelper.floor(livingEntity.getBlockPos().getX()), MathHelper.floor(livingEntity.getBlockPos().getY()), MathHelper.floor(livingEntity.getBlockPos().getZ())));
