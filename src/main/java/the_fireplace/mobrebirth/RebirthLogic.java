@@ -93,7 +93,7 @@ public class RebirthLogic {
                 if(MobRebirth.spawnEggs.containsKey(livingEntity.getType())) {
                     dropMobEgg(livingEntity.getType(), livingEntity);
                 } else {
-                    //TODO log error about missing egg
+                    MobRebirth.LOGGER.error("Missing egg for "+Registry.ENTITY_TYPE.getId(livingEntity.getType()).toString());
                 }
             } else {
                 createEntity(livingEntity);
