@@ -129,29 +129,29 @@ public class MobSettingsManager {
     private static void writeSettings(MobSettings settings, File file) {
         JsonObject obj = new JsonObject();
         if(settings.enabled != null)
-            obj.putDefault("enabled", settings.enabled, null);
+            obj.putDefault("enabled", settings.enabled, "This option can be used to force a mob to be enabled/disabled, regardless of the general settings.");
         if(settings.id != null)
-            obj.putDefault("id", settings.id, null);
+            obj.putDefault("id", settings.id, "Set the mob id these settings apply to. Leave empty to check the filename for it. You generally don't want to touch this in default.");
         if(settings.rebirthChance != null)
-            obj.putDefault("rebirthChance", settings.rebirthChance, null);
+            obj.putDefault("rebirthChance", settings.rebirthChance, "Rebirth chance. 1.0=100%. 0.5=50%");
         if(settings.multiMobChance != null)
-            obj.putDefault("multiMobChance", settings.multiMobChance, null);
+            obj.putDefault("multiMobChance", settings.multiMobChance, "Multi mob chance. 1.0=100%. 0.5=50%");
         if(settings.multiMobMode != null)
-            obj.putDefault("multiMobMode", settings.multiMobMode, null);
+            obj.putDefault("multiMobMode", settings.multiMobMode, "Options are 'continuous', 'per-mob', or 'all'.\r\n'Continuous' applies the chance to each extra mob, and stops when one doesn't spawn\r\n'Per-Mob' applies the chance to each extra mob\r\n'All' applies the chance once.");
         if(settings.multiMobCount != null)
-            obj.putDefault("multiMobCount", settings.multiMobCount, null);
+            obj.putDefault("multiMobCount", settings.multiMobCount, "How many extra mobs to spawn. This does not include the initial reborn mob.");
         if(settings.rebornAsEggs != null)
-            obj.putDefault("rebornAsEggs", settings.rebornAsEggs, null);
+            obj.putDefault("rebornAsEggs", settings.rebornAsEggs, "Should the mob drop a spawn egg instead of being fully reborn?");
         if(settings.rebirthFromPlayer != null)
-            obj.putDefault("rebirthFromPlayer", settings.rebirthFromPlayer, null);
+            obj.putDefault("rebirthFromPlayer", settings.rebirthFromPlayer, "Should the mob be reborn when killed by a player?");
         if(settings.rebirthFromNonPlayer != null)
-            obj.putDefault("rebirthFromNonPlayer", settings.rebirthFromNonPlayer, null);
+            obj.putDefault("rebirthFromNonPlayer", settings.rebirthFromNonPlayer, "Should the mob be reborn when killed by a non-player?");
         if(settings.preventSunlightDamage != null)
-            obj.putDefault("preventSunlightDamage", settings.preventSunlightDamage, null);
+            obj.putDefault("preventSunlightDamage", settings.preventSunlightDamage, "Prevent sunlight damage to the undead. Protects against the sunlight apocalypse in some scenarios.");
         if(settings.biomeList != null)
-            obj.putDefault("biomeList", settings.biomeList, null);
+            obj.putDefault("biomeList", settings.biomeList, "Biome list for rebirth. If it contains \"*\" it is a blocklist, otherwise it is an allowlist.");
         if(settings.rebornMobWeights != null)
-            obj.putDefault("rebornMobWeights", settings.rebornMobWeights, null);
+            obj.putDefault("rebornMobWeights", settings.rebornMobWeights, "Weighted list of mob ids that can spawn from this one. An empty id means the current mob's id will be used.");
         try {
             FileWriter fw = new FileWriter(file);
             fw.write(obj.toJson(JsonGrammar.JSON5));
