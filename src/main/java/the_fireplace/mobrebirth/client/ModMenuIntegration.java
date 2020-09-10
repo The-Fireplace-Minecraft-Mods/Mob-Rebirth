@@ -1,6 +1,6 @@
 package the_fireplace.mobrebirth.client;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.Lists;
 import io.github.prospector.modmenu.api.ConfigScreenFactory;
 import io.github.prospector.modmenu.api.ModMenuApi;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -16,7 +16,7 @@ import the_fireplace.mobrebirth.config.MobSettings;
 import the_fireplace.mobrebirth.config.MobSettingsManager;
 import the_fireplace.mobrebirth.config.ModConfig;
 
-import java.util.Set;
+import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class ModMenuIntegration implements ModMenuApi {
@@ -74,7 +74,7 @@ public class ModMenuIntegration implements ModMenuApi {
         if(!isDefault) {
             defaultSettings.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("text.config.mobrebirth.option.enabled"), mobSettings.enabled == null || mobSettings.enabled)
                 .setDefaultValue(true)
-                .setTooltip(new TranslatableText("text.config.mobrebirth.option.enabled.desc"))
+                .setTooltip(genDescriptionTranslatables("text.config.mobrebirth.option.enabled.desc", 2))
                 .setSaveConsumer(newValue -> mobSettings.enabled = newValue)
                 .build());
         }
@@ -95,7 +95,7 @@ public class ModMenuIntegration implements ModMenuApi {
             .build());
         defaultSettings.addEntry(entryBuilder.startIntField(new TranslatableText("text.config.mobrebirth.option.multiMobCount"), mobSettings.multiMobCount)
             .setDefaultValue(new MobSettings().multiMobCount)
-            .setTooltip(new TranslatableText("text.config.mobrebirth.option.multiMobCount.desc"))
+            .setTooltip(genDescriptionTranslatables("text.config.mobrebirth.option.multiMobCount.desc", 2))
             .setSaveConsumer(newValue -> mobSettings.multiMobCount = newValue)
             .build());
         defaultSettings.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("text.config.mobrebirth.option.rebornAsEggs"), mobSettings.rebornAsEggs)
@@ -120,7 +120,7 @@ public class ModMenuIntegration implements ModMenuApi {
             .build());
         defaultSettings.addEntry(entryBuilder.startStrList(new TranslatableText("text.config.mobrebirth.option.biomeList"), mobSettings.biomeList)
             .setDefaultValue(new MobSettings().biomeList)
-            .setTooltip(new TranslatableText("text.config.mobrebirth.option.biomeList.desc"))
+            .setTooltip(genDescriptionTranslatables("text.config.mobrebirth.option.biomeList.desc", 2))
             .setSaveConsumer(newValue -> mobSettings.biomeList = newValue)
             .build());
         /*defaultSettings.addEntry(entryBuilder.startMap(new TranslatableText("text.config.mobrebirth.option.rebornMobWeights"), mobSettings.rebornMobWeights)
@@ -131,7 +131,7 @@ public class ModMenuIntegration implements ModMenuApi {
     }
 
     private static Text[] genDescriptionTranslatables(String baseKey, int count) {
-        Set<Text> texts = Sets.newHashSet();
+        List<Text> texts = Lists.newArrayList();
         for(int i=0;i<count;i++)
             texts.add(new TranslatableText(baseKey+"."+i));
         return texts.toArray(new Text[0]);
