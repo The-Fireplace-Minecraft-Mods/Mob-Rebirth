@@ -1,8 +1,6 @@
 package the_fireplace.mobrebirth;
 
 import com.google.common.collect.Maps;
-import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
-import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.SpawnEggItem;
@@ -21,8 +19,7 @@ public class MobRebirth implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);
-		config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
+		config = ModConfig.load();
 
 		MobSettingsManager.init();
 

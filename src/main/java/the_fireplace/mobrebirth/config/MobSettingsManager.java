@@ -28,11 +28,21 @@ public class MobSettingsManager {
         return mobSettings.getOrDefault(Registry.ENTITY_TYPE.getId(entity.getType()), defaultSettings);
     }
 
+    public static MobSettings getDefaultSettings() {
+        return defaultSettings;
+    }
+
     public static void init() {
         //noinspection ResultOfMethodCallIgnored
         mobSettingsDir.mkdirs();
         loadDefaultSettings();
         populateMap();
+    }
+
+    public static void saveAll() {
+        writeSettings(defaultSettings, new File(mobSettingsDir, "default.json5"));
+        //TODO once config GUI allows altering other settings, go through and save all of them.
+        // When saving each, only write options that are different from the default, to save space. Perhaps add a config for this behavior.
     }
 
     private static void loadDefaultSettings() {
@@ -44,7 +54,6 @@ public class MobSettingsManager {
     }
 
     private static void populateMap() {
-        //TODO data pack support?
         File[] files = mobSettingsDir.listFiles();
         if(files != null)
             for(File file: files) {
@@ -85,45 +94,46 @@ public class MobSettingsManager {
 
     @SuppressWarnings("ConstantConditions")
     private static MobSettings loadSettings(Identifier id, File file) {
+        JsonObject obj;
         try {
-            JsonObject obj = Jankson.builder().build().load(file);
-            MobSettings settings = mobSettings.getOrDefault(id, defaultSettings);
-            if(settings == null)
-                settings = new MobSettings();
-            else
-                settings = settings.clone();
-
-            if(obj.containsKey("id"))
-                settings.id = obj.get(String.class, "id");
-            else
-                settings.id = id.toString();
-            if(obj.containsKey("enabled"))
-                settings.rebirthChance = obj.get(Double.class, "enabled");
-            if(obj.containsKey("rebirthChance"))
-                settings.rebirthChance = obj.get(Double.class, "rebirthChance");
-            if(obj.containsKey("multiMobChance"))
-                settings.multiMobChance = obj.get(Double.class, "multiMobChance");
-            if(obj.containsKey("multiMobMode"))
-                settings.multiMobMode = obj.get(String.class, "multiMobMode");
-            if(obj.containsKey("multiMobCount"))
-                settings.multiMobCount = obj.get(Integer.class, "multiMobCount");
-            if(obj.containsKey("rebornAsEggs"))
-                settings.rebornAsEggs = obj.get(Boolean.class, "rebornAsEggs");
-            if(obj.containsKey("rebirthFromPlayer"))
-                settings.rebirthFromPlayer = obj.get(Boolean.class, "rebirthFromPlayer");
-            if(obj.containsKey("rebirthFromNonPlayer"))
-                settings.rebirthFromNonPlayer = obj.get(Boolean.class, "rebirthFromNonPlayer");
-            if(obj.containsKey("preventSunlightDamage"))
-                settings.preventSunlightDamage = obj.get(Boolean.class, "preventSunlightDamage");
-            if(obj.containsKey("biomeList"))
-                settings.biomeList = obj.get(List.class, "biomeList");
-            if(obj.containsKey("rebornMobWeights"))
-                settings.rebornMobWeights = obj.get(Map.class, "rebornMobWeights");
-            return settings;
+            obj = Jankson.builder().build().load(file);
         } catch (IOException | SyntaxError | NullPointerException e) {
             e.printStackTrace();
             return null;
         }
+        MobSettings settings = mobSettings.getOrDefault(id, defaultSettings);
+        if(settings == null)
+            settings = new MobSettings();
+        else
+            settings = settings.clone();
+
+        if(obj.containsKey("id"))
+            settings.id = obj.get(String.class, "id");
+        else
+            settings.id = id.toString();
+        if(obj.containsKey("enabled"))
+            settings.enabled = obj.get(Boolean.class, "enabled");
+        if(obj.containsKey("rebirthChance"))
+            settings.rebirthChance = obj.get(Double.class, "rebirthChance");
+        if(obj.containsKey("multiMobChance"))
+            settings.multiMobChance = obj.get(Double.class, "multiMobChance");
+        if(obj.containsKey("multiMobMode"))
+            settings.multiMobMode = obj.get(String.class, "multiMobMode");
+        if(obj.containsKey("multiMobCount"))
+            settings.multiMobCount = obj.get(Integer.class, "multiMobCount");
+        if(obj.containsKey("rebornAsEggs"))
+            settings.rebornAsEggs = obj.get(Boolean.class, "rebornAsEggs");
+        if(obj.containsKey("rebirthFromPlayer"))
+            settings.rebirthFromPlayer = obj.get(Boolean.class, "rebirthFromPlayer");
+        if(obj.containsKey("rebirthFromNonPlayer"))
+            settings.rebirthFromNonPlayer = obj.get(Boolean.class, "rebirthFromNonPlayer");
+        if(obj.containsKey("preventSunlightDamage"))
+            settings.preventSunlightDamage = obj.get(Boolean.class, "preventSunlightDamage");
+        if(obj.containsKey("biomeList"))
+            settings.biomeList = obj.get(List.class, "biomeList");
+        if(obj.containsKey("rebornMobWeights"))
+            settings.rebornMobWeights = obj.get(Map.class, "rebornMobWeights");
+        return settings;
     }
 
     private static void writeSettings(MobSettings settings, File file) {
@@ -133,9 +143,9 @@ public class MobSettingsManager {
         if(settings.id != null)
             obj.putDefault("id", settings.id, "Set the mob id these settings apply to. Leave empty to check the filename for it. You generally don't want to touch this in default.");
         if(settings.rebirthChance != null)
-            obj.putDefault("rebirthChance", settings.rebirthChance, "Rebirth chance. 1.0=100%. 0.5=50%");
+            obj.putDefault("rebirthChance", settings.rebirthChance, "1.0=100%. 0.5=50%");
         if(settings.multiMobChance != null)
-            obj.putDefault("multiMobChance", settings.multiMobChance, "Multi mob chance. 1.0=100%. 0.5=50%");
+            obj.putDefault("multiMobChance", settings.multiMobChance, "1.0=100%. 0.5=50%");
         if(settings.multiMobMode != null)
             obj.putDefault("multiMobMode", settings.multiMobMode, "Options are 'continuous', 'per-mob', or 'all'.\r\n'Continuous' applies the chance to each extra mob, and stops when one doesn't spawn\r\n'Per-Mob' applies the chance to each extra mob\r\n'All' applies the chance once.");
         if(settings.multiMobCount != null)

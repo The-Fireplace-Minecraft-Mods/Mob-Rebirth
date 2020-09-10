@@ -1,6 +1,6 @@
 Update to 1.16.2
 Drop Forge support
-Switch config formats, add config GUI support
+Switch config formats, add partial config GUI support
 Added "rebirth from player" option to allow choosing whether mobs can be reborn when being killed by players
 Added the ability to choose entity types the entity should be reborn as
 Added the ability to choose which biomes the entity should be reborn in

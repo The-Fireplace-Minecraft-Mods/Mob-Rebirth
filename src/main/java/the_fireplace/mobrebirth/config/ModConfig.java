@@ -1,18 +1,51 @@
 package the_fireplace.mobrebirth.config;
 
-import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
-import the_fireplace.mobrebirth.MobRebirth;
+import me.sargunvohra.mcmods.autoconfig1u.shadowed.blue.endless.jankson.Jankson;
+import me.sargunvohra.mcmods.autoconfig1u.shadowed.blue.endless.jankson.JsonGrammar;
+import me.sargunvohra.mcmods.autoconfig1u.shadowed.blue.endless.jankson.JsonObject;
+import me.sargunvohra.mcmods.autoconfig1u.shadowed.blue.endless.jankson.impl.SyntaxError;
 
-@Config(name = MobRebirth.MODID)
-public class ModConfig implements ConfigData {
-    @ConfigEntry.Gui.Tooltip
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class ModConfig {
+    private static final File configDir = new File("config");
+    private static final File baseConfigFile = new File(configDir, "mobrebirth.json5");
+
     public boolean allowBosses = false;
-    @ConfigEntry.Gui.Tooltip
     public boolean allowSlimes = true;
-    @ConfigEntry.Gui.Tooltip
     public boolean allowAnimals = true;
-    @ConfigEntry.Gui.Tooltip
     public boolean vanillaMobsOnly = false;
+
+    public void save() {
+        try {
+            FileWriter fw = new FileWriter(baseConfigFile);
+            fw.write(Jankson.builder().build().toJson(this).toJson(JsonGrammar.JSON5));
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    public static ModConfig load() {
+        JsonObject obj;
+        ModConfig conf = new ModConfig();
+        try {
+            obj = Jankson.builder().build().load(baseConfigFile);
+        } catch (IOException | SyntaxError | NullPointerException e) {
+            e.printStackTrace();
+            return conf;
+        }
+        if(obj.containsKey("allowBosses"))
+            conf.allowBosses = obj.get(Boolean.class, "allowBosses");
+        if(obj.containsKey("allowSlimes"))
+            conf.allowSlimes = obj.get(Boolean.class, "allowSlimes");
+        if(obj.containsKey("allowAnimals"))
+            conf.allowAnimals = obj.get(Boolean.class, "allowAnimals");
+        if(obj.containsKey("vanillaMobsOnly"))
+            conf.vanillaMobsOnly = obj.get(Boolean.class, "vanillaMobsOnly");
+        return conf;
+    }
 }
