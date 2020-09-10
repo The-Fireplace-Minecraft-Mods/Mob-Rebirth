@@ -1,5 +1,6 @@
 package the_fireplace.mobrebirth.config;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 import me.sargunvohra.mcmods.autoconfig1u.shadowed.blue.endless.jankson.Jankson;
@@ -16,7 +17,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -137,10 +137,9 @@ public class MobSettingsManager {
         if(obj.containsKey("preventSunlightDamage"))
             settings.preventSunlightDamage = obj.get(Boolean.class, "preventSunlightDamage");
         if(obj.containsKey("biomeList"))
-            //noinspection unchecked
-            settings.biomeList = obj.get(List.class, "biomeList");
+            settings.biomeList = Lists.newArrayList(obj.get(String[].class, "biomeList"));
         if(obj.containsKey("rebornMobWeights"))
-            //noinspection unchecked
+            //noinspection unchecked//TODO check for the issues biomeList had
             settings.rebornMobWeights = obj.get(Map.class, "rebornMobWeights");
         return settings;
     }
