@@ -1,5 +1,12 @@
 package the_fireplace.mobrebirth.config;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 public class MobSettings {
     public Boolean enabled = null;
     public String id = "";
@@ -11,6 +18,8 @@ public class MobSettings {
     public Boolean rebirthFromPlayer = true;
     public Boolean rebirthFromNonPlayer = true;
     public Boolean damageFromSunlight = true;
+    public List<String> biomeList = Lists.newArrayList("*");
+    public Map<String, Integer> rebornMobWeights = Maps.newHashMap(Collections.singletonMap("", 1));
 
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     @Override
@@ -26,6 +35,8 @@ public class MobSettings {
         clone.rebirthFromPlayer = rebirthFromPlayer;
         clone.rebirthFromNonPlayer = rebirthFromNonPlayer;
         clone.damageFromSunlight = damageFromSunlight;
+        clone.biomeList = biomeList;
+        clone.rebornMobWeights = rebornMobWeights;
         return clone;
     }
 }

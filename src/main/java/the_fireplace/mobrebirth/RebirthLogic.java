@@ -1,5 +1,7 @@
 package the_fireplace.mobrebirth;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -14,14 +16,15 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import the_fireplace.mobrebirth.config.MobSettingsManager;
 
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 public class RebirthLogic {
 
@@ -32,7 +35,8 @@ public class RebirthLogic {
                 return;
             if(checkDamageSource(livingEntity, damageSource)
             && (enabled == Boolean.TRUE || (checkGeneralEntityType(livingEntity)
-            && checkSpecificEntityType(livingEntity))))
+            && checkSpecificEntityType(livingEntity)))
+            && checkBiome(livingEntity))
                 triggerRebirth(livingEntity, getRebirthCount(livingEntity));
         }
     }
@@ -54,6 +58,14 @@ public class RebirthLogic {
         if(livingEntity instanceof SlimeEntity)
             return MobRebirth.config.allowSlimes;
         return !MobRebirth.config.vanillaMobsOnly || isVanilla(livingEntity);
+    }
+
+    private static boolean checkBiome(LivingEntity livingEntity) {
+        List<String> biomeList = MobSettingsManager.getSettings(livingEntity).biomeList;
+        boolean goodBiome = biomeList.contains("*");
+        if(biomeList.contains(BuiltinRegistries.BIOME.getId(livingEntity.getEntityWorld().getBiomeAccess().getBiome(livingEntity.getBlockPos())).toString().toLowerCase()))
+            goodBiome = !goodBiome;
+        return goodBiome;
     }
 
     private static int getRebirthCount(LivingEntity livingEntity) {
@@ -86,16 +98,39 @@ public class RebirthLogic {
         return count;
     }
 
+    public static EntityType<?> getTypeFromPool(LivingEntity livingEntity) {
+        Map<String, Integer> rebornMobTypes = Maps.newHashMap(MobSettingsManager.getSettings(livingEntity).rebornMobWeights);
+        if(rebornMobTypes.isEmpty() || (rebornMobTypes.size() == 1 && rebornMobTypes.containsKey("")))
+            return livingEntity.getType();
+        if(rebornMobTypes.containsKey("")) {
+            int weight = rebornMobTypes.remove("");
+            rebornMobTypes.put(Registry.ENTITY_TYPE.getId(livingEntity.getType()).toString(), weight);
+        }
+        if(rebornMobTypes.size() == 1)
+            return Registry.ENTITY_TYPE.get(new Identifier((String) rebornMobTypes.keySet().toArray()[0]));
+        int total = rebornMobTypes.values().stream().mapToInt(Integer::valueOf).sum();
+        int selected = livingEntity.getRandom().nextInt(total)+1;
+        List<Map.Entry<String, Integer>> entries = Lists.newArrayList(rebornMobTypes.entrySet());
+        Collections.shuffle(entries);
+        for(Map.Entry<String, Integer> entry: entries) {
+            selected -= entry.getValue();
+            if(selected <= 0)
+                return Registry.ENTITY_TYPE.get(new Identifier(entry.getKey()));
+        }
+        throw new IllegalStateException("Ran out of entries in the weighted list.");
+    }
+
     private static void triggerRebirth(LivingEntity livingEntity, int count) {
         for(int i=0;i<count;i++) {
+            EntityType<?> type = getTypeFromPool(livingEntity);
             if (MobSettingsManager.getSettings(livingEntity).rebornAsEggs) {
                 if(MobRebirth.spawnEggs.containsKey(livingEntity.getType())) {
-                    dropMobEgg(livingEntity.getType(), livingEntity);
+                    dropMobEgg(type, livingEntity);
                 } else {
                     MobRebirth.LOGGER.error("Missing egg for "+Registry.ENTITY_TYPE.getId(livingEntity.getType()).toString());
                 }
             } else {
-                createEntity(livingEntity);
+                createEntity(type, livingEntity);
             }
         }
     }
@@ -104,7 +139,7 @@ public class RebirthLogic {
         livingEntity.dropItem(() -> MobRebirth.spawnEggs.get(entityType), 0);
     }
 
-    private static void createEntity(LivingEntity livingEntity) {
+    private static void createEntity(EntityType<?> entityType, LivingEntity livingEntity) {
         //Store
         LivingEntity newEntity;
         World worldIn = livingEntity.world;
@@ -114,7 +149,7 @@ public class RebirthLogic {
         ItemStack offhand = livingEntity.getStackInHand(Hand.OFF_HAND);
         float health = livingEntity.getMaxHealth();
         //Read
-        newEntity = (LivingEntity) livingEntity.getType().create(worldIn);
+        newEntity = (LivingEntity) entityType.create(worldIn);
         if (newEntity == null)
             return;
         newEntity.headYaw = newEntity.yaw;

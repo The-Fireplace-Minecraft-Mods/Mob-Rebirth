@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -114,6 +115,10 @@ public class MobSettingsManager {
                 settings.rebirthFromNonPlayer = obj.get(Boolean.class, "rebirthFromNonPlayer");
             if(obj.containsKey("damageFromSunlight"))
                 settings.damageFromSunlight = obj.get(Boolean.class, "damageFromSunlight");
+            if(obj.containsKey("biomeList"))
+                settings.biomeList = obj.get(List.class, "biomeList");
+            if(obj.containsKey("rebornMobWeights"))
+                settings.rebornMobWeights = obj.get(Map.class, "rebornMobWeights");
             return settings;
         } catch (IOException | SyntaxError | NullPointerException e) {
             e.printStackTrace();
@@ -143,6 +148,10 @@ public class MobSettingsManager {
             obj.putDefault("rebirthFromNonPlayer", settings.rebirthFromNonPlayer, null);
         if(settings.damageFromSunlight != null)
             obj.putDefault("damageFromSunlight", settings.damageFromSunlight, null);
+        if(settings.biomeList != null)
+            obj.putDefault("biomeList", settings.biomeList, null);
+        if(settings.rebornMobWeights != null)
+            obj.putDefault("rebornMobWeights", settings.rebornMobWeights, null);
         try {
             FileWriter fw = new FileWriter(file);
             fw.write(obj.toJson(JsonGrammar.JSON5));
