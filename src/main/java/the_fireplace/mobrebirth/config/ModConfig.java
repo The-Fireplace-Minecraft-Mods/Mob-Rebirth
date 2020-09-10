@@ -17,6 +17,7 @@ public class ModConfig {
     public boolean allowSlimes = true;
     public boolean allowAnimals = true;
     public boolean vanillaMobsOnly = false;
+    public boolean compactCustomMobConfigs = true;
 
     public void save() {
         try {
@@ -46,6 +47,8 @@ public class ModConfig {
             conf.allowAnimals = obj.get(Boolean.class, "allowAnimals");
         if(obj.containsKey("vanillaMobsOnly"))
             conf.vanillaMobsOnly = obj.get(Boolean.class, "vanillaMobsOnly");
+        if(obj.containsKey("compactCustomMobConfigs"))
+            conf.compactCustomMobConfigs = obj.get(Boolean.class, "compactCustomMobConfigs");
         return conf;
     }
 }

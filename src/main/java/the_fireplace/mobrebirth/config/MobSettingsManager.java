@@ -9,11 +9,13 @@ import me.sargunvohra.mcmods.autoconfig1u.shadowed.blue.endless.jankson.impl.Syn
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import the_fireplace.mobrebirth.MobRebirth;
 
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +30,10 @@ public class MobSettingsManager {
         return mobSettings.getOrDefault(Registry.ENTITY_TYPE.getId(entity.getType()), defaultSettings);
     }
 
+    public static Collection<MobSettings> getAllSettings() {
+        return mobSettings.values();
+    }
+
     public static MobSettings getDefaultSettings() {
         return defaultSettings;
     }
@@ -40,9 +46,9 @@ public class MobSettingsManager {
     }
 
     public static void saveAll() {
-        writeSettings(defaultSettings, new File(mobSettingsDir, "default.json5"));
-        //TODO once config GUI allows altering other settings, go through and save all of them.
-        // When saving each, only write options that are different from the default, to save space. Perhaps add a config for this behavior.
+        writeSettings(defaultSettings, new File(mobSettingsDir, "default.json5"), false);
+        for(MobSettings mobSettings: mobSettings.values())
+            writeSettings(mobSettings, mobSettings.file, MobRebirth.config.compactCustomMobConfigs);
     }
 
     private static void loadDefaultSettings() {
@@ -50,7 +56,7 @@ public class MobSettingsManager {
         defaultSettings = loadSettings(null, new File(mobSettingsDir, "default.json5"));
         if(defaultSettings == null)
             defaultSettings = new MobSettings();
-        writeSettings(defaultSettings, new File(mobSettingsDir, "default.json5"));
+        writeSettings(defaultSettings, new File(mobSettingsDir, "default.json5"), false);
     }
 
     private static void populateMap() {
@@ -107,9 +113,10 @@ public class MobSettingsManager {
         else
             settings = settings.clone();
 
-        if(obj.containsKey("id"))
+        settings.file = file;
+        if(obj.containsKey("id") && !obj.get(String.class, "id").isEmpty())
             settings.id = obj.get(String.class, "id");
-        else
+        else if(id != null)
             settings.id = id.toString();
         if(obj.containsKey("enabled"))
             settings.enabled = obj.get(Boolean.class, "enabled");
@@ -130,37 +137,39 @@ public class MobSettingsManager {
         if(obj.containsKey("preventSunlightDamage"))
             settings.preventSunlightDamage = obj.get(Boolean.class, "preventSunlightDamage");
         if(obj.containsKey("biomeList"))
+            //noinspection unchecked
             settings.biomeList = obj.get(List.class, "biomeList");
         if(obj.containsKey("rebornMobWeights"))
+            //noinspection unchecked
             settings.rebornMobWeights = obj.get(Map.class, "rebornMobWeights");
         return settings;
     }
 
-    private static void writeSettings(MobSettings settings, File file) {
+    private static void writeSettings(MobSettings settings, File file, boolean compact) {
         JsonObject obj = new JsonObject();
-        if(settings.enabled != null)
+        if(settings.enabled != null && (!compact || settings.enabled != defaultSettings.enabled))
             obj.putDefault("enabled", settings.enabled, "This option can be used to force a mob to be enabled/disabled, regardless of the general settings.");
-        if(settings.id != null)
+        if(!compact || !settings.id.equals(defaultSettings.id))
             obj.putDefault("id", settings.id, "Set the mob id these settings apply to. Leave empty to check the filename for it. You generally don't want to touch this in default.");
-        if(settings.rebirthChance != null)
+        if(!compact || !settings.rebirthChance.equals(defaultSettings.rebirthChance))
             obj.putDefault("rebirthChance", settings.rebirthChance, "1.0=100%. 0.5=50%");
-        if(settings.multiMobChance != null)
+        if(!compact || !settings.multiMobChance.equals(defaultSettings.multiMobChance))
             obj.putDefault("multiMobChance", settings.multiMobChance, "1.0=100%. 0.5=50%");
-        if(settings.multiMobMode != null)
+        if(!compact || !settings.multiMobMode.equalsIgnoreCase(defaultSettings.multiMobMode))
             obj.putDefault("multiMobMode", settings.multiMobMode, "Options are 'continuous', 'per-mob', or 'all'.\r\n'Continuous' applies the chance to each extra mob, and stops when one doesn't spawn\r\n'Per-Mob' applies the chance to each extra mob\r\n'All' applies the chance once.");
-        if(settings.multiMobCount != null)
+        if(!compact || !settings.multiMobCount.equals(defaultSettings.multiMobCount))
             obj.putDefault("multiMobCount", settings.multiMobCount, "How many extra mobs to spawn. This does not include the initial reborn mob.");
-        if(settings.rebornAsEggs != null)
+        if(!compact || !settings.rebornAsEggs.equals(defaultSettings.rebornAsEggs))
             obj.putDefault("rebornAsEggs", settings.rebornAsEggs, "Should the mob drop a spawn egg instead of being fully reborn?");
-        if(settings.rebirthFromPlayer != null)
+        if(!compact || !settings.rebirthFromPlayer.equals(defaultSettings.rebirthFromPlayer))
             obj.putDefault("rebirthFromPlayer", settings.rebirthFromPlayer, "Should the mob be reborn when killed by a player?");
-        if(settings.rebirthFromNonPlayer != null)
+        if(!compact || !settings.rebirthFromNonPlayer.equals(defaultSettings.rebirthFromNonPlayer))
             obj.putDefault("rebirthFromNonPlayer", settings.rebirthFromNonPlayer, "Should the mob be reborn when killed by a non-player?");
-        if(settings.preventSunlightDamage != null)
+        if(!compact || !settings.preventSunlightDamage.equals(defaultSettings.preventSunlightDamage))
             obj.putDefault("preventSunlightDamage", settings.preventSunlightDamage, "Prevent sunlight damage to the undead. Protects against the sunlight apocalypse in some scenarios.");
-        if(settings.biomeList != null)
+        if(!compact || !settings.biomeList.equals(defaultSettings.biomeList))
             obj.putDefault("biomeList", settings.biomeList, "Biome list for rebirth. If it contains \"*\" it is a blocklist, otherwise it is an allowlist.");
-        if(settings.rebornMobWeights != null)
+        if(!compact || !settings.rebornMobWeights.equals(defaultSettings.rebornMobWeights))
             obj.putDefault("rebornMobWeights", settings.rebornMobWeights, "Weighted list of mob ids that can spawn from this one. An empty id means the current mob's id will be used.");
         try {
             FileWriter fw = new FileWriter(file);
