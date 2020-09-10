@@ -66,8 +66,7 @@ public class RebirthLogic {
                 switch(MobSettingsManager.getSettings(livingEntity).multiMobMode.toLowerCase()) {
                     case "all":
                         if (rand2 <= MobSettingsManager.getSettings(livingEntity).multiMobChance)
-                            for (int i = 0; i < MobSettingsManager.getSettings(livingEntity).multiMobCount; i++)
-                                count++;
+                            count += MobSettingsManager.getSettings(livingEntity).multiMobCount;
                         break;
                     case "per-mob":
                         for (int i = 0; i < MobSettingsManager.getSettings(livingEntity).multiMobCount; i++, rand2 = new Random().nextDouble())
