@@ -46,6 +46,7 @@
   "text.config.mobrebirth.option.rebornMobWeights": "Reborn Mob Weighted List",
   "text.config.mobrebirth.option.rebornMobWeights.desc.0": "Weighted list of mob ids that can spawn from this one.",
   "text.config.mobrebirth.option.rebornMobWeights.desc.1": "An empty id means the current mob's id will be used.",
+  "text.config.mobrebirth.option.rebornMobWeights.err": "Incorrect format: %s, expected domain:entityid=#",
   "text.config.mobrebirth.mobSettings": "%s Rebirth",
   "text.config.mobrebirth.mobSettings.desc": "Custom rebirth settings for %s."
 }

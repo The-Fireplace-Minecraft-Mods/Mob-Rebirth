@@ -6,6 +6,7 @@ import me.sargunvohra.mcmods.autoconfig1u.shadowed.blue.endless.jankson.JsonObje
 import me.sargunvohra.mcmods.autoconfig1u.shadowed.blue.endless.jankson.impl.SyntaxError;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -35,6 +36,8 @@ public class ModConfig {
         ModConfig conf = new ModConfig();
         try {
             obj = Jankson.builder().build().load(baseConfigFile);
+        } catch(FileNotFoundException e) {
+            return conf;
         } catch (IOException | SyntaxError | NullPointerException e) {
             e.printStackTrace();
             return conf;

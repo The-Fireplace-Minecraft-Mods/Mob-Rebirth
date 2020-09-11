@@ -2,10 +2,12 @@ package the_fireplace.mobrebirth.config;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import me.sargunvohra.mcmods.autoconfig1u.shadowed.blue.endless.jankson.Jankson;
 import me.sargunvohra.mcmods.autoconfig1u.shadowed.blue.endless.jankson.JsonGrammar;
 import me.sargunvohra.mcmods.autoconfig1u.shadowed.blue.endless.jankson.JsonObject;
+import me.sargunvohra.mcmods.autoconfig1u.shadowed.blue.endless.jankson.JsonPrimitive;
 import me.sargunvohra.mcmods.autoconfig1u.shadowed.blue.endless.jankson.impl.SyntaxError;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
@@ -52,7 +54,6 @@ public class MobSettingsManager {
     }
 
     private static void loadDefaultSettings() {
-        //noinspection ConstantConditions
         defaultSettings = loadSettings(null, new File(mobSettingsDir, "default.json5"));
         if(defaultSettings == null)
             defaultSettings = new MobSettings();
@@ -88,9 +89,12 @@ public class MobSettingsManager {
             JsonObject obj = Jankson.builder().build().load(file);
             if(obj.containsKey("id")) {
                 String id = obj.get(String.class, "id");
-                return id != null ? new Identifier(id) : null;
+                if(id == null || !id.isEmpty())//empty id should be folder based
+                    return id != null ? new Identifier(id) : null;
             }
             String id = Files.getNameWithoutExtension(file.getName());
+            if(id.equalsIgnoreCase("default"))
+                return null;
             return folder != null ? new Identifier(folder, id) : new Identifier(id);
         } catch (IOException | SyntaxError e) {
             e.printStackTrace();
@@ -138,9 +142,14 @@ public class MobSettingsManager {
             settings.preventSunlightDamage = obj.get(Boolean.class, "preventSunlightDamage");
         if(obj.containsKey("biomeList"))
             settings.biomeList = Lists.newArrayList(obj.get(String[].class, "biomeList"));
-        if(obj.containsKey("rebornMobWeights"))
-            //noinspection unchecked//TODO check for the issues biomeList had
-            settings.rebornMobWeights = obj.get(Map.class, "rebornMobWeights");
+        if(obj.containsKey("rebornMobWeights")) {
+            //It gets deserialized into a JsonObject, so convert it to a HashMap then convert the values from JsonPrimitive to Integer
+            //noinspection unchecked
+            settings.rebornMobWeights = Maps.newHashMap(obj.get(Map.class, "rebornMobWeights"));
+            for(Map.Entry<?, ?> entry: Sets.newHashSet(settings.rebornMobWeights.entrySet()))
+                if(entry.getValue().getClass().isAssignableFrom(JsonPrimitive.class))
+                    settings.rebornMobWeights.put((String) entry.getKey(), Integer.parseInt(entry.getValue().toString()));
+        }
         return settings;
     }
 

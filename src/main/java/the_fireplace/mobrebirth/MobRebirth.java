@@ -20,6 +20,7 @@ public class MobRebirth implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		config = ModConfig.load();
+		config.save();
 
 		MobSettingsManager.init();
 

@@ -1,6 +1,7 @@
 package the_fireplace.mobrebirth.client;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import io.github.prospector.modmenu.api.ConfigScreenFactory;
 import io.github.prospector.modmenu.api.ModMenuApi;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -17,6 +18,8 @@ import the_fireplace.mobrebirth.config.MobSettingsManager;
 import the_fireplace.mobrebirth.config.ModConfig;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Environment(EnvType.CLIENT)
 public class ModMenuIntegration implements ModMenuApi {
@@ -123,11 +126,17 @@ public class ModMenuIntegration implements ModMenuApi {
             .setTooltip(genDescriptionTranslatables("text.config.mobrebirth.option.biomeList.desc", 2))
             .setSaveConsumer(newValue -> mobSettings.biomeList = newValue)
             .build());
-        /*defaultSettings.addEntry(entryBuilder.startMap(new TranslatableText("text.config.mobrebirth.option.rebornMobWeights"), mobSettings.rebornMobWeights)
-            .setDefaultValue(new MobSettings().rebornMobWeights)
+        defaultSettings.addEntry(entryBuilder.startStrList(new TranslatableText("text.config.mobrebirth.option.rebornMobWeights"), mapToList(mobSettings.rebornMobWeights))
+            .setDefaultValue(mapToList(new MobSettings().rebornMobWeights))
             .setTooltip(genDescriptionTranslatables("text.config.mobrebirth.option.rebornMobWeights.desc", 2))
-            .setSaveConsumer(newValue -> mobSettings.rebornMobWeights = newValue)
-            .build());*/
+            .setSaveConsumer(newValue -> mobSettings.rebornMobWeights = listToMap(newValue))
+            .setErrorSupplier(strList -> {
+                for(String str: strList)
+                    if(!str.matches("([a-zA-Z]+(:[a-zA-Z]+)?)?=[0-9]+"))
+                        return Optional.of(new TranslatableText("text.config.mobrebirth.option.rebornMobWeights.err", str));
+                return Optional.empty();
+            })
+            .build());
     }
 
     private static Text[] genDescriptionTranslatables(String baseKey, int count) {
@@ -135,5 +144,23 @@ public class ModMenuIntegration implements ModMenuApi {
         for(int i=0;i<count;i++)
             texts.add(new TranslatableText(baseKey+"."+i));
         return texts.toArray(new Text[0]);
+    }
+
+    public static final String MAP_SEPARATOR = "=";
+    
+    private static List<String> mapToList(Map<String, Integer> map) {
+        List<String> stringList = Lists.newArrayList();
+        for(Map.Entry<String, Integer> entry: map.entrySet())
+            stringList.add(entry.getKey()+MAP_SEPARATOR+entry.getValue().toString());
+        return stringList;
+    }
+
+    private static Map<String, Integer> listToMap(List<String> list) {
+        Map<String, Integer> map = Maps.newHashMap();
+        for(String str: list) {
+            String[] parts = str.split(MAP_SEPARATOR);
+            map.put(parts[0], Integer.parseInt(parts[1]));
+        }
+        return map;
     }
 }
