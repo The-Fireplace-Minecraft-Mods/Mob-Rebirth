@@ -52,5 +52,8 @@
   "text.config.mobrebirth.option.rebornMobWeights.desc.1": "An empty id means the current mob's id will be used.",
   "text.config.mobrebirth.option.rebornMobWeights.err": "Incorrect format: %s, expected domain:entityid=#",
   "text.config.mobrebirth.mobSettings": "%s Rebirth",
-  "text.config.mobrebirth.mobSettings.desc": "Custom rebirth settings for %s."
+  "text.config.mobrebirth.mobSettings.desc": "Custom rebirth settings for %s.",
+  "text.config.mobrebirth.option.deleteCustomMob": "DELETE THIS MOB'S SETTINGS",
+  "text.config.mobrebirth.option.deleteCustomMob.desc.0": "WARNING: THIS MOB'S SETTINGS",
+  "text.config.mobrebirth.option.deleteCustomMob.desc.1": "WILL BE REMOVED IF THIS IS TRUE/YES!"
 }

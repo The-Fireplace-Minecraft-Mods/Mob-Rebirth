@@ -74,8 +74,8 @@ public class ModMenuIntegration implements ModMenuApi {
                     .setDefaultValue("")
                     .setTooltip(genDescriptionTranslatables("text.config.mobrebirth.option.addCustomMob.desc", 2))
                     .setSaveConsumer(newValue -> {
-                        MobSettings created = MobSettingsManager.createSettings(new Identifier(newValue));
-                        //buildMobSettingsCategory(builder, entryBuilder, created, false);
+                        if(!newValue.isEmpty())
+                            MobSettingsManager.createSettings(new Identifier(newValue));
                     })
                     .setErrorSupplier(value ->
                             MobSettingsManager.getCustomIds().contains(new Identifier(value))
@@ -102,61 +102,61 @@ public class ModMenuIntegration implements ModMenuApi {
             MobRebirth.LOGGER.error("Unable to get id for mob with settings at "+mobSettings.getFile().toString());
             return;
         }
-        ConfigCategory defaultSettings = builder.getOrCreateCategory(isDefault ? new TranslatableText("text.config.mobrebirth.defaultSettings") : new TranslatableText("text.config.mobrebirth.mobSettings", id.toString()));
-        defaultSettings.setDescription(new StringVisitable[]{(isDefault ? new TranslatableText("text.config.mobrebirth.defaultSettings.desc") : new TranslatableText("text.config.mobrebirth.mobSettings.desc", id.toString()))});
+        ConfigCategory settingsCategory = builder.getOrCreateCategory(isDefault ? new TranslatableText("text.config.mobrebirth.defaultSettings") : new TranslatableText("text.config.mobrebirth.mobSettings", id.toString()));
+        settingsCategory.setDescription(new StringVisitable[]{(isDefault ? new TranslatableText("text.config.mobrebirth.defaultSettings.desc") : new TranslatableText("text.config.mobrebirth.mobSettings.desc", id.toString()))});
         if(!isDefault) {
-            defaultSettings.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("text.config.mobrebirth.option.enabled"), mobSettings.enabled == null || mobSettings.enabled)
+            settingsCategory.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("text.config.mobrebirth.option.enabled"), mobSettings.enabled == null || mobSettings.enabled)
                 .setDefaultValue(true)
                 .setTooltip(genDescriptionTranslatables("text.config.mobrebirth.option.enabled.desc", 2))
                 .setSaveConsumer(newValue -> mobSettings.enabled = newValue)
                 .build());
         }
-        defaultSettings.addEntry(entryBuilder.startDoubleField(new TranslatableText("text.config.mobrebirth.option.rebirthChance"), mobSettings.rebirthChance)
+        settingsCategory.addEntry(entryBuilder.startDoubleField(new TranslatableText("text.config.mobrebirth.option.rebirthChance"), mobSettings.rebirthChance)
             .setDefaultValue(new MobSettings().rebirthChance)
             .setTooltip(new TranslatableText("text.config.mobrebirth.option.rebirthChance.desc"))
             .setSaveConsumer(newValue -> mobSettings.rebirthChance = newValue)
             .build());
-        defaultSettings.addEntry(entryBuilder.startDoubleField(new TranslatableText("text.config.mobrebirth.option.multiMobChance"), mobSettings.multiMobChance)
+        settingsCategory.addEntry(entryBuilder.startDoubleField(new TranslatableText("text.config.mobrebirth.option.multiMobChance"), mobSettings.multiMobChance)
             .setDefaultValue(new MobSettings().multiMobChance)
             .setTooltip(new TranslatableText("text.config.mobrebirth.option.multiMobChance.desc"))
             .setSaveConsumer(newValue -> mobSettings.multiMobChance = newValue)
             .build());
-        defaultSettings.addEntry(entryBuilder.startSelector(new TranslatableText("text.config.mobrebirth.option.multiMobMode"), new String[]{"continuous", "per-mob", "all"}, mobSettings.multiMobMode)
+        settingsCategory.addEntry(entryBuilder.startSelector(new TranslatableText("text.config.mobrebirth.option.multiMobMode"), new String[]{"continuous", "per-mob", "all"}, mobSettings.multiMobMode)
             .setDefaultValue(new MobSettings().multiMobMode)
             .setTooltip(genDescriptionTranslatables("text.config.mobrebirth.option.multiMobMode.desc", 5))
             .setSaveConsumer(newValue -> mobSettings.multiMobMode = newValue)
             .build());
-        defaultSettings.addEntry(entryBuilder.startIntField(new TranslatableText("text.config.mobrebirth.option.multiMobCount"), mobSettings.multiMobCount)
+        settingsCategory.addEntry(entryBuilder.startIntField(new TranslatableText("text.config.mobrebirth.option.multiMobCount"), mobSettings.multiMobCount)
             .setDefaultValue(new MobSettings().multiMobCount)
             .setTooltip(genDescriptionTranslatables("text.config.mobrebirth.option.multiMobCount.desc", 2))
             .setSaveConsumer(newValue -> mobSettings.multiMobCount = newValue)
             .build());
-        defaultSettings.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("text.config.mobrebirth.option.rebornAsEggs"), mobSettings.rebornAsEggs)
+        settingsCategory.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("text.config.mobrebirth.option.rebornAsEggs"), mobSettings.rebornAsEggs)
             .setDefaultValue(new MobSettings().rebornAsEggs)
             .setTooltip(new TranslatableText("text.config.mobrebirth.option.rebornAsEggs.desc"))
             .setSaveConsumer(newValue -> mobSettings.rebornAsEggs = newValue)
             .build());
-        defaultSettings.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("text.config.mobrebirth.option.rebirthFromPlayer"), mobSettings.rebirthFromPlayer)
+        settingsCategory.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("text.config.mobrebirth.option.rebirthFromPlayer"), mobSettings.rebirthFromPlayer)
             .setDefaultValue(new MobSettings().rebirthFromPlayer)
             .setTooltip(new TranslatableText("text.config.mobrebirth.option.rebirthFromPlayer.desc"))
             .setSaveConsumer(newValue -> mobSettings.rebirthFromPlayer = newValue)
             .build());
-        defaultSettings.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("text.config.mobrebirth.option.rebirthFromNonPlayer"), mobSettings.rebirthFromNonPlayer)
+        settingsCategory.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("text.config.mobrebirth.option.rebirthFromNonPlayer"), mobSettings.rebirthFromNonPlayer)
             .setDefaultValue(new MobSettings().rebirthFromNonPlayer)
             .setTooltip(new TranslatableText("text.config.mobrebirth.option.rebirthFromNonPlayer.desc"))
             .setSaveConsumer(newValue -> mobSettings.rebirthFromNonPlayer = newValue)
             .build());
-        defaultSettings.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("text.config.mobrebirth.option.preventSunlightDamage"), mobSettings.preventSunlightDamage)
+        settingsCategory.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("text.config.mobrebirth.option.preventSunlightDamage"), mobSettings.preventSunlightDamage)
             .setDefaultValue(new MobSettings().preventSunlightDamage)
             .setTooltip(genDescriptionTranslatables("text.config.mobrebirth.option.preventSunlightDamage.desc", 2))
             .setSaveConsumer(newValue -> mobSettings.preventSunlightDamage = newValue)
             .build());
-        defaultSettings.addEntry(entryBuilder.startStrList(new TranslatableText("text.config.mobrebirth.option.biomeList"), mobSettings.biomeList)
+        settingsCategory.addEntry(entryBuilder.startStrList(new TranslatableText("text.config.mobrebirth.option.biomeList"), mobSettings.biomeList)
             .setDefaultValue(new MobSettings().biomeList)
             .setTooltip(genDescriptionTranslatables("text.config.mobrebirth.option.biomeList.desc", 2))
             .setSaveConsumer(newValue -> mobSettings.biomeList = newValue)
             .build());
-        defaultSettings.addEntry(entryBuilder.startStrList(new TranslatableText("text.config.mobrebirth.option.rebornMobWeights"), mapToList(mobSettings.rebornMobWeights))
+        settingsCategory.addEntry(entryBuilder.startStrList(new TranslatableText("text.config.mobrebirth.option.rebornMobWeights"), mapToList(mobSettings.rebornMobWeights))
             .setDefaultValue(mapToList(new MobSettings().rebornMobWeights))
             .setTooltip(genDescriptionTranslatables("text.config.mobrebirth.option.rebornMobWeights.desc", 2))
             .setSaveConsumer(newValue -> mobSettings.rebornMobWeights = listToMap(newValue))
@@ -167,6 +167,16 @@ public class ModMenuIntegration implements ModMenuApi {
                 return Optional.empty();
             })
             .build());
+        if(!isDefault) {
+            settingsCategory.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("text.config.mobrebirth.option.deleteCustomMob"), false)
+                    .setDefaultValue(false)
+                    .setTooltip(genDescriptionTranslatables("text.config.mobrebirth.option.deleteCustomMob.desc", 2))
+                    .setSaveConsumer(newValue -> {
+                        if(newValue)
+                            MobSettingsManager.deleteSettings(id, mobSettings);
+                    })
+                    .build());
+        }
     }
 
     private static Text[] genDescriptionTranslatables(String baseKey, int count) {

@@ -175,6 +175,11 @@ public class MobSettingsManager {
         return settings;
     }
 
+    public static void deleteSettings(Identifier id, MobSettings settings) {
+        settings.file.delete();
+        mobSettings.remove(id);
+    }
+
     private static void writeSettings(MobSettings settings, File file, boolean compact) {
         JsonObject obj = new JsonObject();
         if(settings.enabled != null && (!compact || settings.enabled != defaultSettings.enabled))
