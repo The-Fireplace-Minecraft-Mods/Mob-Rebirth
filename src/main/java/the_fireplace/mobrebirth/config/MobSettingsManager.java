@@ -22,24 +22,25 @@ import java.util.Collection;
 import java.util.Map;
 
 @SuppressWarnings("UnstableApiUsage")
-public class MobSettingsManager {
+public final class MobSettingsManager {
     private static MobSettings defaultSettings = null;
-    private static final Map<Identifier, MobSettings> mobSettings = Maps.newHashMap();
+    private static final Map<Identifier, MobSettings> MOB_SETTINGS = Maps.newHashMap();
 
-    private static final File mobSettingsDir = new File("config/mobrebirth");
+    private static final File MOB_SETTINGS_DIR = new File("config/mobrebirth");
+    private static final File DEFAULT_SETTINGS_FILE = new File(MOB_SETTINGS_DIR, "default.json5");
 
     public static MobSettings getSettings(LivingEntity entity) {
         return getSettings(Registry.ENTITY_TYPE.getId(entity.getType()), false);
     }
     public static MobSettings getSettings(Identifier identifier, boolean clone) {
-        return clone ? mobSettings.getOrDefault(identifier, defaultSettings).clone() : mobSettings.getOrDefault(identifier, defaultSettings);
+        return clone ? MOB_SETTINGS.getOrDefault(identifier, defaultSettings).clone() : MOB_SETTINGS.getOrDefault(identifier, defaultSettings);
     }
 
     public static Collection<Identifier> getCustomIds() {
-        return mobSettings.keySet();
+        return MOB_SETTINGS.keySet();
     }
     public static Collection<MobSettings> getAllSettings() {
-        return mobSettings.values();
+        return MOB_SETTINGS.values();
     }
 
     public static MobSettings getDefaultSettings() {
@@ -48,26 +49,28 @@ public class MobSettingsManager {
 
     public static void init() {
         //noinspection ResultOfMethodCallIgnored
-        mobSettingsDir.mkdirs();
+        MOB_SETTINGS_DIR.mkdirs();
         loadDefaultSettings();
         populateMap();
     }
 
     public static void saveAll() {
-        writeSettings(defaultSettings, new File(mobSettingsDir, "default.json5"), false);
-        for(MobSettings mobSettings: mobSettings.values())
+        writeSettings(defaultSettings, DEFAULT_SETTINGS_FILE, false);
+        for(MobSettings mobSettings: MOB_SETTINGS.values())
             writeSettings(mobSettings, mobSettings.file, MobRebirth.config.compactCustomMobConfigs);
     }
 
     private static void loadDefaultSettings() {
-        defaultSettings = loadSettings(null, new File(mobSettingsDir, "default.json5"));
-        if(defaultSettings == null)
+        defaultSettings = loadSettings(null, DEFAULT_SETTINGS_FILE);
+        if(defaultSettings == null) {
             defaultSettings = new MobSettings();
-        writeSettings(defaultSettings, new File(mobSettingsDir, "default.json5"), false);
+            defaultSettings.file = DEFAULT_SETTINGS_FILE;
+        }
+        writeSettings(defaultSettings, DEFAULT_SETTINGS_FILE, false);
     }
 
     private static void populateMap() {
-        File[] files = mobSettingsDir.listFiles();
+        File[] files = MOB_SETTINGS_DIR.listFiles();
         if(files != null)
             for(File file: files) {
                 if(file.isDirectory()) {
@@ -77,13 +80,13 @@ public class MobSettingsManager {
                             if(Files.getFileExtension(file2.getName()).equalsIgnoreCase("json5")) {
                                 Identifier id = getIdentifier(file.getName(), file2);
                                 if(id != null)
-                                    mobSettings.put(id, loadSettings(id, file2));
+                                    MOB_SETTINGS.put(id, loadSettings(id, file2));
                             }
                 } else {
                     if(Files.getFileExtension(file.getName()).equalsIgnoreCase("json5")) {
                         Identifier id = getIdentifier(null, file);
                         if(id != null)
-                            mobSettings.put(id, loadSettings(id, file));
+                            MOB_SETTINGS.put(id, loadSettings(id, file));
                     }
                 }
             }
@@ -117,7 +120,7 @@ public class MobSettingsManager {
             e.printStackTrace();
             return null;
         }
-        MobSettings settings = mobSettings.getOrDefault(id, defaultSettings);
+        MobSettings settings = MOB_SETTINGS.getOrDefault(id, defaultSettings);
         if(settings == null)
             settings = new MobSettings();
         else
@@ -161,7 +164,7 @@ public class MobSettingsManager {
 
     public static MobSettings createSettings(Identifier id) {
         MobSettings settings = getSettings(id, true);
-        File domainFolder = new File(mobSettingsDir, id.getNamespace());
+        File domainFolder = new File(MOB_SETTINGS_DIR, id.getNamespace());
         if(!domainFolder.exists())
             if(!domainFolder.mkdir()) {
                 MobRebirth.LOGGER.error("Unable to make domain folder for "+id.toString());
@@ -171,13 +174,13 @@ public class MobSettingsManager {
         settings.file = targetFile;
         writeSettings(settings, targetFile, MobRebirth.config.compactCustomMobConfigs);
 
-        mobSettings.put(id, settings);
+        MOB_SETTINGS.put(id, settings);
         return settings;
     }
 
     public static void deleteSettings(Identifier id, MobSettings settings) {
         settings.file.delete();
-        mobSettings.remove(id);
+        MOB_SETTINGS.remove(id);
     }
 
     private static void writeSettings(MobSettings settings, File file, boolean compact) {
