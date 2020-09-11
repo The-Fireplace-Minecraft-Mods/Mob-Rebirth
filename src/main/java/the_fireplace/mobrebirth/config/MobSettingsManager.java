@@ -29,9 +29,15 @@ public class MobSettingsManager {
     private static final File mobSettingsDir = new File("config/mobrebirth");
 
     public static MobSettings getSettings(LivingEntity entity) {
-        return mobSettings.getOrDefault(Registry.ENTITY_TYPE.getId(entity.getType()), defaultSettings);
+        return getSettings(Registry.ENTITY_TYPE.getId(entity.getType()));
+    }
+    public static MobSettings getSettings(Identifier identifier) {
+        return mobSettings.getOrDefault(identifier, defaultSettings);
     }
 
+    public static Collection<Identifier> getCustomIds() {
+        return mobSettings.keySet();
+    }
     public static Collection<MobSettings> getAllSettings() {
         return mobSettings.values();
     }
@@ -84,7 +90,7 @@ public class MobSettingsManager {
     }
 
     @Nullable
-    private static Identifier getIdentifier(@Nullable String folder, File file) {
+    public static Identifier getIdentifier(@Nullable String folder, File file) {
         try {
             JsonObject obj = Jankson.builder().build().load(file);
             if(obj.containsKey("id")) {
@@ -150,6 +156,22 @@ public class MobSettingsManager {
                 if(entry.getValue().getClass().isAssignableFrom(JsonPrimitive.class))
                     settings.rebornMobWeights.put((String) entry.getKey(), Integer.parseInt(entry.getValue().toString()));
         }
+        return settings;
+    }
+
+    public static MobSettings createSettings(Identifier id) {
+        MobSettings settings = getSettings(id);
+        File domainFolder = new File(mobSettingsDir, id.getNamespace());
+        if(!domainFolder.exists())
+            if(!domainFolder.mkdir()) {
+                MobRebirth.LOGGER.error("Unable to make domain folder for "+id.toString());
+                return null;
+            }
+        File targetFile = new File(domainFolder, id.getPath()+".json5");
+        settings.file = targetFile;
+        writeSettings(settings, targetFile, MobRebirth.config.compactCustomMobConfigs);
+
+        mobSettings.put(id, settings);
         return settings;
     }
 

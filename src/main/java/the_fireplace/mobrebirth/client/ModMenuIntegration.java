@@ -2,6 +2,7 @@ package the_fireplace.mobrebirth.client;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.io.Files;
 import io.github.prospector.modmenu.api.ConfigScreenFactory;
 import io.github.prospector.modmenu.api.ModMenuApi;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -12,6 +13,8 @@ import net.fabricmc.api.Environment;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import the_fireplace.mobrebirth.MobRebirth;
 import the_fireplace.mobrebirth.config.MobSettings;
 import the_fireplace.mobrebirth.config.MobSettingsManager;
@@ -20,6 +23,7 @@ import the_fireplace.mobrebirth.config.ModConfig;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Environment(EnvType.CLIENT)
 public class ModMenuIntegration implements ModMenuApi {
@@ -58,6 +62,26 @@ public class ModMenuIntegration implements ModMenuApi {
                 .setTooltip(genDescriptionTranslatables("text.config.mobrebirth.option.compactCustomMobConfigs.desc", 2))
                 .setSaveConsumer(newValue -> MobRebirth.config.compactCustomMobConfigs = newValue)
                 .build());
+            List<Identifier> mobids = Lists.newArrayList(Registry.ENTITY_TYPE.getIds()).stream().filter(id -> Registry.ENTITY_TYPE.get(id).isSummonable()).collect(Collectors.toList());
+            List<String> mobidStrs = Lists.newArrayListWithCapacity(mobids.size()-MobSettingsManager.getAllSettings().size());
+            for(Identifier id: mobids)
+                if(!MobSettingsManager.getCustomIds().contains(id))
+                    mobidStrs.add(id.toString());
+
+            general.addEntry(entryBuilder.startStringDropdownMenu(new TranslatableText("text.config.mobrebirth.option.addCustomMob"), "")
+                    .setSelections(mobidStrs)
+                    .setSuggestionMode(false)
+                    .setDefaultValue("")
+                    .setTooltip(genDescriptionTranslatables("text.config.mobrebirth.option.addCustomMob.desc", 2))
+                    .setSaveConsumer(newValue -> {
+                        MobSettings created = MobSettingsManager.createSettings(new Identifier(newValue));
+                        //buildMobSettingsCategory(builder, entryBuilder, created, false);
+                    })
+                    .setErrorSupplier(value ->
+                            MobSettingsManager.getCustomIds().contains(new Identifier(value))
+                            ? Optional.of(new TranslatableText("text.config.mobrebirth.option.addCustomMob.err"))
+                            : Optional.empty())
+                    .build());
 
             buildMobSettingsCategory(builder, entryBuilder, MobSettingsManager.getDefaultSettings(), true);
             for(MobSettings mobSettings: MobSettingsManager.getAllSettings())
@@ -72,8 +96,14 @@ public class ModMenuIntegration implements ModMenuApi {
     }
     
     public static void buildMobSettingsCategory(ConfigBuilder builder, ConfigEntryBuilder entryBuilder, MobSettings mobSettings, boolean isDefault) {
-        ConfigCategory defaultSettings = builder.getOrCreateCategory(isDefault ? new TranslatableText("text.config.mobrebirth.defaultSettings") : new TranslatableText("text.config.mobrebirth.mobSettings", mobSettings.id));
-        defaultSettings.setDescription(new StringVisitable[]{(isDefault ? new TranslatableText("text.config.mobrebirth.defaultSettings.desc") : new TranslatableText("text.config.mobrebirth.mobSettings.desc", mobSettings.id))});
+        //noinspection UnstableApiUsage
+        Identifier id = mobSettings.id.isEmpty() ? MobSettingsManager.getIdentifier(Files.getNameWithoutExtension(mobSettings.getFile().getParent()), mobSettings.getFile()) : new Identifier(mobSettings.id);
+        if(!isDefault && id == null) {
+            MobRebirth.LOGGER.error("Unable to get id for mob with settings at "+mobSettings.getFile().toString());
+            return;
+        }
+        ConfigCategory defaultSettings = builder.getOrCreateCategory(isDefault ? new TranslatableText("text.config.mobrebirth.defaultSettings") : new TranslatableText("text.config.mobrebirth.mobSettings", id.toString()));
+        defaultSettings.setDescription(new StringVisitable[]{(isDefault ? new TranslatableText("text.config.mobrebirth.defaultSettings.desc") : new TranslatableText("text.config.mobrebirth.mobSettings.desc", id.toString()))});
         if(!isDefault) {
             defaultSettings.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("text.config.mobrebirth.option.enabled"), mobSettings.enabled == null || mobSettings.enabled)
                 .setDefaultValue(true)

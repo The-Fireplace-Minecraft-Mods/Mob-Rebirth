@@ -11,6 +11,10 @@ import java.util.List;
 import java.util.Map;
 
 public class MobSettings {
+    public File getFile() {
+        return file;
+    }
+
     File file;
     @Nullable
     public Boolean enabled = null;
