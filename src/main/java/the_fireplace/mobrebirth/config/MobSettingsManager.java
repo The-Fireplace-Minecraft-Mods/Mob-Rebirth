@@ -29,10 +29,10 @@ public class MobSettingsManager {
     private static final File mobSettingsDir = new File("config/mobrebirth");
 
     public static MobSettings getSettings(LivingEntity entity) {
-        return getSettings(Registry.ENTITY_TYPE.getId(entity.getType()));
+        return getSettings(Registry.ENTITY_TYPE.getId(entity.getType()), false);
     }
-    public static MobSettings getSettings(Identifier identifier) {
-        return mobSettings.getOrDefault(identifier, defaultSettings);
+    public static MobSettings getSettings(Identifier identifier, boolean clone) {
+        return clone ? mobSettings.getOrDefault(identifier, defaultSettings).clone() : mobSettings.getOrDefault(identifier, defaultSettings);
     }
 
     public static Collection<Identifier> getCustomIds() {
@@ -160,7 +160,7 @@ public class MobSettingsManager {
     }
 
     public static MobSettings createSettings(Identifier id) {
-        MobSettings settings = getSettings(id);
+        MobSettings settings = getSettings(id, true);
         File domainFolder = new File(mobSettingsDir, id.getNamespace());
         if(!domainFolder.exists())
             if(!domainFolder.mkdir()) {
