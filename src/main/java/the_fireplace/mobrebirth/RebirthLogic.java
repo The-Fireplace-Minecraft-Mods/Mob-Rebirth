@@ -19,9 +19,9 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import the_fireplace.mobrebirth.config.MobSettingsManager;
 
 import java.util.*;
@@ -31,10 +31,11 @@ public class RebirthLogic {
     public static void onDeath(LivingEntity livingEntity, DamageSource damageSource) {
         if(!livingEntity.getEntityWorld().isClient()) {
             Boolean enabled = MobSettingsManager.getSettings(livingEntity).enabled;
-            if(enabled == Boolean.FALSE)
+            if(Boolean.FALSE.equals(enabled))
                 return;
             if(checkDamageSource(livingEntity, damageSource)
-            && (enabled == Boolean.TRUE || (checkGeneralEntityType(livingEntity)
+            && (Boolean.TRUE.equals(enabled)
+            || (checkGeneralEntityType(livingEntity)
             && checkSpecificEntityType(livingEntity)))
             && checkBiome(livingEntity))
                 triggerRebirth(livingEntity, getRebirthCount(livingEntity));
@@ -63,7 +64,8 @@ public class RebirthLogic {
     private static boolean checkBiome(LivingEntity livingEntity) {
         List<String> biomeList = MobSettingsManager.getSettings(livingEntity).biomeList;
         boolean goodBiome = biomeList.contains("*");
-        if(biomeList.contains(BuiltinRegistries.BIOME.getId(livingEntity.getEntityWorld().getBiomeAccess().getBiome(livingEntity.getBlockPos())).toString().toLowerCase()))
+        Biome biome = livingEntity.getEntityWorld().getBiomeAccess().getBiome(livingEntity.getBlockPos());
+        if(biomeList.contains(livingEntity.getEntityWorld().getRegistryManager().get(Registry.BIOME_KEY).getId(biome).toString().toLowerCase()))
             goodBiome = !goodBiome;
         return goodBiome;
     }
@@ -124,14 +126,12 @@ public class RebirthLogic {
         for(int i=0;i<count;i++) {
             EntityType<?> type = getTypeFromPool(livingEntity);
             if (MobSettingsManager.getSettings(livingEntity).rebornAsEggs) {
-                if(MobRebirth.spawnEggs.containsKey(livingEntity.getType())) {
+                if(MobRebirth.spawnEggs.containsKey(livingEntity.getType()))
                     dropMobEgg(type, livingEntity);
-                } else {
+                else
                     MobRebirth.LOGGER.error("Missing egg for "+Registry.ENTITY_TYPE.getId(livingEntity.getType()).toString());
-                }
-            } else {
+            } else
                 createEntity(type, livingEntity);
-            }
         }
     }
 
