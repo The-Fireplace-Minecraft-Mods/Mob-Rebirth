@@ -111,16 +111,18 @@ public class ModMenuIntegration implements ModMenuApi {
                 .setSaveConsumer(newValue -> mobSettings.enabled = newValue)
                 .build());
         }
-        settingsCategory.addEntry(entryBuilder.startDoubleField(new TranslatableText("text.config.mobrebirth.option.rebirthChance"), mobSettings.rebirthChance)
-            .setDefaultValue(new MobSettings().rebirthChance)
+        settingsCategory.addEntry(entryBuilder.startIntSlider(new TranslatableText("text.config.mobrebirth.option.rebirthChance"), (int)(mobSettings.rebirthChance*1000), 0, 1000)
+            .setDefaultValue((int)(new MobSettings().rebirthChance*1000))
+            .setTextGetter(val -> Text.of(String.format("%.1f", val/10d)+"%"))
             .setTooltip(new TranslatableText("text.config.mobrebirth.option.rebirthChance.desc"))
-            .setSaveConsumer(newValue -> mobSettings.rebirthChance = newValue)
+            .setSaveConsumer(newValue -> mobSettings.rebirthChance = ((double)newValue)/1000d)
             .build());
-        settingsCategory.addEntry(entryBuilder.startDoubleField(new TranslatableText("text.config.mobrebirth.option.multiMobChance"), mobSettings.multiMobChance)
-            .setDefaultValue(new MobSettings().multiMobChance)
-            .setTooltip(new TranslatableText("text.config.mobrebirth.option.multiMobChance.desc"))
-            .setSaveConsumer(newValue -> mobSettings.multiMobChance = newValue)
-            .build());
+        settingsCategory.addEntry(entryBuilder.startIntSlider(new TranslatableText("text.config.mobrebirth.option.multiMobChance"), (int)(mobSettings.multiMobChance*1000), 0, 1000)
+                .setDefaultValue((int)(new MobSettings().multiMobChance*1000))
+                .setTextGetter(val -> Text.of(String.format("%.1f", val/10d)+"%"))
+                .setTooltip(new TranslatableText("text.config.mobrebirth.option.multiMobChance.desc"))
+                .setSaveConsumer(newValue -> mobSettings.multiMobChance = ((double)newValue)/1000d)
+                .build());
         settingsCategory.addEntry(entryBuilder.startSelector(new TranslatableText("text.config.mobrebirth.option.multiMobMode"), new String[]{"continuous", "per-mob", "all"}, mobSettings.multiMobMode)
             .setDefaultValue(new MobSettings().multiMobMode)
             .setTooltip(genDescriptionTranslatables("text.config.mobrebirth.option.multiMobMode.desc", 5))
