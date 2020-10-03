@@ -164,7 +164,7 @@ public class ModMenuIntegration implements ModMenuApi {
             .setSaveConsumer(newValue -> mobSettings.rebornMobWeights = listToMap(newValue))
             .setErrorSupplier(strList -> {
                 for(String str: strList)
-                    if(!str.matches("([a-zA-Z]+(:[a-zA-Z]+)?)?=[0-9]+"))
+                    if(!str.matches("([a-zA-Z_\\-0-9./]+(:[a-zA-Z_\\-0-9.]+)?)?=[0-9]+"))
                         return Optional.of(new TranslatableText("text.config.mobrebirth.option.rebornMobWeights.err", str));
                 return Optional.empty();
             })
