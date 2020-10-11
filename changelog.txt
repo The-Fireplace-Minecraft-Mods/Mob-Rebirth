@@ -1,1 +1,1 @@
-Fixed id checking for rebornMobWeights in the config gui
+Reduced mod size by shadowing in jankson instead of autoconfig

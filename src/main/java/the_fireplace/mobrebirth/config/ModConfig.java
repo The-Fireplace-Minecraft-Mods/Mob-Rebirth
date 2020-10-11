@@ -1,9 +1,9 @@
 package the_fireplace.mobrebirth.config;
 
-import me.sargunvohra.mcmods.autoconfig1u.shadowed.blue.endless.jankson.Jankson;
-import me.sargunvohra.mcmods.autoconfig1u.shadowed.blue.endless.jankson.JsonGrammar;
-import me.sargunvohra.mcmods.autoconfig1u.shadowed.blue.endless.jankson.JsonObject;
-import me.sargunvohra.mcmods.autoconfig1u.shadowed.blue.endless.jankson.impl.SyntaxError;
+import blue.endless.jankson.Jankson;
+import blue.endless.jankson.JsonGrammar;
+import blue.endless.jankson.JsonObject;
+import blue.endless.jankson.impl.SyntaxError;
 
 import java.io.File;
 import java.io.FileNotFoundException;
