@@ -1,1 +1,1 @@
-Reduced mod size by shadowing in jankson instead of autoconfig
+Fixed startup crash due to JiJ not loading jankson
