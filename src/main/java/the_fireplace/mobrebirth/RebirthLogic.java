@@ -14,7 +14,7 @@ import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -143,8 +143,8 @@ public class RebirthLogic {
         //Store
         LivingEntity newEntity;
         World worldIn = livingEntity.world;
-        CompoundTag storedData = new CompoundTag();
-        livingEntity.writeCustomDataToTag(storedData);
+        NbtCompound storedData = new NbtCompound();
+        livingEntity.writeCustomDataToNbt(storedData);
         ItemStack weapon = livingEntity.getStackInHand(Hand.MAIN_HAND);
         ItemStack offhand = livingEntity.getStackInHand(Hand.OFF_HAND);
         //Read
@@ -155,7 +155,7 @@ public class RebirthLogic {
         newEntity.bodyYaw = newEntity.yaw;
         float health = newEntity.getMaxHealth();
         storedData.putInt("Health", (int) health);
-        newEntity.readCustomDataFromTag(storedData);
+        newEntity.readCustomDataFromNbt(storedData);
         newEntity.setHealth(health);
         if (!weapon.isEmpty())
             newEntity.equipStack(EquipmentSlot.MAINHAND, weapon);
