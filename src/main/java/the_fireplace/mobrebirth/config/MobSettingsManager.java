@@ -1,14 +1,13 @@
 package the_fireplace.mobrebirth.config;
 
-import blue.endless.jankson.Jankson;
-import blue.endless.jankson.JsonGrammar;
-import blue.endless.jankson.JsonObject;
-import blue.endless.jankson.JsonPrimitive;
-import blue.endless.jankson.impl.SyntaxError;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -16,6 +15,7 @@ import the_fireplace.mobrebirth.MobRebirth;
 
 import javax.annotation.Nullable;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
@@ -27,7 +27,7 @@ public final class MobSettingsManager {
     private static final Map<Identifier, MobSettings> MOB_SETTINGS = Maps.newHashMap();
 
     private static final File MOB_SETTINGS_DIR = new File("config/mobrebirth");
-    private static final File DEFAULT_SETTINGS_FILE = new File(MOB_SETTINGS_DIR, "default.json5");
+    private static final File DEFAULT_SETTINGS_FILE = new File(MOB_SETTINGS_DIR, "default.json");
 
     public static MobSettings getSettings(LivingEntity entity) {
         return getSettings(Registry.ENTITY_TYPE.getId(entity.getType()), false);
@@ -57,7 +57,7 @@ public final class MobSettingsManager {
     public static void saveAll() {
         writeSettings(defaultSettings, DEFAULT_SETTINGS_FILE, false);
         for(MobSettings mobSettings: MOB_SETTINGS.values())
-            writeSettings(mobSettings, mobSettings.file, MobRebirth.config.compactCustomMobConfigs);
+            writeSettings(mobSettings, mobSettings.file, MobRebirth.config.getUseCompactCustomMobConfigs());
     }
 
     private static void loadDefaultSettings() {
@@ -77,13 +77,13 @@ public final class MobSettingsManager {
                     File[] dirFiles = file.listFiles();
                     if(dirFiles != null)
                         for(File file2: dirFiles)
-                            if(Files.getFileExtension(file2.getName()).equalsIgnoreCase("json5")) {
+                            if(Files.getFileExtension(file2.getName()).equalsIgnoreCase("json")) {
                                 Identifier id = getIdentifier(file.getName(), file2);
                                 if(id != null)
                                     MOB_SETTINGS.put(id, loadSettings(id, file2));
                             }
                 } else {
-                    if(Files.getFileExtension(file.getName()).equalsIgnoreCase("json5")) {
+                    if(Files.getFileExtension(file.getName()).equalsIgnoreCase("json")) {
                         Identifier id = getIdentifier(null, file);
                         if(id != null)
                             MOB_SETTINGS.put(id, loadSettings(id, file));
@@ -95,9 +95,9 @@ public final class MobSettingsManager {
     @Nullable
     public static Identifier getIdentifier(@Nullable String folder, File file) {
         try {
-            JsonObject obj = Jankson.builder().build().load(file);
-            if(obj.containsKey("id")) {
-                String id = obj.get(String.class, "id");
+            JsonObject obj = new JsonObject();
+            if(obj.has("id")) {
+                String id = obj.get("id").getAsString();
                 if(id == null || !id.isEmpty())//empty id should be folder based
                     return id != null ? new Identifier(id) : null;
             }
@@ -105,7 +105,7 @@ public final class MobSettingsManager {
             if(id.equalsIgnoreCase("default"))
                 return null;
             return folder != null ? new Identifier(folder, id) : new Identifier(id);
-        } catch (IOException | SyntaxError e) {
+        } catch (JsonParseException e) {
             e.printStackTrace();
         }
         return null;
@@ -115,8 +115,8 @@ public final class MobSettingsManager {
     private static MobSettings loadSettings(Identifier id, File file) {
         JsonObject obj;
         try {
-            obj = Jankson.builder().build().load(file);
-        } catch (IOException | SyntaxError | NullPointerException e) {
+            obj = new Gson().newJsonReader(new FileReader(file)).;
+        } catch (IOException | NullPointerException e) {
             e.printStackTrace();
             return null;
         }
@@ -127,31 +127,31 @@ public final class MobSettingsManager {
             settings = settings.clone();
 
         settings.file = file;
-        if(obj.containsKey("id") && !obj.get(String.class, "id").isEmpty())
-            settings.id = obj.get(String.class, "id");
+        if(obj.has("id") && !obj.get(String.class, "id").isEmpty())
+            settings.id = obj.get("id").getAsString();
         else if(id != null)
             settings.id = id.toString();
-        if(obj.containsKey("enabled"))
-            settings.enabled = obj.get(Boolean.class, "enabled");
-        if(obj.containsKey("rebirthChance"))
-            settings.rebirthChance = obj.get(Double.class, "rebirthChance");
-        if(obj.containsKey("multiMobChance"))
-            settings.multiMobChance = obj.get(Double.class, "multiMobChance");
-        if(obj.containsKey("multiMobMode"))
-            settings.multiMobMode = obj.get(String.class, "multiMobMode");
-        if(obj.containsKey("multiMobCount"))
-            settings.multiMobCount = obj.get(Integer.class, "multiMobCount");
-        if(obj.containsKey("rebornAsEggs"))
-            settings.rebornAsEggs = obj.get(Boolean.class, "rebornAsEggs");
-        if(obj.containsKey("rebirthFromPlayer"))
-            settings.rebirthFromPlayer = obj.get(Boolean.class, "rebirthFromPlayer");
-        if(obj.containsKey("rebirthFromNonPlayer"))
-            settings.rebirthFromNonPlayer = obj.get(Boolean.class, "rebirthFromNonPlayer");
-        if(obj.containsKey("preventSunlightDamage"))
-            settings.preventSunlightDamage = obj.get(Boolean.class, "preventSunlightDamage");
-        if(obj.containsKey("biomeList"))
+        if(obj.has("enabled"))
+            settings.enabled = obj.get("enabled").getAsBoolean();
+        if(obj.has("rebirthChance"))
+            settings.rebirthChance = obj.get("rebirthChance").getAsDouble();
+        if(obj.has("multiMobChance"))
+            settings.multiMobChance = obj.get("multiMobChance").getAsDouble();
+        if(obj.has("multiMobMode"))
+            settings.multiMobMode = obj.get("multiMobMode").getAsString();
+        if(obj.has("multiMobCount"))
+            settings.multiMobCount = obj.get("multiMobCount").getAsInt();
+        if(obj.has("rebornAsEggs"))
+            settings.rebornAsEggs = obj.get("rebornAsEggs").getAsBoolean();
+        if(obj.has("rebirthFromPlayer"))
+            settings.rebirthFromPlayer = obj.get("rebirthFromPlayer").getAsBoolean();
+        if(obj.has("rebirthFromNonPlayer"))
+            settings.rebirthFromNonPlayer = obj.get("rebirthFromNonPlayer").getAsBoolean();
+        if(obj.has("preventSunlightDamage"))
+            settings.preventSunlightDamage = obj.get("preventSunlightDamage").getAsBoolean();
+        if(obj.has("biomeList"))
             settings.biomeList = Lists.newArrayList(obj.get(String[].class, "biomeList"));
-        if(obj.containsKey("rebornMobWeights")) {
+        if(obj.has("rebornMobWeights")) {
             //It gets deserialized into a JsonObject, so convert it to a HashMap then convert the values from JsonPrimitive to Integer
             //noinspection unchecked
             settings.rebornMobWeights = Maps.newHashMap(obj.get(Map.class, "rebornMobWeights"));
@@ -172,7 +172,7 @@ public final class MobSettingsManager {
             }
         File targetFile = new File(domainFolder, id.getPath()+".json5");
         settings.file = targetFile;
-        writeSettings(settings, targetFile, MobRebirth.config.compactCustomMobConfigs);
+        writeSettings(settings, targetFile, MobRebirth.config.getUseCompactCustomMobConfigs());
 
         MOB_SETTINGS.put(id, settings);
         return settings;

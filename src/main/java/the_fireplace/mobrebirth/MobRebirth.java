@@ -7,19 +7,19 @@ import net.minecraft.item.SpawnEggItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import the_fireplace.mobrebirth.config.MobSettingsManager;
-import the_fireplace.mobrebirth.config.ModConfig;
+import the_fireplace.mobrebirth.config.MRConfig;
 
 import java.util.Map;
 
 public class MobRebirth implements ModInitializer {
 	public static final String MODID = "mobrebirth";
 	static final Map<EntityType<?>, SpawnEggItem> spawnEggs = Maps.newHashMap();
-	public static ModConfig config;
+	public static MRConfig config;
 	public static Logger LOGGER = LogManager.getLogger(MODID);
 
 	@Override
 	public void onInitialize() {
-		config = ModConfig.load();
+		config = MRConfig.load();
 		config.save();
 
 		MobSettingsManager.init();
