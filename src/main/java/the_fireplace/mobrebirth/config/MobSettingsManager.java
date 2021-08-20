@@ -48,6 +48,9 @@ public final class MobSettingsManager {
     }
 
     public MobSettings getDefaultSettings() {
+        if (defaultSettings == null) {
+            throw new IllegalStateException("Attempted to access default mob settings before they were initialized!");
+        }
         return defaultSettings;
     }
 
@@ -59,14 +62,15 @@ public final class MobSettingsManager {
     }
 
     public void saveAll() {
-        writeSettings(defaultSettings, DEFAULT_SETTINGS_FILE, false);
-        for(MobSettings mobSettings: MOB_SETTINGS.values())
+        writeSettings(getDefaultSettings(), DEFAULT_SETTINGS_FILE, false);
+        for (MobSettings mobSettings: MOB_SETTINGS.values()) {
             writeSettings(mobSettings, mobSettings.file, configValues.getUseCompactCustomMobConfigs());
+        }
     }
 
     private void loadDefaultSettings() {
         defaultSettings = loadSettings(null, DEFAULT_SETTINGS_FILE);
-        if(defaultSettings == null) {
+        if (defaultSettings == null) {
             defaultSettings = new MobSettings();
             defaultSettings.file = DEFAULT_SETTINGS_FILE;
         }
@@ -115,18 +119,20 @@ public final class MobSettingsManager {
         return null;
     }
 
+    @Nullable
     private MobSettings loadSettings(Identifier id, File file) {
         JsonObject obj = DIContainer.get().getInstance(JsonFileReader.class).readJsonFile(file);
+        if (obj == null) {
+            return null;
+        }
         MobSettings settings = MOB_SETTINGS.getOrDefault(id, defaultSettings);
-        if(settings == null)
+        if (settings == null) {
             settings = new MobSettings();
-        else
+        } else {
             settings = settings.clone();
+        }
 
         settings.file = file;
-        if (obj == null) {
-            return settings;
-        }
         if(obj.has("id") && !obj.get("id").getAsString().isEmpty())
             settings.id = obj.get("id").getAsString();
         else if(id != null)
@@ -190,9 +196,9 @@ public final class MobSettingsManager {
 
     private void writeSettings(MobSettings settings, File file, boolean shouldOutputCompactFile) {
         JsonObject obj = new JsonObject();
-        if(settings.enabled != null && (!shouldOutputCompactFile || settings.enabled != defaultSettings.enabled))
+        if(settings.enabled != null && (!shouldOutputCompactFile || settings.enabled != getDefaultSettings().enabled))
             obj.addProperty("enabled", settings.enabled);
-        if(!shouldOutputCompactFile || !settings.id.equals(defaultSettings.id))
+        if(!shouldOutputCompactFile || !settings.id.equals(getDefaultSettings().id))
             obj.addProperty("id", settings.id);
         if(!shouldOutputCompactFile || !settings.rebirthChance.equals(defaultSettings.rebirthChance))
             obj.addProperty("rebirthChance", settings.rebirthChance);

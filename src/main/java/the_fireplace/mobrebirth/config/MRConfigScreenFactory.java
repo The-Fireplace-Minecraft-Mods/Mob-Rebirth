@@ -66,7 +66,10 @@ public final class MRConfigScreenFactory {
             TRANSLATION_BASE + "title",
             TRANSLATION_BASE + "general",
             parent,
-            () -> configStateManager.save(config)
+            () -> {
+                configStateManager.save(config);
+                mobSettingsManager.saveAll();
+            }
         );
         addGeneralCategoryEntries();
         buildDefaultMobSettingsCategory(mobSettingsManager.getDefaultSettings());
