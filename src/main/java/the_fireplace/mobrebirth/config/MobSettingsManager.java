@@ -190,15 +190,20 @@ public final class MobSettingsManager {
     }
 
     public void deleteSettings(Identifier id, MobSettings settings) {
-        settings.file.delete();
+        try {
+            java.nio.file.Files.delete(settings.file.toPath());
+        } catch (IOException exception) {
+            MobRebirthConstants.LOGGER.error("Unable to delete mob settings!", exception);
+        }
         MOB_SETTINGS.remove(id);
     }
 
     private void writeSettings(MobSettings settings, File file, boolean shouldOutputCompactFile) {
         JsonObject obj = new JsonObject();
-        if(settings.enabled != null && (!shouldOutputCompactFile || settings.enabled != getDefaultSettings().enabled))
+        MobSettings defaultSettings = getDefaultSettings();
+        if(settings.enabled != null && (!shouldOutputCompactFile || settings.enabled != defaultSettings.enabled))
             obj.addProperty("enabled", settings.enabled);
-        if(!shouldOutputCompactFile || !settings.id.equals(getDefaultSettings().id))
+        if(!shouldOutputCompactFile || !settings.id.equals(defaultSettings.id))
             obj.addProperty("id", settings.id);
         if(!shouldOutputCompactFile || !settings.rebirthChance.equals(defaultSettings.rebirthChance))
             obj.addProperty("rebirthChance", settings.rebirthChance);
