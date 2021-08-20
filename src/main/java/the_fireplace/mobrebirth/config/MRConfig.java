@@ -5,7 +5,7 @@ import dev.the_fireplace.lib.api.io.interfaces.access.StorageReadBuffer;
 import dev.the_fireplace.lib.api.io.interfaces.access.StorageWriteBuffer;
 import dev.the_fireplace.lib.api.lazyio.injectables.ConfigStateManager;
 import dev.the_fireplace.lib.api.lazyio.interfaces.Config;
-import the_fireplace.mobrebirth.MobRebirth;
+import the_fireplace.mobrebirth.MobRebirthConstants;
 import the_fireplace.mobrebirth.domain.config.ConfigValues;
 
 import javax.inject.Inject;
@@ -31,7 +31,7 @@ public final class MRConfig implements Config, ConfigValues {
 
     @Override
     public String getId() {
-        return MobRebirth.MODID;
+        return MobRebirthConstants.MODID;
     }
 
     @Override

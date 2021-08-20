@@ -13,7 +13,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import the_fireplace.mobrebirth.MobRebirth;
+import the_fireplace.mobrebirth.MobRebirthConstants;
 import the_fireplace.mobrebirth.domain.config.ConfigValues;
 
 import javax.inject.Inject;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @Environment(EnvType.CLIENT)
 @Singleton
 public final class MRConfigScreenFactory {
-    private static final String TRANSLATION_BASE = "text.config." + MobRebirth.MODID + ".";
+    private static final String TRANSLATION_BASE = "text.config." + MobRebirthConstants.MODID + ".";
     private static final String OPTION_TRANSLATION_BASE = TRANSLATION_BASE + "option.";
     private static final String MOB_WEIGHT_MAP_ENTRY_REGEX = "([a-zA-Z_\\-0-9./]+(:[a-zA-Z_\\-0-9.]+)?)?=[0-9]+";
 
@@ -37,6 +37,7 @@ public final class MRConfigScreenFactory {
     private final MRConfig config;
     private final ConfigValues defaultConfigValues;
     private final ConfigScreenBuilderFactory configScreenBuilderFactory;
+    private final MobSettingsManager mobSettingsManager;
 
     private final MobSettings mobSettingsDefaults = new MobSettings();
 
@@ -48,13 +49,15 @@ public final class MRConfigScreenFactory {
         ConfigStateManager configStateManager,
         MRConfig config,
         @Named("default") ConfigValues defaultConfigValues,
-        ConfigScreenBuilderFactory configScreenBuilderFactory
+        ConfigScreenBuilderFactory configScreenBuilderFactory,
+        MobSettingsManager mobSettingsManager
     ) {
-        this.translator = translatorFactory.getTranslator(MobRebirth.MODID);
+        this.translator = translatorFactory.getTranslator(MobRebirthConstants.MODID);
         this.configStateManager = configStateManager;
         this.config = config;
         this.defaultConfigValues = defaultConfigValues;
         this.configScreenBuilderFactory = configScreenBuilderFactory;
+        this.mobSettingsManager = mobSettingsManager;
     }
 
     public Screen getConfigScreen(Screen parent) {
@@ -66,8 +69,8 @@ public final class MRConfigScreenFactory {
             () -> configStateManager.save(config)
         );
         addGeneralCategoryEntries();
-        buildDefaultMobSettingsCategory(MobSettingsManager.getDefaultSettings());
-        for (MobSettings mobSettings: MobSettingsManager.getAllSettings()) {
+        buildDefaultMobSettingsCategory(mobSettingsManager.getDefaultSettings());
+        for (MobSettings mobSettings: mobSettingsManager.getAllSettings()) {
             buildCustomMobSettingsCategory(mobSettings);
         }
 
@@ -112,9 +115,9 @@ public final class MRConfigScreenFactory {
 
     private void createAddCustomMobDropdown() {
         List<Identifier> entityIdentifiers = Lists.newArrayList(Registry.ENTITY_TYPE.getIds()).stream().filter(id -> Registry.ENTITY_TYPE.get(id).isSummonable()).collect(Collectors.toList());
-        List<String> mobIdsWithoutCustomSettings = Lists.newArrayListWithCapacity(entityIdentifiers.size()-MobSettingsManager.getAllSettings().size());
+        List<String> mobIdsWithoutCustomSettings = Lists.newArrayListWithCapacity(entityIdentifiers.size()-mobSettingsManager.getAllSettings().size());
         for (Identifier id: entityIdentifiers) {
-            if (!MobSettingsManager.getCustomIds().contains(id)) {
+            if (!mobSettingsManager.getCustomIds().contains(id)) {
                 mobIdsWithoutCustomSettings.add(id.toString());
             }
         }
@@ -127,13 +130,13 @@ public final class MRConfigScreenFactory {
             mobIdsWithoutCustomSettings,
             newValue -> {
                 if (!newValue.isEmpty()) {
-                    MobSettingsManager.createSettings(new Identifier(newValue));
+                    mobSettingsManager.createSettings(new Identifier(newValue));
                 }
             },
             false,
             (byte) 2,
             value ->
-                MobSettingsManager.getCustomIds().contains(new Identifier(value))
+                mobSettingsManager.getCustomIds().contains(new Identifier(value))
                     ? Optional.of(translator.getTranslatedText(OPTION_TRANSLATION_BASE + "addCustomMob.err"))
                     : Optional.empty()
         );
@@ -146,9 +149,9 @@ public final class MRConfigScreenFactory {
 
     private void buildCustomMobSettingsCategory(MobSettings mobSettings) {
         //noinspection UnstableApiUsage
-        Identifier id = mobSettings.id.isEmpty() ? MobSettingsManager.getIdentifier(Files.getNameWithoutExtension(mobSettings.getFile().getParent()), mobSettings.getFile()) : new Identifier(mobSettings.id);
+        Identifier id = mobSettings.id.isEmpty() ? mobSettingsManager.getIdentifier(Files.getNameWithoutExtension(mobSettings.getFile().getParent()), mobSettings.getFile()) : new Identifier(mobSettings.id);
         if (id == null) {
-            MobRebirth.LOGGER.error("Unable to get id for mob with settings at " + mobSettings.getFile().toString());
+            MobRebirthConstants.LOGGER.error("Unable to get id for mob with settings at " + mobSettings.getFile().toString());
             return;
         }
         configScreenBuilder.startCategory(TRANSLATION_BASE + "mobSettings", id.toString());
@@ -169,7 +172,7 @@ public final class MRConfigScreenFactory {
             false,
             newValue -> {
                 if (newValue) {
-                    MobSettingsManager.deleteSettings(id, mobSettings);
+                    mobSettingsManager.deleteSettings(id, mobSettings);
                 }
             },
             (byte) 2

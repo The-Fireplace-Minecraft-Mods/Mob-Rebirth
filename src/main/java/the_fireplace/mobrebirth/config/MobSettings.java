@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class MobSettings {
+public final class MobSettings {
     public File getFile() {
         return file;
     }

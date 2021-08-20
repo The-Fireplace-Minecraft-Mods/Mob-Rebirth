@@ -19,8 +19,8 @@
 
   "environment": "*",
   "entrypoints": {
-    "main": [
-      "the_fireplace.mobrebirth.MobRebirth"
+    "di-main": [
+      "the_fireplace.mobrebirth.entrypoints.MainEntrypoint"
     ],
     "modmenu": [
       "the_fireplace.mobrebirth.entrypoints.ModMenuEntrypoint"

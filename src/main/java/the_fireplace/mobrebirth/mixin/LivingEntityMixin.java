@@ -1,5 +1,6 @@
 package the_fireplace.mobrebirth.mixin;
 
+import dev.the_fireplace.annotateddi.api.DIContainer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import org.spongepowered.asm.mixin.Mixin;
@@ -10,15 +11,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import the_fireplace.mobrebirth.RebirthLogic;
 
 @Mixin(LivingEntity.class)
-public class LivingEntityMixin {
+public final class LivingEntityMixin {
 	@Inject(at = @At("HEAD"), method = "onDeath(Lnet/minecraft/entity/damage/DamageSource;)V")
 	public void onDeath(DamageSource damageSource, CallbackInfo info) {
-		RebirthLogic.onDeath((LivingEntity)(Object)this, damageSource);
+		DIContainer.get().getInstance(RebirthLogic.class).onDeath((LivingEntity)(Object)this, damageSource);
 	}
 
 	@Inject(at = @At("HEAD"), method = "damage(Lnet/minecraft/entity/damage/DamageSource;F)Z", cancellable = true)
-	public void damage(DamageSource damageSource, float amount, CallbackInfoReturnable<Boolean> info) {
-		if(RebirthLogic.shouldCancelEntityDamage(damageSource, (LivingEntity)(Object)this))
+	public void onDamage(DamageSource damageSource, float amount, CallbackInfoReturnable<Boolean> info) {
+		if (DIContainer.get().getInstance(RebirthLogic.class).shouldCancelEntityDamage(damageSource, (LivingEntity)(Object)this)) {
 			info.setReturnValue(false);
+		}
 	}
 }
