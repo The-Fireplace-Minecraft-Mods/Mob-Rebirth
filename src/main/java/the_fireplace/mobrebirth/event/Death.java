@@ -1,7 +1,8 @@
-package the_fireplace.mobrebirth;
+package the_fireplace.mobrebirth.event;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import dev.the_fireplace.annotateddi.api.di.Implementation;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -17,13 +18,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import the_fireplace.mobrebirth.MobRebirthConstants;
 import the_fireplace.mobrebirth.config.MobSettingsManager;
 import the_fireplace.mobrebirth.domain.config.ConfigValues;
+import the_fireplace.mobrebirth.domain.event.DeathHandler;
 import the_fireplace.mobrebirth.entrypoints.MainEntrypoint;
 
 import javax.inject.Inject;
@@ -31,27 +32,28 @@ import javax.inject.Singleton;
 import java.util.*;
 
 @Singleton
-public final class RebirthLogic {
-
+@Implementation
+public final class Death implements DeathHandler {
     private final ConfigValues configValues;
     private final MobSettingsManager mobSettingsManager;
-    
+
     @Inject
-    public RebirthLogic(ConfigValues configValues, MobSettingsManager mobSettingsManager) {
+    public Death(ConfigValues configValues, MobSettingsManager mobSettingsManager) {
         this.configValues = configValues;
         this.mobSettingsManager = mobSettingsManager;
     }
 
+    @Override
     public void onDeath(LivingEntity livingEntity, DamageSource damageSource) {
         if(!livingEntity.getEntityWorld().isClient()) {
             Boolean enabled = mobSettingsManager.getSettings(livingEntity).enabled;
             if(Boolean.FALSE.equals(enabled))
                 return;
             if(checkDamageSource(livingEntity, damageSource)
-            && (Boolean.TRUE.equals(enabled)
-            || (checkGeneralEntityType(livingEntity)
-            && checkSpecificEntityType(livingEntity)))
-            && checkBiome(livingEntity))
+                && (Boolean.TRUE.equals(enabled)
+                || (checkGeneralEntityType(livingEntity)
+                && checkSpecificEntityType(livingEntity)))
+                && checkBiome(livingEntity))
                 triggerRebirth(livingEntity, getRebirthCount(livingEntity));
         }
     }
@@ -79,8 +81,10 @@ public final class RebirthLogic {
         List<String> biomeList = mobSettingsManager.getSettings(livingEntity).biomeList;
         boolean goodBiome = biomeList.contains("*");
         Biome biome = livingEntity.getEntityWorld().getBiomeAccess().getBiome(livingEntity.getBlockPos());
-        if(biomeList.contains(livingEntity.getEntityWorld().getRegistryManager().get(Registry.BIOME_KEY).getId(biome).toString().toLowerCase()))
+        Identifier biomeId = livingEntity.getEntityWorld().getRegistryManager().get(Registry.BIOME_KEY).getId(biome);
+        if (biomeId != null && biomeList.contains(biomeId.toString().toLowerCase())) {
             goodBiome = !goodBiome;
+        }
         return goodBiome;
     }
 
@@ -114,7 +118,7 @@ public final class RebirthLogic {
         return count;
     }
 
-    public EntityType<?> getTypeFromPool(LivingEntity livingEntity) {
+    private EntityType<?> getTypeFromPool(LivingEntity livingEntity) {
         Map<String, Integer> rebornMobTypes = Maps.newHashMap(mobSettingsManager.getSettings(livingEntity).rebornMobWeights);
         if(rebornMobTypes.isEmpty() || (rebornMobTypes.size() == 1 && rebornMobTypes.containsKey("")))
             return livingEntity.getType();
@@ -143,7 +147,7 @@ public final class RebirthLogic {
                 if(MainEntrypoint.spawnEggs.containsKey(livingEntity.getType()))
                     dropMobEgg(type, livingEntity);
                 else
-                    MobRebirthConstants.LOGGER.error("Missing egg for "+Registry.ENTITY_TYPE.getId(livingEntity.getType()).toString());
+                    MobRebirthConstants.LOGGER.error("Missing egg for "+ Registry.ENTITY_TYPE.getId(livingEntity.getType()));
             } else
                 createEntity(type, livingEntity);
         }
@@ -180,16 +184,7 @@ public final class RebirthLogic {
         worldIn.spawnEntity(newEntity);
     }
 
-    public boolean shouldCancelEntityDamage(DamageSource source, LivingEntity livingEntity) {
-        //The only time we want to cancel damage is when preventing a sunlight apocalypse
-        return source.isFire()
-            && mobSettingsManager.getSettings(livingEntity).preventSunlightDamage
-            && livingEntity.isUndead()
-            && !livingEntity.isInLava()
-            && livingEntity.world.isSkyVisible(new BlockPos(MathHelper.floor(livingEntity.getBlockPos().getX()), MathHelper.floor(livingEntity.getBlockPos().getY()), MathHelper.floor(livingEntity.getBlockPos().getZ())));
-    }
-
-    public boolean isVanilla(LivingEntity livingEntity) {
+    private boolean isVanilla(LivingEntity livingEntity) {
         return Registry.ENTITY_TYPE.getId(livingEntity.getType()).getNamespace().equalsIgnoreCase("minecraft");
     }
 }
