@@ -2,7 +2,6 @@ package the_fireplace.mobrebirth.config;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.io.Files;
 import dev.the_fireplace.lib.api.chat.injectables.TranslatorFactory;
 import dev.the_fireplace.lib.api.chat.interfaces.Translator;
 import dev.the_fireplace.lib.api.client.injectables.ConfigScreenBuilderFactory;
@@ -192,24 +191,24 @@ public final class MRConfigScreenFactory {
         );
         configScreenBuilder.addDoublePercentSlider(
             OPTION_TRANSLATION_BASE + "multiMobChance",
-            mobSettings.multiMobChance,
-            mobSettingsDefaults.multiMobChance,
-            newValue -> mobSettings.multiMobChance = newValue
+            mobSettings.extraMobChance,
+            mobSettingsDefaults.extraMobChance,
+            newValue -> mobSettings.extraMobChance = newValue
         );
         configScreenBuilder.addStringDropdown(
             OPTION_TRANSLATION_BASE + "multiMobMode",
-            mobSettings.multiMobMode,
-            mobSettingsDefaults.multiMobMode,
+            mobSettings.extraMobMode,
+            mobSettingsDefaults.extraMobMode,
             Arrays.asList("continuous", "per-mob", "all"),
-            newValue -> mobSettings.multiMobMode = newValue,
+            newValue -> mobSettings.extraMobMode = newValue,
             false,
             (byte) 5
         );
         configScreenBuilder.addIntField(
             OPTION_TRANSLATION_BASE + "multiMobCount",
-            mobSettings.multiMobCount,
-            mobSettingsDefaults.multiMobCount,
-            newValue -> mobSettings.multiMobCount = newValue,
+            mobSettings.extraMobCount,
+            mobSettingsDefaults.extraMobCount,
+            newValue -> mobSettings.extraMobCount = newValue,
             0,
             Integer.MAX_VALUE,
             (byte) 2

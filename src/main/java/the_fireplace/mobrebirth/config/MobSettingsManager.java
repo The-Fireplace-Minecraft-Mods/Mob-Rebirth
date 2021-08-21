@@ -157,11 +157,11 @@ public final class MobSettingsManager {
         if(obj.has("rebirthChance"))
             settings.rebirthChance = obj.get("rebirthChance").getAsDouble();
         if(obj.has("multiMobChance"))
-            settings.multiMobChance = obj.get("multiMobChance").getAsDouble();
+            settings.extraMobChance = obj.get("multiMobChance").getAsDouble();
         if(obj.has("multiMobMode"))
-            settings.multiMobMode = obj.get("multiMobMode").getAsString();
+            settings.extraMobMode = obj.get("multiMobMode").getAsString();
         if(obj.has("multiMobCount"))
-            settings.multiMobCount = obj.get("multiMobCount").getAsInt();
+            settings.extraMobCount = obj.get("multiMobCount").getAsInt();
         if(obj.has("rebornAsEggs"))
             settings.rebornAsEggs = obj.get("rebornAsEggs").getAsBoolean();
         if(obj.has("rebirthFromPlayer"))
@@ -222,12 +222,12 @@ public final class MobSettingsManager {
             obj.addProperty("id", settings.id);
         if(!shouldOutputCompactFile || !settings.rebirthChance.equals(defaultSettings.rebirthChance))
             obj.addProperty("rebirthChance", settings.rebirthChance);
-        if(!shouldOutputCompactFile || !settings.multiMobChance.equals(defaultSettings.multiMobChance))
-            obj.addProperty("multiMobChance", settings.multiMobChance);
-        if(!shouldOutputCompactFile || !settings.multiMobMode.equalsIgnoreCase(defaultSettings.multiMobMode))
-            obj.addProperty("multiMobMode", settings.multiMobMode);
-        if(!shouldOutputCompactFile || !settings.multiMobCount.equals(defaultSettings.multiMobCount))
-            obj.addProperty("multiMobCount", settings.multiMobCount);
+        if(!shouldOutputCompactFile || !settings.extraMobChance.equals(defaultSettings.extraMobChance))
+            obj.addProperty("multiMobChance", settings.extraMobChance);
+        if(!shouldOutputCompactFile || !settings.extraMobMode.equalsIgnoreCase(defaultSettings.extraMobMode))
+            obj.addProperty("multiMobMode", settings.extraMobMode);
+        if(!shouldOutputCompactFile || !settings.extraMobCount.equals(defaultSettings.extraMobCount))
+            obj.addProperty("multiMobCount", settings.extraMobCount);
         if(!shouldOutputCompactFile || !settings.rebornAsEggs.equals(defaultSettings.rebornAsEggs))
             obj.addProperty("rebornAsEggs", settings.rebornAsEggs);
         if(!shouldOutputCompactFile || !settings.rebirthFromPlayer.equals(defaultSettings.rebirthFromPlayer))

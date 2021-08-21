@@ -1,1 +1,2 @@
-Fixed startup crash due to JiJ not loading jankson
+Updated to use Fireplace Lib
+Fixed bug with egg rebirth if the reborn entity is different from the original and one of them does not have an egg

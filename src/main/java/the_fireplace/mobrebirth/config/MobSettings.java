@@ -23,11 +23,11 @@ public final class MobSettings {
     @Nonnull
     public Double rebirthChance = 0.1;
     @Nonnull
-    public Double multiMobChance = 0.01;
+    public Double extraMobChance = 0.01;
     @Nonnull
-    public String multiMobMode = "continuous";
+    public String extraMobMode = "continuous";
     @Nonnull
-    public Integer multiMobCount = 1;
+    public Integer extraMobCount = 1;
     @Nonnull
     public Boolean rebornAsEggs = false;
     @Nonnull
@@ -48,9 +48,9 @@ public final class MobSettings {
         clone.enabled = enabled;
         clone.id = id;
         clone.rebirthChance = rebirthChance;
-        clone.multiMobChance = multiMobChance;
-        clone.multiMobMode = multiMobMode;
-        clone.multiMobCount = multiMobCount;
+        clone.extraMobChance = extraMobChance;
+        clone.extraMobMode = extraMobMode;
+        clone.extraMobCount = extraMobCount;
         clone.rebornAsEggs = rebornAsEggs;
         clone.rebirthFromPlayer = rebirthFromPlayer;
         clone.rebirthFromNonPlayer = rebirthFromNonPlayer;
