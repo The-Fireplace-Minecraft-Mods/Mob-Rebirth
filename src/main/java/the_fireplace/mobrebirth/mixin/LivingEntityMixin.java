@@ -13,12 +13,12 @@ import the_fireplace.mobrebirth.domain.event.DeathHandler;
 
 @Mixin(LivingEntity.class)
 public final class LivingEntityMixin {
-	@Inject(at = @At("HEAD"), method = "onDeath(Lnet/minecraft/entity/damage/DamageSource;)V")
+	@Inject(at = @At("HEAD"), method = "onDeath")
 	public void onDeath(DamageSource damageSource, CallbackInfo info) {
 		DIContainer.get().getInstance(DeathHandler.class).onDeath((LivingEntity)(Object)this, damageSource);
 	}
 
-	@Inject(at = @At("HEAD"), method = "damage(Lnet/minecraft/entity/damage/DamageSource;F)Z", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "damage", cancellable = true)
 	public void onDamage(DamageSource damageSource, float amount, CallbackInfoReturnable<Boolean> info) {
 		if (DIContainer.get().getInstance(DamageHandler.class).shouldCancelEntityDamage(damageSource, (LivingEntity)(Object)this)) {
 			info.setReturnValue(false);
