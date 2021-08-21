@@ -151,8 +151,9 @@ public final class MRConfigScreenFactory {
     }
 
     private void buildCustomMobSettingsCategory(MobSettings mobSettings) {
-        //noinspection UnstableApiUsage
-        Identifier id = mobSettings.id.isEmpty() ? mobSettingsManager.getIdentifier(Files.getNameWithoutExtension(mobSettings.getFile().getParent()), mobSettings.getFile()) : new Identifier(mobSettings.id);
+        Identifier id = mobSettings.id.isEmpty()
+            ? mobSettingsManager.getIdentifier(mobSettings.getFile().getParentFile(), mobSettings.getFile())
+            : new Identifier(mobSettings.id);
         if (id == null) {
             MobRebirthConstants.LOGGER.error("Unable to get id for mob with settings at " + mobSettings.getFile().toString());
             return;

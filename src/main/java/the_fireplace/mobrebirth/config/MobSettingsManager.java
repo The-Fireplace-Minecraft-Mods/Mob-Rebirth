@@ -1,9 +1,8 @@
 package the_fireplace.mobrebirth.config;
 
-import com.google.common.collect.Maps;
-import com.google.common.io.Files;
 import com.google.gson.*;
 import dev.the_fireplace.annotateddi.api.DIContainer;
+import dev.the_fireplace.lib.api.io.injectables.DirectoryResolver;
 import dev.the_fireplace.lib.api.io.injectables.JsonFileReader;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
@@ -15,38 +14,41 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 @SuppressWarnings("UnstableApiUsage")
 @Singleton
 public final class MobSettingsManager {
+    private final ConfigValues configValues;
+
+    private final Map<Identifier, MobSettings> mobSettings = new HashMap<>();
+    private final Path mobSettingsDirectory;
+    private final File defaultSettingsFile;
 
     @Nullable
     private MobSettings defaultSettings = null;
-    private final Map<Identifier, MobSettings> MOB_SETTINGS = Maps.newHashMap();
-
-    private final File MOB_SETTINGS_DIR = new File("config/mobrebirth");
-    private final File DEFAULT_SETTINGS_FILE = new File(MOB_SETTINGS_DIR, "default.json");
-    
-    private final ConfigValues configValues;
 
     @Inject
-    public MobSettingsManager(ConfigValues configValues) {
+    public MobSettingsManager(ConfigValues configValues, DirectoryResolver directoryResolver) {
         this.configValues = configValues;
+        mobSettingsDirectory = directoryResolver.getConfigPath().resolve(MobRebirthConstants.MODID);
+        defaultSettingsFile = mobSettingsDirectory.resolve("default.json").toFile();
     }
 
     public MobSettings getSettings(LivingEntity entity) {
         return getSettings(Registry.ENTITY_TYPE.getId(entity.getType()), false);
     }
     public MobSettings getSettings(Identifier identifier, boolean clone) {
-        return clone ? MOB_SETTINGS.getOrDefault(identifier, defaultSettings).clone() : MOB_SETTINGS.getOrDefault(identifier, defaultSettings);
+        return clone ? mobSettings.getOrDefault(identifier, defaultSettings).clone() : mobSettings.getOrDefault(identifier, defaultSettings);
     }
 
     public Collection<Identifier> getCustomIds() {
-        return MOB_SETTINGS.keySet();
+        return mobSettings.keySet();
     }
     public Collection<MobSettings> getAllSettings() {
-        return MOB_SETTINGS.values();
+        return mobSettings.values();
     }
 
     public MobSettings getDefaultSettings() {
@@ -57,64 +59,74 @@ public final class MobSettingsManager {
     }
 
     public void init() {
-        //noinspection ResultOfMethodCallIgnored
-        MOB_SETTINGS_DIR.mkdirs();
+        try {
+            Files.createDirectories(mobSettingsDirectory);
+        } catch (IOException | SecurityException exception) {
+            MobRebirthConstants.LOGGER.error("Unable to create mob settings directory!", exception);
+        }
         loadDefaultSettings();
-        populateMap();
+        try {
+            populateMobSettingsFromConfig();
+        } catch (IOException exception) {
+            MobRebirthConstants.LOGGER.error("Unable to read custom mob configs!", exception);
+        }
     }
 
     public void saveAll() {
-        writeSettings(getDefaultSettings(), DEFAULT_SETTINGS_FILE, false);
-        for (MobSettings mobSettings: MOB_SETTINGS.values()) {
+        writeSettings(getDefaultSettings(), defaultSettingsFile, false);
+        for (MobSettings mobSettings: mobSettings.values()) {
             writeSettings(mobSettings, mobSettings.file, configValues.getUseCompactCustomMobConfigs());
         }
     }
 
     private void loadDefaultSettings() {
-        defaultSettings = loadSettings(null, DEFAULT_SETTINGS_FILE);
+        defaultSettings = loadSettings(null, defaultSettingsFile);
         if (defaultSettings == null) {
             defaultSettings = new MobSettings();
-            defaultSettings.file = DEFAULT_SETTINGS_FILE;
+            defaultSettings.file = defaultSettingsFile;
         }
-        writeSettings(defaultSettings, DEFAULT_SETTINGS_FILE, false);
+        writeSettings(defaultSettings, defaultSettingsFile, false);
     }
 
-    private void populateMap() {
-        File[] files = MOB_SETTINGS_DIR.listFiles();
-        if(files != null)
-            for(File file: files) {
-                if(file.isDirectory()) {
-                    File[] dirFiles = file.listFiles();
-                    if(dirFiles != null)
-                        for(File file2: dirFiles)
-                            if(Files.getFileExtension(file2.getName()).equalsIgnoreCase("json")) {
-                                Identifier id = getIdentifier(file.getName(), file2);
-                                if(id != null)
-                                    MOB_SETTINGS.put(id, loadSettings(id, file2));
-                            }
-                } else {
-                    if(Files.getFileExtension(file.getName()).equalsIgnoreCase("json")) {
-                        Identifier id = getIdentifier(null, file);
-                        if(id != null)
-                            MOB_SETTINGS.put(id, loadSettings(id, file));
-                    }
-                }
+    private void populateMobSettingsFromConfig() throws IOException {
+        for (Iterator<Path> it = Files.list(mobSettingsDirectory).iterator(); it.hasNext(); ) {
+            Path file = it.next();
+            readMobConfigFile(file);
+        }
+    }
+
+    private void readMobConfigFile(Path configFilePath) throws IOException {
+        if (Files.isDirectory(configFilePath)) {
+            Files.list(configFilePath).forEach(file2 -> scanSettingsFromFile(configFilePath.toFile(), file2.toFile()));
+        } else {
+            scanSettingsFromFile(null, configFilePath.toFile());
+        }
+    }
+
+    private void scanSettingsFromFile(File filePath, File file2) {
+        if (com.google.common.io.Files.getFileExtension(file2.getName()).equalsIgnoreCase("json")) {
+            Identifier id = getIdentifier(filePath, file2);
+            if (id != null) {
+                mobSettings.put(id, loadSettings(id, file2));
             }
+        }
     }
 
     @Nullable
-    public Identifier getIdentifier(@Nullable String folder, File file) {
+    public Identifier getIdentifier(@Nullable File folder, File file) {
         try {
             JsonObject obj = new JsonObject();
-            if(obj.has("id")) {
+            if (obj.has("id")) {
                 String id = obj.get("id").getAsString();
-                if(id == null || !id.isEmpty())//empty id should be folder based
+                if (id == null || !id.isEmpty()) {//empty id should be folder based
                     return id != null ? new Identifier(id) : null;
+                }
             }
-            String id = Files.getNameWithoutExtension(file.getName());
-            if(id.equalsIgnoreCase("default"))
+            String id = com.google.common.io.Files.getNameWithoutExtension(file.getName());
+            if (id.equalsIgnoreCase("default")) {
                 return null;
-            return folder != null ? new Identifier(folder, id) : new Identifier(id);
+            }
+            return folder != null ? new Identifier(folder.getName(), id) : new Identifier(id);
         } catch (JsonParseException e) {
             e.printStackTrace();
         }
@@ -127,7 +139,7 @@ public final class MobSettingsManager {
         if (obj == null) {
             return null;
         }
-        MobSettings settings = MOB_SETTINGS.getOrDefault(id, defaultSettings);
+        MobSettings settings = mobSettings.getOrDefault(id, defaultSettings);
         if (settings == null) {
             settings = new MobSettings();
         } else {
@@ -135,11 +147,12 @@ public final class MobSettingsManager {
         }
 
         settings.file = file;
-        if(obj.has("id") && !obj.get("id").getAsString().isEmpty())
+        if (obj.has("id") && !obj.get("id").getAsString().isEmpty()) {
             settings.id = obj.get("id").getAsString();
-        else if(id != null)
+        } else if (id != null) {
             settings.id = id.toString();
-        if(obj.has("enabled"))
+        }
+        if (obj.has("enabled"))
             settings.enabled = obj.get("enabled").getAsBoolean();
         if(obj.has("rebirthChance"))
             settings.rebirthChance = obj.get("rebirthChance").getAsDouble();
@@ -178,7 +191,7 @@ public final class MobSettingsManager {
 
     public void createSettings(Identifier id) {
         MobSettings settings = getSettings(id, true);
-        File domainFolder = new File(MOB_SETTINGS_DIR, id.getNamespace());
+        File domainFolder = mobSettingsDirectory.resolve(id.getNamespace()).toFile();
         if(!domainFolder.exists())
             if(!domainFolder.mkdir()) {
                 MobRebirthConstants.LOGGER.error("Unable to make domain folder for " + id);
@@ -188,16 +201,16 @@ public final class MobSettingsManager {
         settings.file = targetFile;
         writeSettings(settings, targetFile, configValues.getUseCompactCustomMobConfigs());
 
-        MOB_SETTINGS.put(id, settings);
+        mobSettings.put(id, settings);
     }
 
     public void deleteSettings(Identifier id, MobSettings settings) {
         try {
-            java.nio.file.Files.delete(settings.file.toPath());
+            Files.delete(settings.file.toPath());
         } catch (IOException exception) {
             MobRebirthConstants.LOGGER.error("Unable to delete mob settings!", exception);
         }
-        MOB_SETTINGS.remove(id);
+        mobSettings.remove(id);
     }
 
     private void writeSettings(MobSettings settings, File file, boolean shouldOutputCompactFile) {
