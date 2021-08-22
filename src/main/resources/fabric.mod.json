@@ -27,7 +27,8 @@
     ]
   },
   "mixins": [
-    "mobrebirth.mixins.json"
+    "mobrebirth.mixins.json",
+    "optional.mixins.json"
   ],
 
   "depends": {

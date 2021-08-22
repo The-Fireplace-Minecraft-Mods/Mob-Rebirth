@@ -9,10 +9,16 @@ import dev.the_fireplace.lib.api.client.interfaces.ConfigScreenBuilder;
 import dev.the_fireplace.lib.api.lazyio.injectables.ConfigStateManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.SemanticVersion;
+import net.fabricmc.loader.api.VersionParsingException;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import the_fireplace.mobrebirth.MobRebirthConstants;
+import the_fireplace.mobrebirth.compat.modmenu.ModMenuCompat;
+import the_fireplace.mobrebirth.compat.modmenu.OldModMenuCompat;
 import the_fireplace.mobrebirth.domain.config.ConfigValues;
 
 import javax.inject.Inject;
@@ -68,6 +74,15 @@ public final class MRConfigScreenFactory {
             () -> {
                 configStateManager.save(config);
                 mobSettingsManager.saveAll();
+                Optional<ModContainer> modmenu = FabricLoader.getInstance().getModContainer("modmenu");
+                try {
+                    if (modmenu.isPresent() && SemanticVersion.parse(modmenu.get().getMetadata().getVersion().getFriendlyString()).compareTo(SemanticVersion.parse("1.16.9")) < 1) {
+                        ModMenuCompat compat = new OldModMenuCompat();
+                        compat.forceReloadConfigGui();
+                    }
+                } catch (VersionParsingException e) {
+                    MobRebirthConstants.LOGGER.error("Unable to parse mod menu version", e);
+                }
             }
         );
         addGeneralCategoryEntries();

@@ -1,0 +1,11 @@
+{
+  "required": false,
+  "package": "the_fireplace.mobrebirth.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "clothconfig.AbstractConfigScreenAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 0
+  }
+}
