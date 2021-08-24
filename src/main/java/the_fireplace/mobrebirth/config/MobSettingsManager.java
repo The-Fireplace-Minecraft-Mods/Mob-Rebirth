@@ -13,7 +13,10 @@ import the_fireplace.mobrebirth.domain.config.ConfigValues;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -197,7 +200,7 @@ public final class MobSettingsManager {
                 MobRebirthConstants.LOGGER.error("Unable to make domain folder for " + id);
                 return;
             }
-        File targetFile = new File(domainFolder, id.getPath()+".json5");
+        File targetFile = new File(domainFolder, id.getPath()+".json");
         settings.file = targetFile;
         writeSettings(settings, targetFile, configValues.getUseCompactCustomMobConfigs());
 
