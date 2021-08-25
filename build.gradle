@@ -28,7 +28,6 @@ dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	modImplementation "io.github.prospector:modmenu:${project.modmenu_version}"
 	modImplementation("me.shedaniel.cloth:config-2:${project.clothconfig_version}") {
@@ -81,7 +80,6 @@ if (hasProperty('curseForgeApiKey')) {
 			mainArtifact(new File(new File(buildDir, "libs"), "$archivesBaseName-${version}.jar")) {
 				displayName = "$archivesBaseName-$version"
 				relations {
-					requiredDependency 'fabric-api'
 					requiredDependency 'fireplace-lib'
 					optionalDependency 'cloth-config'
 					optionalDependency 'modmenu'
