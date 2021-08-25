@@ -1,4 +1,4 @@
-package the_fireplace.mobrebirth;
+package dev.the_fireplace.mobrebirth;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

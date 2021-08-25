@@ -1,11 +1,11 @@
-package the_fireplace.mobrebirth.config;
+package dev.the_fireplace.mobrebirth.config;
 
 import dev.the_fireplace.annotateddi.api.di.Implementation;
-import the_fireplace.mobrebirth.domain.config.ConfigValues;
+import dev.the_fireplace.mobrebirth.domain.config.ConfigValues;
 
 import javax.inject.Singleton;
 
-@Implementation(name="default")
+@Implementation(name = "default")
 @Singleton
 public final class MRConfigDefaults implements ConfigValues {
     @Override

@@ -1,4 +1,4 @@
-package the_fireplace.mobrebirth.mixin.clothconfig;
+package dev.the_fireplace.mobrebirth.mixin.clothconfig;
 
 import me.shedaniel.clothconfig2.gui.AbstractConfigScreen;
 import net.fabricmc.api.EnvType;

@@ -1,14 +1,14 @@
-package the_fireplace.mobrebirth.config;
+package dev.the_fireplace.mobrebirth.config;
 
 import com.google.gson.*;
 import dev.the_fireplace.annotateddi.api.DIContainer;
 import dev.the_fireplace.lib.api.io.injectables.DirectoryResolver;
 import dev.the_fireplace.lib.api.io.injectables.JsonFileReader;
+import dev.the_fireplace.mobrebirth.MobRebirthConstants;
+import dev.the_fireplace.mobrebirth.domain.config.ConfigValues;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import the_fireplace.mobrebirth.MobRebirthConstants;
-import the_fireplace.mobrebirth.domain.config.ConfigValues;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -43,6 +43,7 @@ public final class MobSettingsManager {
     public MobSettings getSettings(LivingEntity entity) {
         return getSettings(Registry.ENTITY_TYPE.getId(entity.getType()), false);
     }
+
     public MobSettings getSettings(Identifier identifier, boolean clone) {
         return clone ? mobSettings.getOrDefault(identifier, defaultSettings).clone() : mobSettings.getOrDefault(identifier, defaultSettings);
     }
@@ -50,6 +51,7 @@ public final class MobSettingsManager {
     public Collection<Identifier> getCustomIds() {
         return mobSettings.keySet();
     }
+
     public Collection<MobSettings> getAllSettings() {
         return mobSettings.values();
     }
@@ -77,7 +79,7 @@ public final class MobSettingsManager {
 
     public void saveAll() {
         writeSettings(getDefaultSettings(), defaultSettingsFile, false);
-        for (MobSettings mobSettings: mobSettings.values()) {
+        for (MobSettings mobSettings : mobSettings.values()) {
             writeSettings(mobSettings, mobSettings.file, configValues.getUseCompactCustomMobConfigs());
         }
     }
@@ -155,25 +157,34 @@ public final class MobSettingsManager {
         } else if (id != null) {
             settings.id = id.toString();
         }
-        if (obj.has("enabled"))
+        if (obj.has("enabled")) {
             settings.enabled = obj.get("enabled").getAsBoolean();
-        if(obj.has("rebirthChance"))
+        }
+        if (obj.has("rebirthChance")) {
             settings.rebirthChance = obj.get("rebirthChance").getAsDouble();
-        if(obj.has("multiMobChance"))
+        }
+        if (obj.has("multiMobChance")) {
             settings.extraMobChance = obj.get("multiMobChance").getAsDouble();
-        if(obj.has("multiMobMode"))
+        }
+        if (obj.has("multiMobMode")) {
             settings.extraMobMode = obj.get("multiMobMode").getAsString();
-        if(obj.has("multiMobCount"))
+        }
+        if (obj.has("multiMobCount")) {
             settings.extraMobCount = obj.get("multiMobCount").getAsInt();
-        if(obj.has("rebornAsEggs"))
+        }
+        if (obj.has("rebornAsEggs")) {
             settings.rebornAsEggs = obj.get("rebornAsEggs").getAsBoolean();
-        if(obj.has("rebirthFromPlayer"))
+        }
+        if (obj.has("rebirthFromPlayer")) {
             settings.rebirthFromPlayer = obj.get("rebirthFromPlayer").getAsBoolean();
-        if(obj.has("rebirthFromNonPlayer"))
+        }
+        if (obj.has("rebirthFromNonPlayer")) {
             settings.rebirthFromNonPlayer = obj.get("rebirthFromNonPlayer").getAsBoolean();
-        if(obj.has("preventSunlightDamage"))
+        }
+        if (obj.has("preventSunlightDamage")) {
             settings.preventSunlightDamage = obj.get("preventSunlightDamage").getAsBoolean();
-        if(obj.has("biomeList")) {
+        }
+        if (obj.has("biomeList")) {
             JsonArray biomeListJson = obj.getAsJsonArray("biomeList");
             settings.biomeList = new ArrayList<>(biomeListJson.size());
             for (JsonElement jsonElement : biomeListJson) {
@@ -181,7 +192,7 @@ public final class MobSettingsManager {
                 settings.biomeList.add(biome);
             }
         }
-        if(obj.has("rebornMobWeights")) {
+        if (obj.has("rebornMobWeights")) {
             JsonArray mobWeightsJson = obj.get("rebornMobWeights").getAsJsonArray();
             settings.rebornMobWeights = new HashMap<>(mobWeightsJson.size());
             for (JsonElement mobWeightJson : mobWeightsJson) {
@@ -195,12 +206,13 @@ public final class MobSettingsManager {
     public void createSettings(Identifier id) {
         MobSettings settings = getSettings(id, true);
         File domainFolder = mobSettingsDirectory.resolve(id.getNamespace()).toFile();
-        if(!domainFolder.exists())
-            if(!domainFolder.mkdir()) {
+        if (!domainFolder.exists()) {
+            if (!domainFolder.mkdir()) {
                 MobRebirthConstants.LOGGER.error("Unable to make domain folder for " + id);
                 return;
             }
-        File targetFile = new File(domainFolder, id.getPath()+".json");
+        }
+        File targetFile = new File(domainFolder, id.getPath() + ".json");
         settings.file = targetFile;
         writeSettings(settings, targetFile, configValues.getUseCompactCustomMobConfigs());
 
@@ -219,36 +231,46 @@ public final class MobSettingsManager {
     private void writeSettings(MobSettings settings, File file, boolean shouldOutputCompactFile) {
         JsonObject obj = new JsonObject();
         MobSettings defaultSettings = getDefaultSettings();
-        if(settings.enabled != null && (!shouldOutputCompactFile || settings.enabled != defaultSettings.enabled))
+        if (settings.enabled != null && (!shouldOutputCompactFile || settings.enabled != defaultSettings.enabled)) {
             obj.addProperty("enabled", settings.enabled);
-        if(!shouldOutputCompactFile || !settings.id.equals(defaultSettings.id))
+        }
+        if (!shouldOutputCompactFile || !settings.id.equals(defaultSettings.id)) {
             obj.addProperty("id", settings.id);
-        if(!shouldOutputCompactFile || !settings.rebirthChance.equals(defaultSettings.rebirthChance))
+        }
+        if (!shouldOutputCompactFile || settings.rebirthChance != defaultSettings.rebirthChance) {
             obj.addProperty("rebirthChance", settings.rebirthChance);
-        if(!shouldOutputCompactFile || !settings.extraMobChance.equals(defaultSettings.extraMobChance))
+        }
+        if (!shouldOutputCompactFile || settings.extraMobChance != defaultSettings.extraMobChance) {
             obj.addProperty("multiMobChance", settings.extraMobChance);
-        if(!shouldOutputCompactFile || !settings.extraMobMode.equalsIgnoreCase(defaultSettings.extraMobMode))
+        }
+        if (!shouldOutputCompactFile || !settings.extraMobMode.equalsIgnoreCase(defaultSettings.extraMobMode)) {
             obj.addProperty("multiMobMode", settings.extraMobMode);
-        if(!shouldOutputCompactFile || !settings.extraMobCount.equals(defaultSettings.extraMobCount))
+        }
+        if (!shouldOutputCompactFile || settings.extraMobCount != defaultSettings.extraMobCount) {
             obj.addProperty("multiMobCount", settings.extraMobCount);
-        if(!shouldOutputCompactFile || !settings.rebornAsEggs.equals(defaultSettings.rebornAsEggs))
+        }
+        if (!shouldOutputCompactFile || settings.rebornAsEggs != defaultSettings.rebornAsEggs) {
             obj.addProperty("rebornAsEggs", settings.rebornAsEggs);
-        if(!shouldOutputCompactFile || !settings.rebirthFromPlayer.equals(defaultSettings.rebirthFromPlayer))
+        }
+        if (!shouldOutputCompactFile || settings.rebirthFromPlayer != defaultSettings.rebirthFromPlayer) {
             obj.addProperty("rebirthFromPlayer", settings.rebirthFromPlayer);
-        if(!shouldOutputCompactFile || !settings.rebirthFromNonPlayer.equals(defaultSettings.rebirthFromNonPlayer))
+        }
+        if (!shouldOutputCompactFile || settings.rebirthFromNonPlayer != defaultSettings.rebirthFromNonPlayer) {
             obj.addProperty("rebirthFromNonPlayer", settings.rebirthFromNonPlayer);
-        if(!shouldOutputCompactFile || !settings.preventSunlightDamage.equals(defaultSettings.preventSunlightDamage))
+        }
+        if (!shouldOutputCompactFile || settings.preventSunlightDamage != defaultSettings.preventSunlightDamage) {
             obj.addProperty("preventSunlightDamage", settings.preventSunlightDamage);
-        if(!shouldOutputCompactFile || !settings.biomeList.equals(defaultSettings.biomeList)) {
+        }
+        if (!shouldOutputCompactFile || !settings.biomeList.equals(defaultSettings.biomeList)) {
             JsonArray biomeListJson = new JsonArray();
-            for (String biome: settings.biomeList) {
+            for (String biome : settings.biomeList) {
                 biomeListJson.add(biome);
             }
             obj.add("biomeList", biomeListJson);
         }
-        if(!shouldOutputCompactFile || !settings.rebornMobWeights.equals(defaultSettings.rebornMobWeights)) {
+        if (!shouldOutputCompactFile || !settings.rebornMobWeights.equals(defaultSettings.rebornMobWeights)) {
             JsonArray mobWeightsJson = new JsonArray();
-            for (Map.Entry<String, Integer> rebornMobWeight: settings.rebornMobWeights.entrySet()) {
+            for (Map.Entry<String, Integer> rebornMobWeight : settings.rebornMobWeights.entrySet()) {
                 JsonObject mobWeightJson = new JsonObject();
                 mobWeightJson.addProperty("mobId", rebornMobWeight.getKey());
                 mobWeightJson.addProperty("weight", rebornMobWeight.getValue());

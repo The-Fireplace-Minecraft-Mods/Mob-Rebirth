@@ -1,8 +1,14 @@
-package the_fireplace.mobrebirth.event;
+package dev.the_fireplace.mobrebirth.event;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import dev.the_fireplace.annotateddi.api.di.Implementation;
+import dev.the_fireplace.mobrebirth.MobRebirthConstants;
+import dev.the_fireplace.mobrebirth.config.MobSettings;
+import dev.the_fireplace.mobrebirth.config.MobSettingsManager;
+import dev.the_fireplace.mobrebirth.domain.config.ConfigValues;
+import dev.the_fireplace.mobrebirth.domain.event.DeathHandler;
+import dev.the_fireplace.mobrebirth.entrypoints.MainEntrypoint;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -23,15 +29,12 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import org.jetbrains.annotations.Nullable;
-import the_fireplace.mobrebirth.MobRebirthConstants;
-import the_fireplace.mobrebirth.config.MobSettings;
-import the_fireplace.mobrebirth.config.MobSettingsManager;
-import the_fireplace.mobrebirth.domain.config.ConfigValues;
-import the_fireplace.mobrebirth.domain.event.DeathHandler;
-import the_fireplace.mobrebirth.entrypoints.MainEntrypoint;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Implementation
 public final class Death implements DeathHandler {
@@ -62,8 +65,9 @@ public final class Death implements DeathHandler {
                 && (Boolean.TRUE.equals(enabled)
                 || (rebirthIsAllowedForEntityCategory()
                 && rebirthIsAllowedForEntityType()))
-                && rebirthIsAllowedInBiome())
+                && rebirthIsAllowedInBiome()) {
                 triggerRebirth(getMobCountToSpawn());
+            }
         }
     }
 
@@ -193,22 +197,25 @@ public final class Death implements DeathHandler {
 
     private EntityType<?> getEntityTypeForRebirth() {
         Map<String, Integer> rebornMobTypes = Maps.newHashMap(this.mobSettings.rebornMobWeights);
-        if(rebornMobTypes.isEmpty() || (rebornMobTypes.size() == 1 && rebornMobTypes.containsKey("")))
+        if (rebornMobTypes.isEmpty() || (rebornMobTypes.size() == 1 && rebornMobTypes.containsKey(""))) {
             return livingEntity.getType();
-        if(rebornMobTypes.containsKey("")) {
+        }
+        if (rebornMobTypes.containsKey("")) {
             int weight = rebornMobTypes.remove("");
             rebornMobTypes.put(Registry.ENTITY_TYPE.getId(livingEntity.getType()).toString(), weight);
         }
-        if(rebornMobTypes.size() == 1)
+        if (rebornMobTypes.size() == 1) {
             return Registry.ENTITY_TYPE.get(new Identifier((String) rebornMobTypes.keySet().toArray()[0]));
+        }
         int total = rebornMobTypes.values().stream().mapToInt(Integer::valueOf).sum();
-        int selected = livingEntity.getRandom().nextInt(total)+1;
+        int selected = livingEntity.getRandom().nextInt(total) + 1;
         List<Map.Entry<String, Integer>> entries = Lists.newArrayList(rebornMobTypes.entrySet());
         Collections.shuffle(entries);
-        for(Map.Entry<String, Integer> entry: entries) {
+        for (Map.Entry<String, Integer> entry : entries) {
             selected -= entry.getValue();
-            if(selected <= 0)
+            if (selected <= 0) {
                 return Registry.ENTITY_TYPE.get(new Identifier(entry.getKey()));
+            }
         }
         throw new IllegalStateException("Ran out of entries in the weighted list.");
     }

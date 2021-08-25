@@ -1,9 +1,8 @@
-package the_fireplace.mobrebirth.config;
+package dev.the_fireplace.mobrebirth.config;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.util.Collections;
@@ -18,27 +17,16 @@ public final class MobSettings {
     File file;
     @Nullable
     public Boolean enabled = null;
-    @Nonnull
     public String id = "";
-    @Nonnull
-    public Double rebirthChance = 0.1;
-    @Nonnull
-    public Double extraMobChance = 0.01;
-    @Nonnull
+    public double rebirthChance = 0.1;
+    public double extraMobChance = 0.01;
     public String extraMobMode = "continuous";
-    @Nonnull
-    public Integer extraMobCount = 1;
-    @Nonnull
-    public Boolean rebornAsEggs = false;
-    @Nonnull
-    public Boolean rebirthFromPlayer = true;
-    @Nonnull
-    public Boolean rebirthFromNonPlayer = true;
-    @Nonnull
-    public Boolean preventSunlightDamage = false;
-    @Nonnull
+    public int extraMobCount = 1;
+    public boolean rebornAsEggs = false;
+    public boolean rebirthFromPlayer = true;
+    public boolean rebirthFromNonPlayer = true;
+    public boolean preventSunlightDamage = false;
     public List<String> biomeList = Lists.newArrayList("*");
-    @Nonnull
     public Map<String, Integer> rebornMobWeights = Maps.newHashMap(Collections.singletonMap("", 1));
 
     @SuppressWarnings("MethodDoesntCallSuperMethod")

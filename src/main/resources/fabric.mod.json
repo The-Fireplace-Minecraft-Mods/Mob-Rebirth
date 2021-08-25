@@ -20,10 +20,10 @@
   "environment": "*",
   "entrypoints": {
     "di-main": [
-      "the_fireplace.mobrebirth.entrypoints.MainEntrypoint"
+      "dev.the_fireplace.mobrebirth.entrypoints.MainEntrypoint"
     ],
     "modmenu": [
-      "the_fireplace.mobrebirth.entrypoints.ModMenuEntrypoint"
+      "dev.the_fireplace.mobrebirth.entrypoints.ModMenuEntrypoint"
     ]
   },
   "mixins": [

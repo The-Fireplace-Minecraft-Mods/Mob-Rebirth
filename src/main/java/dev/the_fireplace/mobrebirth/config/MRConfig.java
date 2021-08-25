@@ -1,18 +1,18 @@
-package the_fireplace.mobrebirth.config;
+package dev.the_fireplace.mobrebirth.config;
 
 import dev.the_fireplace.annotateddi.api.di.Implementation;
 import dev.the_fireplace.lib.api.io.interfaces.access.StorageReadBuffer;
 import dev.the_fireplace.lib.api.io.interfaces.access.StorageWriteBuffer;
 import dev.the_fireplace.lib.api.lazyio.injectables.ConfigStateManager;
 import dev.the_fireplace.lib.api.lazyio.interfaces.Config;
-import the_fireplace.mobrebirth.MobRebirthConstants;
-import the_fireplace.mobrebirth.domain.config.ConfigValues;
+import dev.the_fireplace.mobrebirth.MobRebirthConstants;
+import dev.the_fireplace.mobrebirth.domain.config.ConfigValues;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-@Implementation("the_fireplace.mobrebirth.domain.config.ConfigValues")
+@Implementation("dev.the_fireplace.mobrebirth.domain.config.ConfigValues")
 @Singleton
 public final class MRConfig implements Config, ConfigValues {
     private final ConfigValues defaultConfig;

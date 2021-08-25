@@ -1,4 +1,4 @@
-package the_fireplace.mobrebirth.config;
+package dev.the_fireplace.mobrebirth.config;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -7,6 +7,10 @@ import dev.the_fireplace.lib.api.chat.interfaces.Translator;
 import dev.the_fireplace.lib.api.client.injectables.ConfigScreenBuilderFactory;
 import dev.the_fireplace.lib.api.client.interfaces.ConfigScreenBuilder;
 import dev.the_fireplace.lib.api.lazyio.injectables.ConfigStateManager;
+import dev.the_fireplace.mobrebirth.MobRebirthConstants;
+import dev.the_fireplace.mobrebirth.compat.modmenu.ModMenuCompat;
+import dev.the_fireplace.mobrebirth.compat.modmenu.OldModMenuCompat;
+import dev.the_fireplace.mobrebirth.domain.config.ConfigValues;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
@@ -16,10 +20,6 @@ import net.fabricmc.loader.api.VersionParsingException;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import the_fireplace.mobrebirth.MobRebirthConstants;
-import the_fireplace.mobrebirth.compat.modmenu.ModMenuCompat;
-import the_fireplace.mobrebirth.compat.modmenu.OldModMenuCompat;
-import the_fireplace.mobrebirth.domain.config.ConfigValues;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -87,7 +87,7 @@ public final class MRConfigScreenFactory {
         );
         addGeneralCategoryEntries();
         buildDefaultMobSettingsCategory(mobSettingsManager.getDefaultSettings());
-        for (MobSettings mobSettings: mobSettingsManager.getAllSettings()) {
+        for (MobSettings mobSettings : mobSettingsManager.getAllSettings()) {
             buildCustomMobSettingsCategory(mobSettings);
         }
 
@@ -132,8 +132,8 @@ public final class MRConfigScreenFactory {
 
     private void createAddCustomMobDropdown() {
         List<Identifier> entityIdentifiers = Lists.newArrayList(Registry.ENTITY_TYPE.getIds()).stream().filter(id -> Registry.ENTITY_TYPE.get(id).isSummonable()).collect(Collectors.toList());
-        List<String> mobIdsWithoutCustomSettings = Lists.newArrayListWithCapacity(entityIdentifiers.size()-mobSettingsManager.getAllSettings().size());
-        for (Identifier id: entityIdentifiers) {
+        List<String> mobIdsWithoutCustomSettings = Lists.newArrayListWithCapacity(entityIdentifiers.size() - mobSettingsManager.getAllSettings().size());
+        for (Identifier id : entityIdentifiers) {
             if (!mobSettingsManager.getCustomIds().contains(id)) {
                 mobIdsWithoutCustomSettings.add(id.toString());
             }
@@ -267,7 +267,7 @@ public final class MRConfigScreenFactory {
             newValue -> mobSettings.rebornMobWeights = listToMap(newValue),
             (byte) 2,
             strList -> {
-                for (String str: strList) {
+                for (String str : strList) {
                     if (!str.matches(MOB_WEIGHT_MAP_ENTRY_REGEX)) {
                         return Optional.of(translator.getTranslatedText(OPTION_TRANSLATION_BASE + "rebornMobWeights.err", str));
                     }
@@ -282,7 +282,7 @@ public final class MRConfigScreenFactory {
 
     private static List<String> mapToList(Map<String, Integer> map) {
         List<String> stringList = Lists.newArrayList();
-        for (Map.Entry<String, Integer> entry: map.entrySet()) {
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
             stringList.add(entry.getKey() + MAP_SEPARATOR + entry.getValue().toString());
         }
 
@@ -291,7 +291,7 @@ public final class MRConfigScreenFactory {
 
     private static Map<String, Integer> listToMap(List<String> list) {
         Map<String, Integer> map = Maps.newHashMap();
-        for (String str: list) {
+        for (String str : list) {
             String[] parts = str.split(MAP_SEPARATOR);
             map.put(parts[0], Integer.parseInt(parts[1]));
         }
