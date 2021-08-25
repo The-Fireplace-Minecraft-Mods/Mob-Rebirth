@@ -27,14 +27,13 @@
     ]
   },
   "mixins": [
-    "mobrebirth.mixins.json",
-    "optional.mixins.json"
+    "mobrebirth.mixins.json"
   ],
 
   "depends": {
     "fabricloader": ">=0.7.2",
     "fabric": "*",
-    "minecraft": "1.16.X",
+    "minecraft": "1.15.X",
     "fireplacelib": ">=5.4 <6"
   }
 }

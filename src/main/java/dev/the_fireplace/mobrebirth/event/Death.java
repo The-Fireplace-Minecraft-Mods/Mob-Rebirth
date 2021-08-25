@@ -22,7 +22,7 @@ import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -139,7 +139,7 @@ public final class Death implements DeathHandler {
     private Identifier getEntityBiomeId() {
         Biome biome = livingEntity.getEntityWorld().getBiomeAccess().getBiome(livingEntity.getBlockPos());
 
-        return livingEntity.getEntityWorld().getRegistryManager().get(Registry.BIOME_KEY).getId(biome);
+        return Registry.BIOME.getId(biome);
     }
 
     private int getMobCountToSpawn() {
@@ -228,8 +228,8 @@ public final class Death implements DeathHandler {
         //Store
         LivingEntity newEntity;
         World worldIn = livingEntity.world;
-        NbtCompound storedData = new NbtCompound();
-        livingEntity.writeCustomDataToNbt(storedData);
+        CompoundTag storedData = new CompoundTag();
+        livingEntity.writeCustomDataToTag(storedData);
         ItemStack weapon = livingEntity.getStackInHand(Hand.MAIN_HAND);
         ItemStack offhand = livingEntity.getStackInHand(Hand.OFF_HAND);
         //Read
@@ -239,9 +239,9 @@ public final class Death implements DeathHandler {
         }
         newEntity.headYaw = newEntity.yaw;
         newEntity.bodyYaw = newEntity.yaw;
-        float health = newEntity.getMaxHealth();
+        float health = newEntity.getMaximumHealth();
         storedData.putInt("Health", (int) health);
-        newEntity.readCustomDataFromNbt(storedData);
+        newEntity.readCustomDataFromTag(storedData);
         newEntity.setHealth(health);
         if (!weapon.isEmpty()) {
             newEntity.equipStack(EquipmentSlot.MAINHAND, weapon);
