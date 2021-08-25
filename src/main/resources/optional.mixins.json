@@ -1,7 +1,7 @@
 {
   "required": false,
   "package": "dev.the_fireplace.mobrebirth.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_16",
   "client": [
     "clothconfig.AbstractConfigScreenAccessor"
   ],

@@ -237,8 +237,8 @@ public final class Death implements DeathHandler {
         if (newEntity == null) {
             return;
         }
-        newEntity.headYaw = newEntity.yaw;
-        newEntity.bodyYaw = newEntity.yaw;
+        newEntity.setHeadYaw(newEntity.getYaw());
+        newEntity.setBodyYaw(newEntity.getYaw());
         float health = newEntity.getMaxHealth();
         storedData.putInt("Health", (int) health);
         newEntity.readCustomDataFromNbt(storedData);

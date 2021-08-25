@@ -76,7 +76,7 @@ public final class MRConfigScreenFactory {
                 mobSettingsManager.saveAll();
                 Optional<ModContainer> modmenu = FabricLoader.getInstance().getModContainer("modmenu");
                 try {
-                    if (modmenu.isPresent() && SemanticVersion.parse(modmenu.get().getMetadata().getVersion().getFriendlyString()).compareTo(SemanticVersion.parse("1.16.9")) < 1) {
+                    if (modmenu.isPresent() && SemanticVersion.parse(modmenu.get().getMetadata().getVersion().getFriendlyString()).compareTo(SemanticVersion.parse("2.0.2")) < 1) {
                         ModMenuCompat compat = new OldModMenuCompat();
                         compat.forceReloadConfigGui();
                     }
