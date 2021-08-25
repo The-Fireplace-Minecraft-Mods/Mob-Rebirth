@@ -137,7 +137,7 @@ public final class Death implements DeathHandler {
 
     @Nullable
     private Identifier getEntityBiomeId() {
-        Biome biome = livingEntity.getEntityWorld().getBiomeAccess().getBiome(livingEntity.getBlockPos());
+        Biome biome = livingEntity.getEntityWorld().getBiome(livingEntity.getBlockPos());
 
         return Registry.BIOME.getId(biome);
     }
@@ -238,7 +238,7 @@ public final class Death implements DeathHandler {
             return;
         }
         newEntity.headYaw = newEntity.yaw;
-        newEntity.bodyYaw = newEntity.yaw;
+        newEntity.pitch = newEntity.yaw;
         float health = newEntity.getMaximumHealth();
         storedData.putInt("Health", (int) health);
         newEntity.readCustomDataFromTag(storedData);
