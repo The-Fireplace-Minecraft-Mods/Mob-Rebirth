@@ -8,6 +8,4 @@ public interface ConfigValues {
     boolean getAllowAnimalRebirth();
 
     boolean getVanillaRebirthOnly();
-
-    boolean getUseCompactCustomMobConfigs();
 }

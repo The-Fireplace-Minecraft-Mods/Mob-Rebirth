@@ -21,7 +21,6 @@ public final class MRConfig implements Config, ConfigValues {
     private boolean allowSlimeRebirth;
     private boolean allowAnimalRebirth;
     private boolean onlyAllowVanillaMobRebirth;
-    private boolean useCompactCustomMobConfigs;
 
     @Inject
     public MRConfig(ConfigStateManager configStateManager, @Named("default") ConfigValues defaultConfig) {
@@ -40,7 +39,6 @@ public final class MRConfig implements Config, ConfigValues {
         allowSlimeRebirth = buffer.readBool("allowSlimeRebirth", defaultConfig.getAllowSlimeRebirth());
         allowAnimalRebirth = buffer.readBool("allowAnimalRebirth", defaultConfig.getAllowAnimalRebirth());
         onlyAllowVanillaMobRebirth = buffer.readBool("onlyAllowVanillaMobRebirth", defaultConfig.getVanillaRebirthOnly());
-        useCompactCustomMobConfigs = buffer.readBool("useCompactCustomMobConfigs", defaultConfig.getUseCompactCustomMobConfigs());
     }
 
     @Override
@@ -49,7 +47,6 @@ public final class MRConfig implements Config, ConfigValues {
         buffer.writeBool("allowSlimeRebirth", allowSlimeRebirth);
         buffer.writeBool("allowAnimalRebirth", allowAnimalRebirth);
         buffer.writeBool("onlyAllowVanillaMobRebirth", onlyAllowVanillaMobRebirth);
-        buffer.writeBool("useCompactCustomMobConfigs", useCompactCustomMobConfigs);
     }
 
     @Override
@@ -72,11 +69,6 @@ public final class MRConfig implements Config, ConfigValues {
         return onlyAllowVanillaMobRebirth;
     }
 
-    @Override
-    public boolean getUseCompactCustomMobConfigs() {
-        return useCompactCustomMobConfigs;
-    }
-
     public void setAllowBossRebirth(boolean allowBossRebirth) {
         this.allowBossRebirth = allowBossRebirth;
     }
@@ -91,9 +83,5 @@ public final class MRConfig implements Config, ConfigValues {
 
     public void setOnlyAllowVanillaMobRebirth(boolean onlyAllowVanillaMobRebirth) {
         this.onlyAllowVanillaMobRebirth = onlyAllowVanillaMobRebirth;
-    }
-
-    public void setUseCompactCustomMobConfigs(boolean useCompactCustomMobConfigs) {
-        this.useCompactCustomMobConfigs = useCompactCustomMobConfigs;
     }
 }

@@ -15,6 +15,7 @@ logs/
 *.iws
 
 # vscode
+
 .settings/
 .vscode/
 bin/
@@ -22,4 +23,6 @@ bin/
 .project
 
 # fabric
-run/
+/run/
+/lib/
+/src/main/resources/.cache/

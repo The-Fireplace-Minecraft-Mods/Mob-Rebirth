@@ -1,7 +1,5 @@
 package dev.the_fireplace.mobrebirth.config;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import dev.the_fireplace.lib.api.chat.injectables.TranslatorFactory;
 import dev.the_fireplace.lib.api.chat.interfaces.Translator;
 import dev.the_fireplace.lib.api.client.injectables.ConfigScreenBuilderFactory;
@@ -11,6 +9,7 @@ import dev.the_fireplace.mobrebirth.MobRebirthConstants;
 import dev.the_fireplace.mobrebirth.compat.modmenu.ModMenuCompat;
 import dev.the_fireplace.mobrebirth.compat.modmenu.OldModMenuCompat;
 import dev.the_fireplace.mobrebirth.domain.config.ConfigValues;
+import dev.the_fireplace.mobrebirth.util.MapListConverter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
@@ -19,14 +18,11 @@ import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.api.VersionParsingException;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -44,7 +40,7 @@ public final class MRConfigScreenFactory {
     private final ConfigScreenBuilderFactory configScreenBuilderFactory;
     private final MobSettingsManager mobSettingsManager;
 
-    private final MobSettings mobSettingsDefaults = new MobSettings();
+    private final MobSettings defaultMobSettings;
 
     private ConfigScreenBuilder configScreenBuilder;
 
@@ -55,7 +51,8 @@ public final class MRConfigScreenFactory {
         MRConfig config,
         @Named("default") ConfigValues defaultConfigValues,
         ConfigScreenBuilderFactory configScreenBuilderFactory,
-        MobSettingsManager mobSettingsManager
+        MobSettingsManager mobSettingsManager,
+        DefaultMobSettings defaultMobSettings
     ) {
         this.translator = translatorFactory.getTranslator(MobRebirthConstants.MODID);
         this.configStateManager = configStateManager;
@@ -63,6 +60,7 @@ public final class MRConfigScreenFactory {
         this.defaultConfigValues = defaultConfigValues;
         this.configScreenBuilderFactory = configScreenBuilderFactory;
         this.mobSettingsManager = mobSettingsManager;
+        this.defaultMobSettings = defaultMobSettings;
     }
 
     public Screen getConfigScreen(Screen parent) {
@@ -86,9 +84,9 @@ public final class MRConfigScreenFactory {
             }
         );
         addGeneralCategoryEntries();
-        buildDefaultMobSettingsCategory(mobSettingsManager.getDefaultSettings());
-        for (MobSettings mobSettings : mobSettingsManager.getAllSettings()) {
-            buildCustomMobSettingsCategory(mobSettings);
+        buildDefaultMobSettingsCategory(defaultMobSettings);
+        for (Identifier customMobId : mobSettingsManager.getMobIdsWithCustomSettings()) {
+            buildCustomMobSettingsCategory(customMobId, mobSettingsManager.getSettings(customMobId));
         }
 
         return this.configScreenBuilder.build();
@@ -119,41 +117,27 @@ public final class MRConfigScreenFactory {
             defaultConfigValues.getVanillaRebirthOnly(),
             config::setOnlyAllowVanillaMobRebirth
         );
-        configScreenBuilder.addBoolToggle(
-            OPTION_TRANSLATION_BASE + "useCompactCustomMobConfigs",
-            config.getUseCompactCustomMobConfigs(),
-            defaultConfigValues.getUseCompactCustomMobConfigs(),
-            config::setUseCompactCustomMobConfigs,
-            (byte) 2
-        );
 
         createAddCustomMobDropdown();
     }
 
     private void createAddCustomMobDropdown() {
-        List<Identifier> entityIdentifiers = Lists.newArrayList(Registry.ENTITY_TYPE.getIds()).stream().filter(id -> Registry.ENTITY_TYPE.get(id).isSummonable()).collect(Collectors.toList());
-        List<String> mobIdsWithoutCustomSettings = Lists.newArrayListWithCapacity(entityIdentifiers.size() - mobSettingsManager.getAllSettings().size());
-        for (Identifier id : entityIdentifiers) {
-            if (!mobSettingsManager.getCustomIds().contains(id)) {
-                mobIdsWithoutCustomSettings.add(id.toString());
-            }
-        }
 
         // Not a real, savable option, but it's the easiest way to allow adding custom mobs in the GUI without hacking cloth config or building something custom that users won't be familiar with.
         configScreenBuilder.addStringDropdown(
             OPTION_TRANSLATION_BASE + "addCustomMob",
             "",
             "",
-            mobIdsWithoutCustomSettings,
+            mobSettingsManager.getMobIdsWithoutCustomSettings().stream().map(Identifier::toString).sorted().collect(Collectors.toList()),
             newValue -> {
                 if (!newValue.isEmpty()) {
-                    mobSettingsManager.createSettings(new Identifier(newValue));
+                    mobSettingsManager.addCustom(new Identifier(newValue), defaultMobSettings.clone());
                 }
             },
             false,
             (byte) 2,
             value ->
-                mobSettingsManager.getCustomIds().contains(new Identifier(value))
+                mobSettingsManager.isCustom(new Identifier(value))
                     ? Optional.of(translator.getTranslatedText(OPTION_TRANSLATION_BASE + "addCustomMob.err"))
                     : Optional.empty()
         );
@@ -164,22 +148,8 @@ public final class MRConfigScreenFactory {
         addCommonMobSettingsCategoryOptions(mobSettings);
     }
 
-    private void buildCustomMobSettingsCategory(MobSettings mobSettings) {
-        Identifier id = mobSettings.id.isEmpty()
-            ? mobSettingsManager.getIdentifier(mobSettings.getFile().getParentFile(), mobSettings.getFile())
-            : new Identifier(mobSettings.id);
-        if (id == null) {
-            MobRebirthConstants.LOGGER.error("Unable to get id for mob with settings at " + mobSettings.getFile().toString());
-            return;
-        }
+    private void buildCustomMobSettingsCategory(Identifier id, MobSettings mobSettings) {
         configScreenBuilder.startCategory(TRANSLATION_BASE + "mobSettings", id.toString());
-        configScreenBuilder.addBoolToggle(
-            OPTION_TRANSLATION_BASE + "enabled",
-            mobSettings.enabled == null || mobSettings.enabled,
-            true,
-            newValue -> mobSettings.enabled = newValue,
-            (byte) 2
-        );
 
         addCommonMobSettingsCategoryOptions(mobSettings);
 
@@ -190,7 +160,7 @@ public final class MRConfigScreenFactory {
             false,
             newValue -> {
                 if (newValue) {
-                    mobSettingsManager.deleteSettings(id, mobSettings);
+                    mobSettingsManager.deleteCustom(id);
                 }
             },
             (byte) 2
@@ -198,73 +168,80 @@ public final class MRConfigScreenFactory {
     }
 
     private void addCommonMobSettingsCategoryOptions(MobSettings mobSettings) {
+        configScreenBuilder.addBoolToggle(
+            OPTION_TRANSLATION_BASE + "enabled",
+            mobSettings.isEnabled(),
+            defaultMobSettings.isEnabled(),
+            mobSettings::setEnabled,
+            (byte) 2
+        );
         configScreenBuilder.addDoublePercentSlider(
             OPTION_TRANSLATION_BASE + "rebirthChance",
-            mobSettings.rebirthChance,
-            mobSettingsDefaults.rebirthChance,
-            newValue -> mobSettings.rebirthChance = newValue
+            mobSettings.getRebirthChance(),
+            defaultMobSettings.getRebirthChance(),
+            mobSettings::setRebirthChance
         );
         configScreenBuilder.addDoublePercentSlider(
             OPTION_TRANSLATION_BASE + "multiMobChance",
-            mobSettings.extraMobChance,
-            mobSettingsDefaults.extraMobChance,
-            newValue -> mobSettings.extraMobChance = newValue
+            mobSettings.getExtraMobChance(),
+            defaultMobSettings.getExtraMobChance(),
+            mobSettings::setExtraMobChance
         );
         configScreenBuilder.addStringDropdown(
             OPTION_TRANSLATION_BASE + "multiMobMode",
-            mobSettings.extraMobMode,
-            mobSettingsDefaults.extraMobMode,
+            mobSettings.getExtraMobMode(),
+            defaultMobSettings.getExtraMobMode(),
             Arrays.asList("continuous", "per-mob", "all"),
-            newValue -> mobSettings.extraMobMode = newValue,
+            mobSettings::setExtraMobMode,
             false,
             (byte) 5
         );
         configScreenBuilder.addIntField(
             OPTION_TRANSLATION_BASE + "multiMobCount",
-            mobSettings.extraMobCount,
-            mobSettingsDefaults.extraMobCount,
-            newValue -> mobSettings.extraMobCount = newValue,
+            mobSettings.getExtraMobCount(),
+            defaultMobSettings.getExtraMobCount(),
+            mobSettings::setExtraMobCount,
             0,
             Integer.MAX_VALUE,
             (byte) 2
         );
         configScreenBuilder.addBoolToggle(
             OPTION_TRANSLATION_BASE + "rebornAsEggs",
-            mobSettings.rebornAsEggs,
-            mobSettingsDefaults.rebornAsEggs,
-            newValue -> mobSettings.rebornAsEggs = newValue
+            mobSettings.isRebornAsEggs(),
+            defaultMobSettings.isRebornAsEggs(),
+            mobSettings::setRebornAsEggs
         );
         configScreenBuilder.addBoolToggle(
             OPTION_TRANSLATION_BASE + "rebirthFromPlayer",
-            mobSettings.rebirthFromPlayer,
-            mobSettingsDefaults.rebirthFromPlayer,
-            newValue -> mobSettings.rebirthFromPlayer = newValue
+            mobSettings.isRebirthFromPlayer(),
+            defaultMobSettings.isRebirthFromPlayer(),
+            mobSettings::setRebirthFromPlayer
         );
         configScreenBuilder.addBoolToggle(
             OPTION_TRANSLATION_BASE + "rebirthFromNonPlayer",
-            mobSettings.rebirthFromNonPlayer,
-            mobSettingsDefaults.rebirthFromNonPlayer,
-            newValue -> mobSettings.rebirthFromNonPlayer = newValue
+            mobSettings.isRebirthFromNonPlayer(),
+            defaultMobSettings.isRebirthFromNonPlayer(),
+            mobSettings::setRebirthFromNonPlayer
         );
         configScreenBuilder.addBoolToggle(
             OPTION_TRANSLATION_BASE + "preventSunlightDamage",
-            mobSettings.preventSunlightDamage,
-            mobSettingsDefaults.preventSunlightDamage,
-            newValue -> mobSettings.preventSunlightDamage = newValue,
+            mobSettings.isPreventSunlightDamage(),
+            defaultMobSettings.isPreventSunlightDamage(),
+            mobSettings::setPreventSunlightDamage,
             (byte) 2
         );
         configScreenBuilder.addStringListField(
             OPTION_TRANSLATION_BASE + "biomeList",
-            mobSettings.biomeList,
-            mobSettingsDefaults.biomeList,
-            newValue -> mobSettings.biomeList = newValue,
+            mobSettings.getBiomeList(),
+            defaultMobSettings.getBiomeList(),
+            mobSettings::setBiomeList,
             (byte) 2
         );
         configScreenBuilder.addStringListField(
             OPTION_TRANSLATION_BASE + "rebornMobWeights",
-            mapToList(mobSettings.rebornMobWeights),
-            mapToList(mobSettingsDefaults.rebornMobWeights),
-            newValue -> mobSettings.rebornMobWeights = listToMap(newValue),
+            MapListConverter.mapToList(mobSettings.getRebornMobWeights()),
+            MapListConverter.mapToList(defaultMobSettings.getRebornMobWeights()),
+            newValue -> mobSettings.setRebornMobWeights(MapListConverter.listToMap(newValue)),
             (byte) 2,
             strList -> {
                 for (String str : strList) {
@@ -277,25 +254,4 @@ public final class MRConfigScreenFactory {
         );
     }
 
-    //TODO integrate these with FL 6.0.0
-    public static final String MAP_SEPARATOR = "=";
-
-    private static List<String> mapToList(Map<String, Integer> map) {
-        List<String> stringList = Lists.newArrayList();
-        for (Map.Entry<String, Integer> entry : map.entrySet()) {
-            stringList.add(entry.getKey() + MAP_SEPARATOR + entry.getValue().toString());
-        }
-
-        return stringList;
-    }
-
-    private static Map<String, Integer> listToMap(List<String> list) {
-        Map<String, Integer> map = Maps.newHashMap();
-        for (String str : list) {
-            String[] parts = str.split(MAP_SEPARATOR);
-            map.put(parts[0], Integer.parseInt(parts[1]));
-        }
-
-        return map;
-    }
 }
