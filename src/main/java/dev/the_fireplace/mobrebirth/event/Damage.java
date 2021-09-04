@@ -3,10 +3,13 @@ package dev.the_fireplace.mobrebirth.event;
 import dev.the_fireplace.annotateddi.api.di.Implementation;
 import dev.the_fireplace.mobrebirth.config.MobSettingsManager;
 import dev.the_fireplace.mobrebirth.domain.event.DamageHandler;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.registry.Registry;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -24,7 +27,11 @@ public final class Damage implements DamageHandler {
 
     public boolean shouldCancelEntityDamage(DamageSource source, LivingEntity livingEntity) {
         return isSunlightDamage(source, livingEntity)
-            && mobSettingsManager.getSettings(livingEntity).preventSunlightDamage;
+            && mobSettingsManager.getSettings(getId(livingEntity)).isPreventSunlightDamage();
+    }
+
+    private Identifier getId(Entity entity) {
+        return Registry.ENTITY_TYPE.getId(entity.getType());
     }
 
     private boolean isSunlightDamage(DamageSource source, LivingEntity livingEntity) {
