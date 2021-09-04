@@ -27,9 +27,4 @@ public final class MRConfigDefaults implements ConfigValues {
     public boolean getVanillaRebirthOnly() {
         return false;
     }
-
-    @Override
-    public boolean getUseCompactCustomMobConfigs() {
-        return true;
-    }
 }

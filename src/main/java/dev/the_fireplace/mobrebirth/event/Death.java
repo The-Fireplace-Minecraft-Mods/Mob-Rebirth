@@ -9,6 +9,7 @@ import dev.the_fireplace.mobrebirth.config.MobSettingsManager;
 import dev.the_fireplace.mobrebirth.domain.config.ConfigValues;
 import dev.the_fireplace.mobrebirth.domain.event.DeathHandler;
 import dev.the_fireplace.mobrebirth.entrypoints.MainEntrypoint;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -56,16 +57,14 @@ public final class Death implements DeathHandler {
     public void onDeath(LivingEntity livingEntity, DamageSource damageSource) {
         if (!livingEntity.getEntityWorld().isClient()) {
             this.livingEntity = livingEntity;
-            this.mobSettings = mobSettingsManager.getSettings(livingEntity);
-            Boolean enabled = this.mobSettings.enabled;
-            if (Boolean.FALSE.equals(enabled)) {
+            this.mobSettings = mobSettingsManager.getSettings(getId(livingEntity));
+            boolean enabled = this.mobSettings.isEnabled();
+            if (!enabled) {
                 return;
             }
             if (rebirthIsAllowedFromSource(damageSource)
-                && (Boolean.TRUE.equals(enabled)
-                || (rebirthIsAllowedForEntityCategory()
-                && rebirthIsAllowedForEntityType()))
-                && rebirthIsAllowedInBiome()) {
+                && rebirthIsAllowedInBiome()
+            ) {
                 triggerRebirth(getMobCountToSpawn());
             }
         }
@@ -73,9 +72,9 @@ public final class Death implements DeathHandler {
 
     private boolean rebirthIsAllowedFromSource(DamageSource damageSource) {
         if (damageSource.getAttacker() instanceof PlayerEntity) {
-            return this.mobSettings.rebirthFromPlayer;
+            return this.mobSettings.isRebirthFromPlayer();
         } else {
-            return this.mobSettings.rebirthFromNonPlayer;
+            return this.mobSettings.isRebirthFromNonPlayer();
         }
     }
 
@@ -124,7 +123,7 @@ public final class Death implements DeathHandler {
     }
 
     private boolean rebirthIsAllowedInBiome() {
-        List<String> biomeList = this.mobSettings.biomeList;
+        List<String> biomeList = this.mobSettings.getBiomeList();
         boolean biomeIsAllowed = biomeList.contains("*");
 
         Identifier biomeId = getEntityBiomeId();
@@ -145,7 +144,7 @@ public final class Death implements DeathHandler {
     private int getMobCountToSpawn() {
         double rand = Math.random();
         int count = 0;
-        if (rand <= this.mobSettings.rebirthChance) {
+        if (rand <= this.mobSettings.getRebirthChance()) {
             count++;
             count += getExtraMobCount();
         }
@@ -153,24 +152,24 @@ public final class Death implements DeathHandler {
     }
 
     private int getExtraMobCount() {
-        if (this.mobSettings.extraMobCount <= 0) {
+        if (this.mobSettings.getExtraMobCount() <= 0) {
             return 0;
         }
 
         double rand = Math.random();
-        String extraMobMode = this.mobSettings.extraMobMode.toLowerCase();
+        String extraMobMode = this.mobSettings.getExtraMobMode().toLowerCase();
         switch (extraMobMode) {
             case "all":
-                if (rand <= this.mobSettings.extraMobChance) {
-                    return this.mobSettings.extraMobCount;
+                if (rand <= this.mobSettings.getExtraMobChance()) {
+                    return this.mobSettings.getExtraMobCount();
                 }
                 return 0;
             case "per-mob":
             case "continuous":
             default:
                 int extraCount = 0;
-                for (int i = 0; i < this.mobSettings.extraMobCount; i++, rand = Math.random()) {
-                    if (rand <= this.mobSettings.extraMobChance) {
+                for (int i = 0; i < this.mobSettings.getExtraMobCount(); i++, rand = Math.random()) {
+                    if (rand <= this.mobSettings.getExtraMobChance()) {
                         extraCount++;
                     } else if (!extraMobMode.equals("per-mob")) {
                         break;
@@ -183,7 +182,7 @@ public final class Death implements DeathHandler {
     private void triggerRebirth(int count) {
         for (int i = 0; i < count; i++) {
             EntityType<?> rebornEntityType = getEntityTypeForRebirth();
-            if (this.mobSettings.rebornAsEggs) {
+            if (this.mobSettings.isRebornAsEggs()) {
                 if (MainEntrypoint.spawnEggs.containsKey(rebornEntityType)) {
                     dropMobEgg(rebornEntityType);
                 } else {
@@ -196,7 +195,7 @@ public final class Death implements DeathHandler {
     }
 
     private EntityType<?> getEntityTypeForRebirth() {
-        Map<String, Integer> rebornMobTypes = Maps.newHashMap(this.mobSettings.rebornMobWeights);
+        Map<String, Integer> rebornMobTypes = Maps.newHashMap(this.mobSettings.getRebornMobWeights());
         if (rebornMobTypes.isEmpty() || (rebornMobTypes.size() == 1 && rebornMobTypes.containsKey(""))) {
             return livingEntity.getType();
         }
@@ -255,6 +254,10 @@ public final class Death implements DeathHandler {
     }
 
     private boolean isVanilla(LivingEntity livingEntity) {
-        return Registry.ENTITY_TYPE.getId(livingEntity.getType()).getNamespace().equalsIgnoreCase("minecraft");
+        return getId(livingEntity).getNamespace().equalsIgnoreCase("minecraft");
+    }
+
+    private Identifier getId(Entity entity) {
+        return Registry.ENTITY_TYPE.getId(entity.getType());
     }
 }

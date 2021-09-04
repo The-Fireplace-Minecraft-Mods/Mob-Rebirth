@@ -11,9 +11,6 @@
   "text.config.mobrebirth.option.allowAnimalRebirth.desc": "Should animals be reborn?",
   "text.config.mobrebirth.option.onlyAllowVanillaMobRebirth": "Vanilla Mobs Only",
   "text.config.mobrebirth.option.onlyAllowVanillaMobRebirth.desc": "Only allow vanilla mobs be reborn?",
-  "text.config.mobrebirth.option.useCompactCustomMobConfigs": "Compact Custom Mob Configs",
-  "text.config.mobrebirth.option.useCompactCustomMobConfigs.desc[0]": "Reduce the size of custom mob configs",
-  "text.config.mobrebirth.option.useCompactCustomMobConfigs.desc[1]": "by only exporting non-default values.",
 
   "text.config.mobrebirth.option.addCustomMob": "Add Custom Mob Settings",
   "text.config.mobrebirth.option.addCustomMob.desc[0]": "Choose an entity ID then save",
