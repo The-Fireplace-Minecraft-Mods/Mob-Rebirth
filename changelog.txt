@@ -1,4 +1,1 @@
-Updated to use Fireplace Lib 5.5.0+
-Restructured configs to more closely match the format of the Config GUI - it's not ideal, but it'll do for now since it's more maintainable. Will likely restructure again to be more like the original after FL 6.0.0 is released.
-Internally reworked configs to be more maintainable.
-Removed Compact Custom Mob Configs option
+Updated to use Fireplace Lib 5.6.1+
