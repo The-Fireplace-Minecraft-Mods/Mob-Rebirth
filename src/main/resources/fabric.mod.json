@@ -32,7 +32,7 @@
   "depends": {
     "fabricloader": ">=0.7.2",
     "minecraft": ">=1.17",
-    "fireplacelib": ">=5.6.1 <6"
+    "fireplacelib": ">=6.0.5 <7"
   },
   "suggests": {
     "modmenu": "*"

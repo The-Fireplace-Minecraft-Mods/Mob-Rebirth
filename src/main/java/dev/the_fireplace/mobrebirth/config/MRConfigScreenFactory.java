@@ -4,6 +4,8 @@ import dev.the_fireplace.lib.api.chat.injectables.TranslatorFactory;
 import dev.the_fireplace.lib.api.chat.interfaces.Translator;
 import dev.the_fireplace.lib.api.client.injectables.ConfigScreenBuilderFactory;
 import dev.the_fireplace.lib.api.client.interfaces.ConfigScreenBuilder;
+import dev.the_fireplace.lib.api.client.interfaces.DecimalSliderOptionBuilder;
+import dev.the_fireplace.lib.api.client.interfaces.OptionBuilder;
 import dev.the_fireplace.lib.api.lazyio.injectables.ConfigStateManager;
 import dev.the_fireplace.mobrebirth.MobRebirthConstants;
 import dev.the_fireplace.mobrebirth.domain.config.ConfigValues;
@@ -118,13 +120,11 @@ public final class MRConfigScreenFactory {
                 if (!newValue.isEmpty()) {
                     mobSettingsManager.addCustom(new Identifier(newValue), defaultMobSettings.clone());
                 }
-            },
-            false,
-            (byte) 2,
-            value ->
-                mobSettingsManager.isCustom(new Identifier(value))
-                    ? Optional.of(translator.getTranslatedText(OPTION_TRANSLATION_BASE + "addCustomMob.err"))
-                    : Optional.empty()
+            }
+        ).setDescriptionRowCount((byte) 2).setErrorSupplier(value ->
+            mobSettingsManager.isCustom(new Identifier(value))
+                ? Optional.of(translator.getTranslatedText(OPTION_TRANSLATION_BASE + "addCustomMob.err"))
+                : Optional.empty()
         );
     }
 
@@ -147,96 +147,94 @@ public final class MRConfigScreenFactory {
                 if (newValue) {
                     mobSettingsManager.deleteCustom(id);
                 }
-            },
-            (byte) 2
-        );
+            }
+        ).setDescriptionRowCount((byte) 2);
     }
 
     private void addCommonMobSettingsCategoryOptions(MobSettings mobSettings) {
-        configScreenBuilder.addBoolToggle(
+        OptionBuilder<Boolean> enabled = configScreenBuilder.addBoolToggle(
             OPTION_TRANSLATION_BASE + "enabled",
             mobSettings.isEnabled(),
             defaultMobSettings.isEnabled(),
-            mobSettings::setEnabled,
-            (byte) 2
-        );
-        configScreenBuilder.addDoublePercentSlider(
+            mobSettings::setEnabled
+        ).setDescriptionRowCount((byte) 2);
+        DecimalSliderOptionBuilder<Double> rebirthChance = configScreenBuilder.addDoubleSlider(
             OPTION_TRANSLATION_BASE + "rebirthChance",
             mobSettings.getRebirthChance(),
             defaultMobSettings.getRebirthChance(),
-            mobSettings::setRebirthChance
+            mobSettings::setRebirthChance,
+            0,
+            100
         );
-        configScreenBuilder.addDoublePercentSlider(
+        rebirthChance.enablePercentMode();
+        rebirthChance.addDependency(enabled);
+        DecimalSliderOptionBuilder<Double> multiMobChance = configScreenBuilder.addDoubleSlider(
             OPTION_TRANSLATION_BASE + "multiMobChance",
             mobSettings.getExtraMobChance(),
             defaultMobSettings.getExtraMobChance(),
-            mobSettings::setExtraMobChance
+            mobSettings::setExtraMobChance,
+            0,
+            100
         );
+        multiMobChance.enablePercentMode();
+        multiMobChance.addDependency(rebirthChance, value -> value > 0);
         configScreenBuilder.addStringDropdown(
             OPTION_TRANSLATION_BASE + "multiMobMode",
             mobSettings.getExtraMobMode(),
             defaultMobSettings.getExtraMobMode(),
             Arrays.asList("continuous", "per-mob", "all"),
-            mobSettings::setExtraMobMode,
-            false,
-            (byte) 5
-        );
+            mobSettings::setExtraMobMode
+        ).setDescriptionRowCount((byte) 5).addDependency(multiMobChance, value -> value > 0);
         configScreenBuilder.addIntField(
             OPTION_TRANSLATION_BASE + "multiMobCount",
             mobSettings.getExtraMobCount(),
             defaultMobSettings.getExtraMobCount(),
-            mobSettings::setExtraMobCount,
-            0,
-            Integer.MAX_VALUE,
-            (byte) 2
-        );
+            mobSettings::setExtraMobCount
+        ).setMinimum(0).setDescriptionRowCount((byte) 2).addDependency(multiMobChance, value -> value > 0);
+        ;
         configScreenBuilder.addBoolToggle(
             OPTION_TRANSLATION_BASE + "rebornAsEggs",
             mobSettings.isRebornAsEggs(),
             defaultMobSettings.isRebornAsEggs(),
             mobSettings::setRebornAsEggs
-        );
+        ).addDependency(rebirthChance, value -> value > 0);
         configScreenBuilder.addBoolToggle(
             OPTION_TRANSLATION_BASE + "rebirthFromPlayer",
             mobSettings.isRebirthFromPlayer(),
             defaultMobSettings.isRebirthFromPlayer(),
             mobSettings::setRebirthFromPlayer
-        );
+        ).addDependency(rebirthChance, value -> value > 0);
         configScreenBuilder.addBoolToggle(
             OPTION_TRANSLATION_BASE + "rebirthFromNonPlayer",
             mobSettings.isRebirthFromNonPlayer(),
             defaultMobSettings.isRebirthFromNonPlayer(),
             mobSettings::setRebirthFromNonPlayer
-        );
+        ).addDependency(rebirthChance, value -> value > 0);
         configScreenBuilder.addBoolToggle(
             OPTION_TRANSLATION_BASE + "preventSunlightDamage",
             mobSettings.isPreventSunlightDamage(),
             defaultMobSettings.isPreventSunlightDamage(),
-            mobSettings::setPreventSunlightDamage,
-            (byte) 2
-        );
+            mobSettings::setPreventSunlightDamage
+        ).setDescriptionRowCount((byte) 2).addDependency(enabled);
         configScreenBuilder.addStringListField(
             OPTION_TRANSLATION_BASE + "biomeList",
             mobSettings.getBiomeList(),
             defaultMobSettings.getBiomeList(),
-            mobSettings::setBiomeList,
-            (byte) 2
-        );
+            mobSettings::setBiomeList
+        ).setDescriptionRowCount((byte) 2).addDependency(rebirthChance, value -> value > 0);
         configScreenBuilder.addStringListField(
             OPTION_TRANSLATION_BASE + "rebornMobWeights",
             MapListConverter.mapToList(mobSettings.getRebornMobWeights()),
             MapListConverter.mapToList(defaultMobSettings.getRebornMobWeights()),
-            newValue -> mobSettings.setRebornMobWeights(MapListConverter.listToMap(newValue)),
-            (byte) 2,
-            strList -> {
-                for (String str : strList) {
-                    if (!str.matches(MOB_WEIGHT_MAP_ENTRY_REGEX)) {
-                        return Optional.of(translator.getTranslatedText(OPTION_TRANSLATION_BASE + "rebornMobWeights.err", str));
-                    }
+            newValue -> mobSettings.setRebornMobWeights(MapListConverter.listToMap(newValue))
+        ).setDescriptionRowCount((byte) 2).setErrorSupplier(strList -> {
+            for (String str : strList) {
+                if (!str.matches(MOB_WEIGHT_MAP_ENTRY_REGEX)) {
+                    return Optional.of(translator.getTranslatedText(OPTION_TRANSLATION_BASE + "rebornMobWeights.err", str));
                 }
-                return Optional.empty();
             }
-        );
+            return Optional.empty();
+        }).addDependency(rebirthChance, value -> value > 0);
     }
 
 }
