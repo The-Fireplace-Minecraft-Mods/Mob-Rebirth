@@ -29,10 +29,19 @@
   "mixins": [
     "mobrebirth.mixins.json"
   ],
-
   "depends": {
     "fabricloader": ">=0.7.2",
     "minecraft": "1.14.X",
-    "fireplacelib": ">=5.5 <6"
+    "fireplacelib": ">=6.0.5 <7"
+  },
+  "suggests": {
+    "modmenu": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/QXQYPj5"
+      }
+    }
   }
 }
