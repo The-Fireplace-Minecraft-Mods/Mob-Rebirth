@@ -1,2 +1,1 @@
-Updated to use Fireplace Lib 6.0.5+
-Minor improvements to the config GUI
+Updated to use Fabric Loader 0.12+ and Fireplace Lib 6.2+
