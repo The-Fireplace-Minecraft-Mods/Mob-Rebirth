@@ -2,16 +2,16 @@
   "schemaVersion": 1,
   "id": "mobrebirth",
   "version": "${version}",
-
-  "name": "Mob Rebirth",
-  "description": "Allows mobs to be reborn in various ways.",
+  "name": "${name}",
+  "description": "${description}",
   "authors": [
     "The_Fireplace"
   ],
   "contact": {
-    "homepage": "https://www.curseforge.com/minecraft/mc-mods/mob-rebirth",
-    "sources": "https://github.com/The-Fireplace-Minecraft-Mods/Mob-Rebirth",
-    "issues": "https://github.com/The-Fireplace-Minecraft-Mods/Mob-Rebirth/issues"
+    "homepage": "${curseforge_url}",
+    "sources": "${github_url}",
+    "issues": "${github_url}/issues",
+    "modrinth": "${modrinth_url}"
   },
 
   "license": "MPL-2.0",
