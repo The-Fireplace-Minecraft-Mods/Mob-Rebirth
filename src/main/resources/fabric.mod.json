@@ -20,10 +20,10 @@
   "environment": "*",
   "entrypoints": {
     "di-main": [
-      "dev.the_fireplace.mobrebirth.entrypoints.MainEntrypoint"
+      "dev.the_fireplace.mobrebirth.entrypoints.Main"
     ],
-    "modmenu": [
-      "dev.the_fireplace.mobrebirth.entrypoints.ModMenuEntrypoint"
+    "fireplacelib": [
+      "dev.the_fireplace.mobrebirth.entrypoints.ConfigGui"
     ]
   },
   "mixins": [
@@ -32,7 +32,7 @@
   "depends": {
     "fabricloader": ">=0.12.0",
     "minecraft": ">=1.18.2",
-    "fireplacelib": ">=6.2 <7"
+    "fireplacelib": ">=6.3 <7"
   },
   "custom": {
     "modmenu": {
