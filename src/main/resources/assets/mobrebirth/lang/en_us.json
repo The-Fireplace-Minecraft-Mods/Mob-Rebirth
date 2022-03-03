@@ -1,8 +1,8 @@
 {
+  "modmenu.descriptionTranslation.mobrebirth": "${description}",
   "text.config.mobrebirth.title": "Mob Rebirth Config",
   "text.config.mobrebirth.general": "General Settings",
   "text.config.mobrebirth.general.desc": "Can be overridden by individual mobs.",
-
   "text.config.mobrebirth.option.allowBossRebirth": "Allow Bosses",
   "text.config.mobrebirth.option.allowBossRebirth.desc": "Should bosses be reborn?",
   "text.config.mobrebirth.option.allowSlimeRebirth": "Allow Slimes",
