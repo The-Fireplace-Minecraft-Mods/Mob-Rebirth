@@ -8,7 +8,7 @@ import dev.the_fireplace.mobrebirth.config.MobSettings;
 import dev.the_fireplace.mobrebirth.config.MobSettingsManager;
 import dev.the_fireplace.mobrebirth.domain.config.ConfigValues;
 import dev.the_fireplace.mobrebirth.domain.event.DeathHandler;
-import dev.the_fireplace.mobrebirth.entrypoints.MainEntrypoint;
+import dev.the_fireplace.mobrebirth.entrypoints.Main;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
@@ -183,7 +183,7 @@ public final class Death implements DeathHandler {
         for (int i = 0; i < count; i++) {
             EntityType<?> rebornEntityType = getEntityTypeForRebirth();
             if (this.mobSettings.isRebornAsEggs()) {
-                if (MainEntrypoint.spawnEggs.containsKey(rebornEntityType)) {
+                if (Main.spawnEggs.containsKey(rebornEntityType)) {
                     dropMobEgg(rebornEntityType);
                 } else {
                     MobRebirthConstants.LOGGER.error("Missing egg for " + Registry.ENTITY_TYPE.getId(rebornEntityType));
@@ -220,7 +220,7 @@ public final class Death implements DeathHandler {
     }
 
     private void dropMobEgg(EntityType<?> entityType) {
-        livingEntity.dropItem(() -> MainEntrypoint.spawnEggs.get(entityType), 0);
+        livingEntity.dropItem(() -> Main.spawnEggs.get(entityType), 0);
     }
 
     private void createEntity(EntityType<?> entityType) {

@@ -8,7 +8,7 @@ import net.minecraft.item.SpawnEggItem;
 
 import java.util.Map;
 
-public final class MainEntrypoint implements DIModInitializer {
+public final class Main implements DIModInitializer {
     public static final Map<EntityType<?>, SpawnEggItem> spawnEggs = Maps.newHashMap();
 
     @Override
