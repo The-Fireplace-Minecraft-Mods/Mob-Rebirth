@@ -1,2 +1,1 @@
-Updated to use Fireplace Lib 6.0.5+
-Minor improvements to the config GUI
+Update to use features from Fireplace Lib 6.3
