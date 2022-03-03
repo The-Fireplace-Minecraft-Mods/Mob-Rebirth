@@ -27,6 +27,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import org.jetbrains.annotations.Nullable;
@@ -136,9 +137,9 @@ public final class Death implements DeathHandler {
 
     @Nullable
     private Identifier getEntityBiomeId() {
-        Biome biome = livingEntity.getEntityWorld().getBiomeAccess().getBiome(livingEntity.getBlockPos());
+        RegistryEntry<Biome> biome = livingEntity.getEntityWorld().getBiomeAccess().getBiome(livingEntity.getBlockPos());
 
-        return livingEntity.getEntityWorld().getRegistryManager().get(Registry.BIOME_KEY).getId(biome);
+        return livingEntity.getEntityWorld().getRegistryManager().get(Registry.BIOME_KEY).getId(biome.value());
     }
 
     private int getMobCountToSpawn() {
