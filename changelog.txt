@@ -1,3 +1,1 @@
-Update to use features from Fireplace Lib 6.3
-Update to 1.18.2
-The description shown in Mod Menu can now be translated
+Update to use Fireplace Lib 7.X and Annotated DI 4.X

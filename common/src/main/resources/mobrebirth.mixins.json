@@ -1,0 +1,13 @@
+{
+    "required": true,
+    "minVersion": "0.8",
+    "package": "dev.the_fireplace.mobrebirth.mixin",
+    "compatibilityLevel": "JAVA_16",
+    "mixins": [
+        "LivingEntityMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    },
+    "refmap": "${refmap_target}refmap.json"
+}
